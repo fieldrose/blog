@@ -19,15 +19,14 @@ import {
 import { transformerFileName } from "./src/utils/transformers/fileName";
 import config from "./astro-paper.config";
 
+import vue from "@astrojs/vue";
+
 export default defineConfig({
   site: config.site.url,
-  integrations: [
-    mdx(),
-    sitemap({
-      filter: page =>
-        config.features?.showArchives !== false || !page.endsWith("/archives/"),
-    }),
-  ],
+  integrations: [mdx(), sitemap({
+    filter: page =>
+      config.features?.showArchives !== false || !page.endsWith("/archives/"),
+  }), vue()],
   i18n: {
     locales: ["en"],
     defaultLocale: "en",

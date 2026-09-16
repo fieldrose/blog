@@ -2,10 +2,11 @@ import { defineAstroPaperConfig } from "./src/types/config";
 
 export default defineAstroPaperConfig({
   site: {
-    url: "https://astro-paper.pages.dev/",
-    title: "AstroPaper",
+    // url: "https://astro-paper.pages.dev/",
+    url: "https://6aaa32f072094af758c662c6--mimas-blog.netlify.app/posts/adding-new-posts-in-astropaper-theme/",
+    title: "",
     description: "A minimal, responsive and SEO-friendly Astro blog theme.",
-    author: "Sat Naing",
+    author: "Mimas",
     profile: "https://satna.ing",
     ogImage: "default-og.jpg",
     lang: "en",
