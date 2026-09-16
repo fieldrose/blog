@@ -18,6 +18,7 @@ import {
 } from "@shikijs/transformers";
 import { transformerFileName } from "./src/utils/transformers/fileName";
 import config from "./astro-paper.config";
+import { localeCodes } from "./src/i18n/locales";
 
 import vue from "@astrojs/vue";
 
@@ -32,7 +33,7 @@ export default defineConfig({
     vue(),
   ],
   i18n: {
-    locales: ["zh", "en"],
+    locales: localeCodes,
     defaultLocale: "zh",
     routing: {
       prefixDefaultLocale: false,
