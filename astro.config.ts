@@ -23,13 +23,17 @@ import vue from "@astrojs/vue";
 
 export default defineConfig({
   site: config.site.url,
-  integrations: [mdx(), sitemap({
-    filter: page =>
-      config.features?.showArchives !== false || !page.endsWith("/archives/"),
-  }), vue()],
+  integrations: [
+    mdx(),
+    sitemap({
+      filter: page =>
+        config.features?.showArchives !== false || !page.endsWith("/archives/"),
+    }),
+    vue(),
+  ],
   i18n: {
-    locales: ["en"],
-    defaultLocale: "en",
+    locales: ["zh", "en"],
+    defaultLocale: "zh",
     routing: {
       prefixDefaultLocale: false,
     },
