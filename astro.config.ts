@@ -36,7 +36,8 @@ export default defineConfig({
     locales: localeCodes,
     defaultLocale: "zh",
     routing: {
-      prefixDefaultLocale: false,
+      prefixDefaultLocale: true,
+      redirectToDefaultLocale: true,
     },
   },
   markdown: {
