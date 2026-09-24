@@ -9,9 +9,12 @@ import IconMoon from "@/assets/icons/IconMoon.svg";
 import IconX from "@/assets/icons/IconX.svg";
 import IconChangeLanguage from "@/assets/icons/iconChangeLanguage.svg";
 import LinkButton from "./LinkButton.astro";
+import UserMenu from "@/components/react/UserMenu.tsx";
+import ReadingSettings from "@/components/vue/ReadingSettings.vue";
 import { stripBase, stripLocale } from "@/utils/withBase";
 import { useTranslations } from "@/i18n";
 import { locales } from "@/i18n/locales";
+import { hasSupabasePublicEnv } from "@/lib/env";
 import config from "@/config";
 
 const { site, features } = config;
@@ -28,6 +31,9 @@ const pathWithoutTrailingSlash =
     : relativePath;
 
 const currentPath = stripLocale(pathWithoutTrailingSlash, locale);
+
+const showAuth = features.auth && hasSupabasePublicEnv;
+const showReadingSettings = features.readingSettings;
 
 // 语言切换菜单 — 从共享配置动态生成
 const localeMenu = locales.map(loc => ({
@@ -211,6 +217,20 @@ const isActive = (path: string) => {
             </ul>
           </div>
         </li>
+        {
+          showReadingSettings && (
+            <li class="col-span-1 flex items-center justify-center">
+              <ReadingSettings client:idle labels={t.readingSettings} />
+            </li>
+          )
+        }
+        {
+          showAuth && (
+            <li class="col-span-1 flex items-center justify-center">
+              <UserMenu client:idle labels={t.auth} />
+            </li>
+          )
+        }
       </ul>
     </nav>
   </div>

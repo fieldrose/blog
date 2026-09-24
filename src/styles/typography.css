@@ -5,6 +5,12 @@
   .app-prose {
     @apply prose;
 
+    /* Reading-settings overrides (Vue Pinia island writes these to <html>).
+       Falls back to the original defaults when unset. */
+    font-size: calc(1rem * var(--reader-font-scale, 1));
+    line-height: var(--reader-line-height, 1.75);
+    max-width: var(--reader-max-width, 48rem);
+
     h1,
     h2,
     h3,

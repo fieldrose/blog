@@ -61,9 +61,90 @@ export interface UIStrings {
     goToPreviousPage: string;
     goToNextPage: string;
   };
+  reactions: {
+    /** Visually hidden section title for the emoji reaction bar. */
+    heading: string;
+    like: string;
+    fire: string;
+    idea: string;
+    question: string;
+    /** Shown when the reactions backend is unavailable. */
+    unavailable: string;
+  };
+  auth: {
+    signIn: string;
+    signUp: string;
+    signOut: string;
+    loginTab: string;
+    registerTab: string;
+    dialogAriaLabel: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+    githubButton: string;
+    submitting: string;
+    checkEmailTitle: string;
+    checkEmailBody: string;
+    backToLogin: string;
+    closeDialog: string;
+    menuLabel: string;
+    /** Validation / error messages. */
+    errRequiredEmail: string;
+    errRequiredPassword: string;
+    errPasswordTooShort: string;
+    errPasswordMismatch: string;
+    errInvalidCredentials: string;
+    errEmailNotConfirmed: string;
+    errUserExists: string;
+    errRateLimited: string;
+    errGeneric: string;
+    /** /auth/callback page. */
+    callbackWorking: string;
+    callbackFailed: string;
+    callbackBackHome: string;
+  };
+  readingSettings: {
+    buttonTitle: string;
+    panelTitle: string;
+    fontSize: string;
+    lineHeight: string;
+    contentWidth: string;
+    reset: string;
+    widthNarrow: string;
+    widthNormal: string;
+    widthWide: string;
+    lineTight: string;
+    lineComfortable: string;
+    lineLoose: string;
+    lineExtraLoose: string;
+  };
   notFound: {
     title: string;
     message: string;
     goHome: string;
+  };
+  stats: {
+    /** <title> + page heading. */
+    title: string;
+    description: string;
+    loading: string;
+    unavailable: string;
+    noData: string;
+    totalPv: string;
+    totalUv: string;
+    pvLabel: string;
+    uvLabel: string;
+    topPostsTitle: string;
+    vitalsTitle: string;
+    reactionsTitle: string;
+    viewsLabel: string;
+    metricLcp: string;
+    metricCls: string;
+    metricInp: string;
+    ratingGood: string;
+    ratingNeedsImprovement: string;
+    ratingPoor: string;
+    /** Footer entry. */
+    statsLink: string;
   };
 }

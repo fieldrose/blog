@@ -5,6 +5,7 @@ import { getRelativeLocaleUrl } from "astro:i18n";
 import { resolveDefaultOgImagePath } from "@/utils/resolveDefaultOgImagePath";
 import { getAssetPath } from "@/utils/withBase";
 import config from "@/config";
+import { hasSupabasePublicEnv } from "@/lib/env";
 import "@/styles/global.css";
 
 type Props = {
@@ -114,6 +115,33 @@ const rssHref = getRelativeLocaleUrl(
       })();
     </script>
 
+    <!--
+      Sync reading CSS variables before first paint so persisted font /
+      line-height / content-width don't flash the defaults on reload.
+      Must stay in sync with src/stores/reading.ts (STORAGE_VERSION + fields).
+    -->
+    <script is:inline>
+      (function () {
+        try {
+          var raw = localStorage.getItem("reading-settings");
+          if (!raw) return;
+          var s = JSON.parse(raw);
+          if (s.__v !== 1) return;
+          var root = document.documentElement;
+          if (typeof s.fontScale === "number")
+            root.style.setProperty("--reader-font-scale", s.fontScale);
+          if (typeof s.lineHeight === "number")
+            root.style.setProperty("--reader-line-height", s.lineHeight);
+          var widths = { narrow: "40rem", normal: "48rem", wide: "60rem" };
+          if (s.contentWidth && widths[s.contentWidth])
+            root.style.setProperty(
+              "--reader-max-width",
+              widths[s.contentWidth]
+            );
+        } catch (_) {}
+      })();
+    </script>
+
     <ClientRouter />
   </head>
   <body
@@ -123,5 +151,26 @@ const rssHref = getRelativeLocaleUrl(
     <script>
       import "@/scripts/theme";
     </script>
+    {
+      config.features.analytics && hasSupabasePublicEnv && (
+        <script>
+          import { trackPageview } from "@/lib/analytics";
+          import { initWebVitals } from "@/lib/web-vitals";
+
+          // Skip local development so test traffic never reaches production stats.
+          const isLocal = ["localhost", "127.0.0.1"].includes(
+            window.location.hostname
+          );
+
+          if (!isLocal) {
+            // astro:page-load fires on first load AND after every View Transition.
+            document.addEventListener("astro:page-load", () => {
+              trackPageview(document.documentElement.lang);
+            });
+            initWebVitals();
+          }
+        </script>
+      )
+    }
   </body>
 </html>

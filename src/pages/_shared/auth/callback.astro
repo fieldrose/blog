@@ -1,0 +1,80 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import { useTranslations } from "@/i18n";
+import config from "@/config";
+
+const locale = Astro.currentLocale ?? config.site.lang;
+const t = useTranslations(locale);
+---
+
+<Layout title={t.auth.dialogAriaLabel}>
+  <main
+    id="main-content"
+    class="app-layout flex min-h-[60vh] flex-col items-center justify-center gap-4 text-center"
+  >
+    <p
+      id="callback-status"
+      data-error={t.auth.callbackFailed}
+      class="text-muted-foreground text-sm"
+    >
+      {t.auth.callbackWorking}
+    </p>
+    <a
+      id="callback-home"
+      href="/"
+      class="text-accent hidden text-sm underline underline-offset-4"
+    >
+      {t.auth.callbackBackHome}
+    </a>
+  </main>
+</Layout>
+
+<script>
+  import { getBrowserSupabase } from "@/lib/supabase/client";
+
+  function safeNext(value: string | null): string {
+    // Only allow same-origin absolute paths; block open-redirects ("//host").
+    if (value && value.startsWith("/") && !value.startsWith("//")) {
+      return value;
+    }
+    return "/";
+  }
+
+  async function handleCallback() {
+    const status = document.getElementById("callback-status");
+    const params = new URLSearchParams(window.location.search);
+    const next = safeNext(params.get("next"));
+    const code = params.get("code");
+    const tokenHash = params.get("token_hash");
+    const type = params.get("type") ?? "email";
+
+    try {
+      const supabase = getBrowserSupabase();
+
+      if (code) {
+        const { error } = await supabase.auth.exchangeCodeForSession(code);
+        if (error) throw error;
+        window.location.replace(next);
+        return;
+      }
+
+      if (tokenHash) {
+        const { error } = await supabase.auth.verifyOtp({
+          token_hash: tokenHash,
+          type: type as "email" | "recovery" | "invite",
+        });
+        if (error) throw error;
+        window.location.replace(next);
+        return;
+      }
+
+      // Nothing to do — simply go home.
+      window.location.replace("/");
+    } catch {
+      if (status) status.textContent = status.dataset.error ?? "Auth failed.";
+      document.getElementById("callback-home")?.classList.remove("hidden");
+    }
+  }
+
+  void handleCallback();
+</script>

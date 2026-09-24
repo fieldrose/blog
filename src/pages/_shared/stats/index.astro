@@ -1,0 +1,65 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Breadcrumb from "@/components/Breadcrumb.astro";
+import Main from "@/components/Main.astro";
+import Footer from "@/components/Footer.astro";
+import StatsDashboard from "@/components/react/StatsDashboard.tsx";
+import { useTranslations } from "@/i18n";
+import { hasSupabasePublicEnv } from "@/lib/env";
+import config from "@/config";
+
+const locale = Astro.currentLocale ?? config.site.lang;
+const t = useTranslations(locale);
+const enabled = config.features.analytics && hasSupabasePublicEnv;
+---
+
+<Layout
+  title={`${t.stats.title} | ${config.site.title}`}
+  description={t.stats.description}
+>
+  <Header />
+  <Breadcrumb />
+  <Main pageTitle={t.stats.title}>
+    <p class="text-muted-foreground mb-6 text-sm">{t.stats.description}</p>
+    {
+      enabled ? (
+        <StatsDashboard
+          client:idle
+          labels={{
+            loading: t.stats.loading,
+            unavailable: t.stats.unavailable,
+            noData: t.stats.noData,
+            pvLabel: t.stats.pvLabel,
+            uvLabel: t.stats.uvLabel,
+            topPostsTitle: t.stats.topPostsTitle,
+            vitalsTitle: t.stats.vitalsTitle,
+            reactionsTitle: t.stats.reactionsTitle,
+            totalPv: t.stats.totalPv,
+            totalUv: t.stats.totalUv,
+            viewsLabel: t.stats.viewsLabel,
+            metricLabels: {
+              lcp: t.stats.metricLcp,
+              cls: t.stats.metricCls,
+              inp: t.stats.metricInp,
+            },
+            ratingLabels: {
+              good: t.stats.ratingGood,
+              "needs-improvement": t.stats.ratingNeedsImprovement,
+              poor: t.stats.ratingPoor,
+            },
+            reactionLabels: {
+              like: t.reactions.like,
+              fire: t.reactions.fire,
+              idea: t.reactions.idea,
+              question: t.reactions.question,
+            },
+          }}
+        />
+      ) : (
+        <p class="text-muted-foreground text-sm">{t.stats.unavailable}</p>
+      )
+    }
+  </Main>
+  <Footer />
+</Layout>

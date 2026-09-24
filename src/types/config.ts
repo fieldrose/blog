@@ -59,6 +59,18 @@ interface FeaturesConfig {
    * Set to false to disable search entirely.
    */
   search?: "pagefind" | false;
+  /** Supabase Auth login/registration UI. Defaults to false. */
+  auth?: boolean;
+  /** Per-post emoji reactions. Defaults to false. */
+  reactions?: boolean;
+  /** Privacy-friendly analytics collection + /stats page. Defaults to false. */
+  analytics?: boolean;
+  /** RAG AI assistant island. Defaults to false (auto-off without AI env). */
+  aiAssistant?: boolean;
+  /** PWA: web manifest + service worker. Defaults to false. */
+  pwa?: boolean;
+  /** Vue 3 reading settings panel (font size / line height / content width). Defaults to true. */
+  readingSettings?: boolean;
 }
 
 interface SocialLink {

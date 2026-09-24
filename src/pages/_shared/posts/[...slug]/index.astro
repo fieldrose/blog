@@ -5,7 +5,7 @@ import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 import Datetime from "@/components/Datetime.astro";
 import Tag from "@/components/Tag.astro";
-import { getPostSlug, getPostUrl } from "@/utils/getPostPaths";
+import { getPostSlug, getPostSlugPath, getPostUrl } from "@/utils/getPostPaths";
 import { getSortedPosts } from "@/utils/getSortedPosts";
 import { slugifyStr } from "@/utils/slugify";
 import { toTransitionName } from "@/utils/toTransitionName";
@@ -14,6 +14,9 @@ import ShareLinks from "./_components/ShareLinks.astro";
 import BackButton from "./_components/BackButton.astro";
 import BackToTopButton from "./_components/BackToTopButton.astro";
 import AdjacentPostNav from "./_components/AdjacentPostNav.astro";
+import PostReactions from "@/components/react/PostReactions.tsx";
+import { useTranslations } from "@/i18n";
+import { hasSupabasePublicEnv } from "@/lib/env";
 import config from "@/config";
 
 export async function getStaticPaths() {
@@ -74,6 +77,9 @@ const {
 } = post.data;
 
 const { Content } = await render(post);
+
+const t = useTranslations(locale);
+const showReactions = config.features.reactions && hasSupabasePublicEnv;
 
 let ogImageUrl: string | undefined;
 
@@ -154,6 +160,25 @@ const ogImage = ogImageUrl
     <ul class="mt-4 mb-8 flex flex-wrap gap-4 sm:my-8">
       {tags.map(tag => <Tag tag={slugifyStr(tag)} tagName={tag} size="sm" />)}
     </ul>
+
+    {
+      showReactions && (
+        <section class="mb-8">
+          <PostReactions
+            client:visible
+            slug={getPostSlugPath(post.id, post.filePath)}
+            labels={{
+              heading: t.reactions.heading,
+              like: t.reactions.like,
+              fire: t.reactions.fire,
+              idea: t.reactions.idea,
+              question: t.reactions.question,
+              unavailable: t.reactions.unavailable,
+            }}
+          />
+        </section>
+      )
+    }
 
     <ShareLinks />
 

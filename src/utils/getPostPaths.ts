@@ -28,6 +28,8 @@ function getPostSlugPath(id: string, filePath: string | undefined): string {
     : String(slug);
 }
 
+export { getPostSlugPath };
+
 /**
  * Returns the slug-only path for use as a route param in `getStaticPaths`.
  * No base prefix, no locale — Astro handles those at a higher level.

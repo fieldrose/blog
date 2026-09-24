@@ -21,16 +21,23 @@ import config from "./astro-paper.config";
 import { localeCodes } from "./src/i18n/locales";
 
 import vue from "@astrojs/vue";
+import react from "@astrojs/react";
+import netlify from "@astrojs/netlify";
 
 export default defineConfig({
   site: config.site.url,
+  adapter: netlify(),
   integrations: [
     mdx(),
     sitemap({
       filter: page =>
         config.features?.showArchives !== false || !page.endsWith("/archives/"),
     }),
-    vue(),
+    vue({
+      // Installs Pinia-independent Vue plugins (VueQueryPlugin) on every island app.
+      appEntrypoint: "/src/pages/_app",
+    }),
+    react(),
   ],
   i18n: {
     locales: localeCodes,
@@ -96,6 +103,55 @@ export default defineConfig({
       PUBLIC_GOOGLE_SITE_VERIFICATION: envField.string({
         access: "public",
         context: "client",
+        optional: true,
+      }),
+      // Canonical site URL; also the base for OAuth/email redirects.
+      PUBLIC_SITE_URL: envField.string({
+        access: "public",
+        context: "client",
+        optional: true,
+      }),
+      // Supabase — public values (RLS is the security boundary).
+      PUBLIC_SUPABASE_URL: envField.string({
+        access: "public",
+        context: "client",
+        optional: true,
+      }),
+      PUBLIC_SUPABASE_ANON_KEY: envField.string({
+        access: "public",
+        context: "client",
+        optional: true,
+      }),
+      // Supabase — server-only secret.
+      SUPABASE_SERVICE_ROLE_KEY: envField.string({
+        access: "secret",
+        context: "server",
+        optional: true,
+      }),
+      // AI provider (OpenAI-compatible) — server-only, all optional.
+      AI_API_BASE_URL: envField.string({
+        access: "secret",
+        context: "server",
+        optional: true,
+      }),
+      AI_API_KEY: envField.string({
+        access: "secret",
+        context: "server",
+        optional: true,
+      }),
+      AI_CHAT_MODEL: envField.string({
+        access: "secret",
+        context: "server",
+        optional: true,
+      }),
+      AI_EMBEDDING_MODEL: envField.string({
+        access: "secret",
+        context: "server",
+        optional: true,
+      }),
+      AI_EMBEDDING_DIM: envField.number({
+        access: "secret",
+        context: "server",
         optional: true,
       }),
     },

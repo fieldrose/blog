@@ -1,0 +1,97 @@
+---
+author: Mimas
+pubDatetime: 2026-04-23T02:00:00Z
+modDatetime: 2026-04-24T02:00:00Z
+title: "Astro Islands: Running React 19 and Vue 3 side by side"
+slug: examples/framework-islands
+featured: false
+draft: false
+tags:
+  - docs
+  - demo
+description: "A live, interactive demo of React 19 and Vue 3 islands sharing UI state via nanostores and server state via a singleton TanStack Query client."
+---
+
+import ReactCounter from "@/components/react/CounterDemo.tsx";
+import VueCounter from "@/components/vue/CounterDemo.vue";
+import ReactTotals from "@/components/react/ReactionTotalsDemo.tsx";
+import VueTotals from "@/components/vue/ReactionTotalsDemo.vue";
+
+This blog is mostly static, pre-rendered HTML — zero JavaScript by default. But Astro's
+[Islands architecture](https://docs.astro.build/en/concepts/islands/) lets us hydrate
+individual interactive components independently, and islands don't have to share a framework.
+This very page ships **React 19** and **Vue 3** islands together, and demonstrates two
+ways they can cooperate.
+
+## Table of contents
+
+## Demo 1 — shared UI state with nanostores
+
+The two counters below are rendered by different frameworks, but they read and write the same
+framework-agnostic [nanostores](https://github.com/nanostores/nanostores) atom
+(`src/stores/demo.ts`). Click `+1` in either one — the other updates instantly, with
+**zero network requests**. State lives in a plain JS module singleton, so both islands
+import the exact same store instance.
+
+<div class="grid gap-4 sm:grid-cols-2 not-prose">
+  <ReactCounter client:visible />
+  <VueCounter client:visible />
+</div>
+
+```ts
+// src/stores/demo.ts — no React or Vue import
+import { atom } from "nanostores";
+export const counterAtom = atom(0);
+```
+
+```tsx
+// React binding
+import { useStore } from "@nanostores/react";
+const count = useStore(counterAtom);
+```
+
+```vue
+<!-- Vue binding -->
+<script setup lang="ts">
+import { useStore } from "@nanostores/vue";
+const count = useStore(counterAtom);
+</script>
+```
+
+## Demo 2 — shared server cache with TanStack Query
+
+Server state is a different problem: caching, deduplication, background refetching, and
+invalidation. Both islands below fetch site-wide reaction totals from
+`GET /api/reactions/totals` using TanStack Query v5 — React via `react-query`,
+Vue via `vue-query` — but they share **one module-level `QueryClient` singleton**
+(`src/lib/query/client.ts`, injected into Vue in `src/pages/_app.ts`).
+
+Open DevTools → Network and reload: both islands hydrate and issue `useQuery` with the
+identical key `["reactions", "totals"]`, yet the endpoint is requested **exactly
+once**, and both components render the same numbers.
+
+<div class="grid gap-4 sm:grid-cols-2 not-prose">
+  <ReactTotals client:visible />
+  <VueTotals client:visible />
+</div>
+
+The same singleton cache is what lets a login state change (React auth island) instantly
+invalidate reaction queries used anywhere on the page — regardless of which framework owns
+the consuming component.
+
+## Why two mechanisms?
+
+| Concern | Tool | Why |
+| --- | --- | --- |
+| Ephemeral client UI state | nanostores atom | Tiny, framework-agnostic, synchronous, no caching semantics |
+| Async server state | TanStack Query v5 | Dedup, retries, cache, invalidation, optimistic updates |
+
+Mixing the two would mean either fighting a server-cache library to hold UI state, or
+hand-rolling fetch state machines for data that should be cached. Keeping the boundary
+explicit makes each island smaller and the network behavior predictable.
+
+## What ships to the browser?
+
+Every island is an independent chunk: the homepage and articles without these components
+download neither React nor Vue. Open DevTools → Network on a normal article and compare
+the downloaded JavaScript with this page — islands pay only for the interactivity they use.
