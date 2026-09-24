@@ -31,6 +31,11 @@ export default {
   },
   home: {
     socialLinks: "Social Links",
+    heroGreeting: "Hi, I'm Mimas",
+    heroIntro:
+      "A frontend engineer working mainly with Vue 3 / React + TypeScript (and Astro), focused on frontend engineering: build optimization, micro-frontends, performance and CI/CD.",
+    heroFullstack:
+      "I also go full-stack in TypeScript: Node.js, Supabase, BFF APIs and RAG applications. This blog is where I keep my technical notes and project retrospectives.",
     featured: "Featured",
     recentPosts: "Recent Posts",
     allPosts: "All Posts",

@@ -31,6 +31,11 @@ export default {
   },
   home: {
     socialLinks: "社交链接",
+    heroGreeting: "你好，我是 Mimas",
+    heroIntro:
+      "一名前端工程师，主力技术栈是 Vue 3 / React + TypeScript，也写 Astro。长期关注前端工程化：构建优化、微前端架构、性能与 CI/CD。",
+    heroFullstack:
+      "也用 TypeScript 写全栈：Node.js、Supabase、BFF 接口与 RAG 应用。这里记录我的技术笔记和项目复盘。",
     featured: "推荐文章",
     recentPosts: "最新文章",
     allPosts: "所有文章",
