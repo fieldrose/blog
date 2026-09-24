@@ -142,6 +142,8 @@ const ogImage = ogImageUrl
 
     <article
       id="article"
+      data-toc-heading={t.post.tocHeading}
+      data-toc-open={t.post.tocOpen}
       class:list={[
         "mt-8 w-full",
         "app-prose max-w-app",
@@ -222,6 +224,41 @@ const ogImage = ogImageUrl
   }
   updateScrollProgress();
 
+  // Localize the "Table of contents" heading/collapse summary per page locale.
+  // The markdown source keeps the English text (it anchors the auto-TOC);
+  // this swaps the visible text nodes without touching heading anchors.
+  function localizeTableOfContents() {
+    const article = document.getElementById("article");
+    if (!article) return;
+    const headingText = article.dataset.tocHeading;
+    const openText = article.dataset.tocOpen;
+    if (!headingText || !openText) return;
+
+    const tocHeading = article.querySelector("h2#table-of-contents");
+    if (tocHeading) {
+      for (const node of tocHeading.childNodes) {
+        if (
+          node.nodeType === Node.TEXT_NODE &&
+          /table of contents/i.test(node.data)
+        ) {
+          node.data = node.data.replace(/table of contents/i, headingText);
+        }
+      }
+    }
+
+    const summary = article.querySelector("summary");
+    if (summary) {
+      for (const node of summary.childNodes) {
+        if (
+          node.nodeType === Node.TEXT_NODE &&
+          /open table of contents/i.test(node.data)
+        ) {
+          node.data = node.data.replace(/open table of contents/i, openText);
+        }
+      }
+    }
+  }
+
   function addHeadingLinks() {
     const headings = Array.from(
       document.querySelectorAll("h2, h3, h4, h5, h6")
@@ -240,6 +277,7 @@ const ogImage = ogImageUrl
       heading.appendChild(link);
     }
   }
+  localizeTableOfContents();
   addHeadingLinks();
 
   function attachCopyButtons() {

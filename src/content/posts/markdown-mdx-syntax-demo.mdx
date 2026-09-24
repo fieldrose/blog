@@ -1,0 +1,186 @@
+---
+author: Mimas
+pubDatetime: 2024-01-18T09:00:00Z
+title: "Markdown 与 MDX 写法示例手册"
+slug: markdown-mdx-syntax-demo
+featured: false
+draft: false
+tags: [Markdown, MDX, Docs]
+description:
+  "本站写作语法速查：Markdown 基础语法与 MDX 扩展写法的完整示例，包含 Callout 提示块、代码块高亮与文件名标签、表格、脚注、任务列表，以及 React/Vue 岛屿组件的嵌入方式。写新文章时来这里复制写法。"
+---
+
+import ReactCounter from "@/components/react/CounterDemo.tsx";
+import VueCounter from "@/components/vue/CounterDemo.vue";
+
+这是一篇"组件库演示页"式的语法参考文章：把本站支持的 Markdown / MDX 写法集中在一处，写新文章时直接来这里翻示例、复制源码。发布时间特意设为全站最早，不打乱其他文章的时间线；可以从归档页、搜索或 Docs 标签找到它。
+
+## Table of contents
+
+## `.md` 还是 `.mdx`
+
+本站由 Astro 驱动，`src/content/posts/` 下的 `.md` 与 `.mdx` 都是文章源文件：
+
+| 文件类型 | 适用场景                 | 说明                                     |
+| :------- | :----------------------- | :--------------------------------------- |
+| `.md`    | 纯文字内容               | 标准 Markdown，写起来最省心              |
+| `.mdx`   | 需要嵌入组件或控制 HTML  | Markdown 超集，支持 `import` 组件、JSX |
+
+两种文件享受完全相同的渲染管线：代码高亮、Callout、自动目录都可用，区别只在 MDX 额外支持组件。注意 MDX 中正文的 `{` 与 `<` 会被当作表达式或标签解析，纯文字内容优先用 `.md`。
+
+## 文本样式
+
+段落之间空一行分隔。行内写法有：**粗体**、*斜体*、***粗斜体***、~~删除线~~、行内代码 `const answer = 42`，以及[普通链接](https://docs.astro.build)。裸 URL 会被自动识别为链接：https://astro.build
+
+## 列表
+
+无序列表支持嵌套：
+
+- 前端
+  - Astro
+  - Vue 3
+- 后端
+
+有序列表：
+
+1. 写 frontmatter
+2. 写正文
+3. `git commit`
+
+任务列表（GFM 扩展）：
+
+- [x] 支持 Markdown 语法
+- [ ] 把这篇文章的写法用到新文章里
+
+## 引用与 Callout
+
+普通引用块：
+
+> 好的架构是演进出来的，不是设计出来的。
+
+Callout 提示块是 GitHub 风格的彩色提示（由 rehype-callouts 渲染），支持五种类型，方括号后可以接自定义标题：
+
+> [!NOTE]
+> 强调用户应该注意的信息。
+
+> [!TIP] 自定义标题也是支持的
+> 提升效率的可选建议。
+
+> [!IMPORTANT]
+> 用户必须知道的关键信息。
+
+> [!WARNING]
+> 有潜在风险的内容。
+
+> [!CAUTION]
+> 负面后果警告。
+
+## 表格
+
+| 语法特性       | `.md` | `.mdx` | 备注                  |
+| :------------- | :---: | :----: | :-------------------- |
+| 标题/列表/表格 |  ✓   |   ✓   | GFM 默认启用          |
+| 脚注           |  ✓   |   ✓   | `[^1]` 语法定义       |
+| 内嵌组件       |  ✗   |   ✓   | 需要顶部 `import`     |
+
+冒号位置控制对齐：左对齐、居中、右对齐。
+
+## 脚注
+
+正文中插入脚注标记[^1]，长脚注[^note]也没问题。
+
+[^1]: 简短的脚注内容。
+[^note]: 脚注可以写得长一些，支持**行内样式**，渲染在文末。
+
+## 代码块
+
+### 文件名标签
+
+meta 里写 `file="..."`，代码块左上角会渲染文件名徽标：
+
+```ts file="src/examples/slugify.ts"
+export function slugify(input: string) {
+  return input.trim().toLowerCase().replace(/\s+/g, "-");
+}
+```
+
+### 行高亮、词高亮与 Diff
+
+用注释标记控制高亮（Shiki transformers，支持亮/暗双主题）：
+
+```ts
+export function add(a: number, b: number) {
+  return a + b; // [!code highlight]
+}
+
+const result = add(1, 2); // [!code word:add]
+```
+
+Diff 标记：
+
+```ts
+const port = 3000; // [!code --]
+const port = Number(import.meta.env.PORT) || 3000; // [!code ++]
+```
+
+### 展示 Markdown 源码
+
+想展示三反引号围栏本身，外层用四个反引号：
+
+````md
+> [!NOTE]
+> 这是一个 Callout 示例。
+````
+
+## 正文里写 HTML
+
+MDX 走 JSX 规则：标签必须正确闭合（`<br />`），属性值用引号包裹；正文中裸露的 `{`、`<` 一定要放进行内代码或代码块。给元素加 `not-prose` 类可以脱离 prose 排版，配合 Tailwind 自由布局：
+
+<div class="not-prose my-6 rounded-md border p-4">
+  <p class="font-medium">这段内容不受 prose 样式约束</p>
+  <p class="text-muted-foreground mt-1">随便用 Tailwind 类排版，比如小一号的辅助文字。</p>
+</div>
+
+## 嵌入 React / Vue 组件
+
+仅 `.mdx` 可用。文件顶部 `import` 组件，正文中像写标签一样使用，`client:visible` 表示滚动进入视口时才注水（Astro 岛屿架构）：
+
+````mdx
+import ReactCounter from "@/components/react/CounterDemo.tsx";
+import VueCounter from "@/components/vue/CounterDemo.vue";
+
+<div class="grid gap-4 not-prose sm:grid-cols-2">
+  <ReactCounter client:visible />
+  <VueCounter client:visible />
+</div>
+````
+
+实际渲染效果——两个计数器分别由 React 19 与 Vue 3 渲染，但共享同一个 nanostores atom（`src/stores/demo.ts`），任意一侧 +1，另一侧立即同步：
+
+<div class="grid gap-4 not-prose sm:grid-cols-2">
+  <ReactCounter client:visible />
+  <VueCounter client:visible />
+</div>
+
+## 文章模板备忘
+
+新文章的 frontmatter 模板：
+
+```yaml
+---
+author: Mimas
+pubDatetime: 2024-01-18T09:00:00Z
+modDatetime: 2024-06-02T10:00:00Z
+title: "文章标题"
+slug: my-post-slug
+featured: false
+draft: false
+tags: [前端, 工程化]
+description: "摘要会用于 SEO、OG 图与列表页"
+---
+```
+
+两条约定：
+
+1. `pubDatetime` 必填（ISO 8601 格式），文章有修改时更新 `modDatetime`；
+2. 正文第一节写 `## Table of contents`——remark-toc 会在此自动生成目录，remark-collapse 会把目录折叠成 `<details>` 块，标题文案按站点语言自动本地化（中文页面显示"目录"）。

@@ -21,6 +21,8 @@ export default {
     editPage: "编辑页面",
     previousPost: "上一篇文章",
     nextPost: "下一篇文章",
+    tocHeading: "目录",
+    tocOpen: "展开目录",
   },
   pagination: {
     prev: "上一页",

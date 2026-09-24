@@ -21,6 +21,8 @@ export default {
     editPage: "Edit page",
     previousPost: "Previous Post",
     nextPost: "Next Post",
+    tocHeading: "Table of contents",
+    tocOpen: "Open Table of contents",
   },
   pagination: {
     prev: "Prev",
