@@ -32,6 +32,37 @@ import VueCounter from "@/components/vue/CounterDemo.vue";
 
 段落之间空一行分隔。行内写法有：**粗体**、*斜体*、***粗斜体***、~~删除线~~、行内代码 `const answer = 42`，以及[普通链接](https://docs.astro.build)。裸 URL 会被自动识别为链接：https://astro.build
 
+## 换行与图片
+
+### 换行
+
+空一行就是分段。想在**同一段落内**强制换行，推荐在上一行末尾加反斜杠 `\`：
+
+```md
+第一句话，行尾写反斜杠\
+第二句话和第一句仍在同一个段落里。
+```
+
+另一种写法是上一行末尾敲两个空格，效果相同，但空格在源码里不可见、容易被编辑器自动去掉，不如反斜杠直观。注意：单个换行符会被渲染成空格（两行合并成一段）；`\n` 或 `/n` 不是 Markdown 语法，会原样输出成文字。
+
+### 图片
+
+图片源文件放在 `src/assets/images/`，用**相对文章文件的路径**引用——`src/content/posts/` 下的文章需要往上两级：
+
+```md
+![Single-repo 项目结构示例](../../assets/images/single-repo.png)
+```
+
+Astro 图片服务会自动优化：构建时压缩、按需转 WebP、注入 `width` 与 `height` 防止布局抖动；方括号内是替代文本，图片加载失败时显示。`.mdx` 还可以用 import + JSX 写法，`@/` 别名只在 import 语句里生效：
+
+```mdx
+import singleRepo from "@/assets/images/single-repo.png";
+
+<img src={singleRepo} alt="Single-repo 项目结构示例" />
+```
+
+不建议把图片放进 `public/` 再写 `![alt](/xxx.png)`——那样会跳过图片优化管线，当前统一放 `src/assets/images/`。
+
 ## 列表
 
 无序列表支持嵌套：

@@ -23,6 +23,7 @@ import { localeCodes } from "./src/i18n/locales";
 import vue from "@astrojs/vue";
 import react from "@astrojs/react";
 import netlify from "@astrojs/netlify";
+import basicSsl from "@vitejs/plugin-basic-ssl";
 
 export default defineConfig({
   site: config.site.url,
@@ -68,7 +69,7 @@ export default defineConfig({
     },
   },
   vite: {
-    plugins: [tailwindcss()],
+    plugins: [tailwindcss(), basicSsl()],
   },
   fonts: [
     {

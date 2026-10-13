@@ -32,7 +32,17 @@ vue
 ...
 └────package.json
 ```
-图
+![Single-repo 项目结构示例](../../assets/images/single-repo.png)
 ### Multirepo
-
-
+多仓库，将应用内各个模块都彻底隔离和封装。
+- 每个项目/模块都是独立的仓库，互不干扰，最终使用npm包实现代码共享。
+- 管理粒度更细，但不同项目依赖可能重复、跨项目改动需要多次提交和协调、代码共享使用的npm包会有延迟、各仓库独立构建配置，配置分散。
+- 适用于微服务，技术栈异构等场景。
+- 例如node后端框架fastify就使用了Multirepo管理。
+![Multirepo 项目结构示例](../../assets/images/multi-repo.png)
+### Monorepo
+既类似Single-repo使用一个仓库管理代码，又实现类似Multirepo对子项目进行彻底的封装和隔离。
+- 物理集中，逻辑拆分。
+- 缺点是难以实现细粒度的权限控制，复杂度较高。
+- 与monolith（巨石）项目的区别：monolith项目一定会同时部署，且一般不做模块化分割，与monorepo不等价。
+![Monorepo 项目结构示例](../../assets/images/mono-repo.png)
