@@ -1,0 +1,38 @@
+---
+author: Mimas
+pubDatetime: 2025-11-20T12:22:32Z
+title: "Monorepo架构演进"
+slug: monorepo-note
+featured: false
+draft: false
+tags: [Monorepo, Docs]
+description:
+  "记录将原有single-repo单体项目向Monorepo管理演进过程中的学习内容"
+---
+在接手项目重构时，我们发现原有的单仓（Single-Repo）管理方式在集成测试、业务功能输出以及增量构建等方面存在诸多不便。\
+为此，我们采用 Turborepo 将项目平滑迁移至 Monorepo 架构，从根本上解决了这些工程化难题。\
+此处是对于Monorepo实践过程和知识点的记录。
+## Table of contents
+
+## Monorepo简介
+在常用的代码组织架构中，有Single-repo、Multirepo、Monorepo这三种代码库组织方式。
+### Single-repo
+一个应用的全部代码都使用一个代码仓库管理，模块间仅通过简单划分或不划分进行组织。\
+整个应用类似npm包，仅在根目录存在一个package.json文件管理版本和依赖关系。通常适用于Monolith（巨石）应用，即整个应用作为一个整体。\
+```
+// 例如：vue2框架项目结构
+vue
+|——src
+|  |——compiler
+|  |——core
+|  |——platforms
+|  |——server
+|  |——sfc
+|  └──shared
+...
+└────package.json
+```
+图
+### Multirepo
+
+

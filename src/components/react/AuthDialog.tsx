@@ -113,7 +113,7 @@ export default function AuthDialog({
           type="button"
           onClick={onClose}
           aria-label={labels.closeDialog}
-          className="text-muted-foreground hover:text-accent absolute end-3 top-3 rounded p-1 text-xl leading-none"
+          className="text-muted-foreground hover:text-accent absolute end-1 top-1 rounded p-1 pb-3 text-xl leading-none"
         >
           ×
         </button>

@@ -40,16 +40,12 @@ const homePath = getRelativeLocaleUrl(locale, "");
       <a
         target="_blank"
         href={`${import.meta.env.BASE_URL.replace(/\/?$/, "/")}rss.xml`}
-        class="inline-block"
+        class="text-muted-foreground hover:text-accent mt-1 ml-3 inline-flex items-center gap-1 text-sm transition-colors"
         aria-label="RSS Feed"
         title="RSS Feed"
       >
-        <IconRss
-          width={20}
-          height={20}
-          class="stroke-accent scale-125 stroke-3 rtl:-rotate-90"
-        />
-        <span class="sr-only">RSS Feed</span>
+        <IconRss class="inline-block size-5 scale-125 rtl:-rotate-90" />
+        <span>RSS</span>
       </a>
 
       <p>{t.home.heroIntro}</p>

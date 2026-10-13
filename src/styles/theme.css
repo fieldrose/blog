@@ -10,6 +10,16 @@
   --font-app: var(--font-google-sans-code);
 }
 
+/*
+ * Dual-tone accent (intentional):
+ *   light → #006cac (cool blue, evokes daytime sky)
+ *   dark  → #ff6b01 (warm orange, evokes evening sunset)
+ * The day/night shift in accent hue is part of the site's
+ * "sunrise → sunset" storytelling, not a configuration accident.
+ * Links, hover states and active-nav therefore change colour
+ * between themes — this is by design.
+ */
+
 /* Light theme values */
 :root,
 [data-theme="light"] {
@@ -30,5 +40,5 @@
   --accent-foreground: #ffffff;
   --muted: #343f60;
   --muted-foreground: #afb9ca;
-  --border: #ab4b08;
+  --border: #3a4359;
 }

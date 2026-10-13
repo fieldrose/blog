@@ -2,6 +2,7 @@
 import type { CollectionEntry } from "astro:content";
 import { getPostUrl } from "@/utils/getPostPaths";
 import { toTransitionName } from "@/utils/toTransitionName";
+import IconStar from "@/assets/icons/IconStar.svg";
 import Datetime from "./Datetime.astro";
 
 type Props = {
@@ -10,22 +11,36 @@ type Props = {
 
 const { variant: Heading = "h2", id, data, filePath } = Astro.props;
 
-const { title, description, ...props } = data;
+const { title, description, featured, ...props } = data;
 ---
 
-<li class="my-6">
-  <a
-    href={getPostUrl(id, filePath, Astro.currentLocale)}
-    class:list={[
-      "text-accent inline-block text-lg font-medium",
-      "decoration-dashed underline-offset-4 hover:underline",
-      "focus-visible:no-underline focus-visible:underline-offset-0",
-    ]}
-  >
-    <Heading transition:name={toTransitionName(id)}>
-      {title}
-    </Heading>
-  </a>
+<li
+  class:list={[
+    "my-6 rounded-lg px-3 py-1 transition-colors",
+    { "border-l-2 border-accent/60 bg-muted/25": featured },
+    "hover:bg-muted/30",
+  ]}
+>
+  <div class="flex items-center gap-1.5">
+    {featured && (
+      <IconStar
+        aria-hidden="true"
+        class="text-accent inline-block size-4 flex-none"
+      />
+    )}
+    <a
+      href={getPostUrl(id, filePath, Astro.currentLocale)}
+      class:list={[
+        "text-accent inline-block text-lg font-medium",
+        "decoration-dashed underline-offset-4 hover:underline",
+        "focus-visible:no-underline focus-visible:underline-offset-0",
+      ]}
+    >
+      <Heading transition:name={toTransitionName(id)}>
+        {title}
+      </Heading>
+    </a>
+  </div>
   <Datetime {...props} />
   <p>{description}</p>
 </li>

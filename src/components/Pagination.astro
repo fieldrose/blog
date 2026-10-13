@@ -31,7 +31,9 @@ const t = useTranslations(Astro.currentLocale);
         <IconArrowLeft class="inline-block rtl:rotate-180" />
         {t.pagination.prev}
       </LinkButton>
-      {page.currentPage} / {page.lastPage}
+      <span class="text-muted-foreground bg-muted/50 rounded-md px-3 py-1 text-sm tabular-nums">
+        {page.currentPage} / {page.lastPage}
+      </span>
       <LinkButton
         disabled={!page.url.next}
         href={page.url.next as string}

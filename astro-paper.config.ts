@@ -26,7 +26,7 @@ export default defineAstroPaperConfig({
     showBackButton: true,
     editPost: {
       enabled: true,
-      url: "https://github.com/satnaing/astro-paper/edit/main/",
+      url: "https://github.com/fieldrose/astro-paper/edit/main/",
     },
     search: "pagefind",
     // New dynamic features — enabled incrementally as their modules land.

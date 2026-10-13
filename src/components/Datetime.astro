@@ -41,8 +41,9 @@ const date = datetime.format("D MMM, YYYY");
 >
   <IconCalendar
     class:list={[
-      "inline-block size-6 min-w-5.5",
-      { "scale-90": size === "sm" },
+      "inline-block",
+      { "size-4": size === "sm" },
+      { "size-5": size === "lg" },
     ]}
   />
   {

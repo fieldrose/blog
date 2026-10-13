@@ -26,11 +26,11 @@ const t = useTranslations(locale);
     prevPost && (
       <a
         href={getPostUrl(prevPost.id, prevPost.filePath, locale)}
-        class="flex w-full gap-1 hover:opacity-75"
+        class="border-border hover:border-accent/60 hover:bg-muted/30 flex w-full gap-2 rounded-lg border p-3 transition-colors"
       >
-        <IconArrowLeft class="inline-block flex-none rtl:rotate-180" />
+        <IconArrowLeft class="text-accent inline-block flex-none self-center rtl:rotate-180" />
         <div>
-          <span>{t.post.previousPost}</span>
+          <span class="text-muted-foreground text-sm">{t.post.previousPost}</span>
           <div class="text-accent/85 text-sm">{prevPost.title}</div>
         </div>
       </a>
@@ -40,13 +40,13 @@ const t = useTranslations(locale);
     nextPost && (
       <a
         href={getPostUrl(nextPost.id, nextPost.filePath, locale)}
-        class="flex w-full justify-end gap-1 text-end hover:opacity-75 sm:col-start-2"
+        class="border-border hover:border-accent/60 hover:bg-muted/30 flex w-full justify-end gap-2 rounded-lg border p-3 text-end transition-colors sm:col-start-2"
       >
         <div>
-          <span>{t.post.nextPost}</span>
+          <span class="text-muted-foreground text-sm">{t.post.nextPost}</span>
           <div class="text-accent/85 text-sm">{nextPost.title}</div>
         </div>
-        <IconArrowRight class="inline-block flex-none rtl:rotate-180" />
+        <IconArrowRight class="text-accent inline-block flex-none self-center rtl:rotate-180" />
       </a>
     )
   }
