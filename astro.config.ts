@@ -70,6 +70,13 @@ export default defineConfig({
   },
   vite: {
     plugins: [tailwindcss(), basicSsl()],
+    // Force Vite to pre-bundle @pagefind/default-ui so the dynamic
+    // `await import("@pagefind/default-ui")` in search.astro resolves at dev time.
+    // Without this, Vite's scanner misses the Astro <script> dynamic import
+    // and the dev server returns 504 when opening the search page.
+    optimizeDeps: {
+      include: ["@pagefind/default-ui"],
+    },
   },
   fonts: [
     {
