@@ -139,6 +139,7 @@ export interface ResolvedAstroPaperConfig {
 
 /**
  * Type helper for astro-paper.config.ts.
+ * @param config - The configuration object.
  * Provides full IntelliSense without any runtime overhead.
  */
 export function defineAstroPaperConfig(
