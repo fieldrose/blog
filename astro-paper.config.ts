@@ -4,7 +4,7 @@ export default defineAstroPaperConfig({
   site: {
     // Prefer the canonical URL injected via env (Netlify SITE_URL / PUBLIC_SITE_URL).
     // Falls back to localhost so local builds and CI never produce invalid URLs.
-    url: process.env.PUBLIC_SITE_URL ?? "http://localhost:4321/",
+    url: process.env.PUBLIC_SITE_URL ?? "https://localhost:4321/",
     title: "Mimas Blog",
     description: "Mimas 的个人技术博客 —— 前端、框架与工程实践笔记。",
     author: "Mimas",

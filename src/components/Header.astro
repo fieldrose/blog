@@ -353,12 +353,11 @@ const isActive = (path: string) => {
     {
       showReadingSettings && (
         <div class="border-border mt-2 border-t pt-2">
-          <div class="px-4 py-2">
-            <div class="text-muted-foreground mb-2 text-sm">
-              {t.readingSettings?.panelTitle ?? "阅读设置"}
-            </div>
-            <ReadingSettings client:idle labels={t.readingSettings} />
-          </div>
+          <ReadingSettings
+            client:idle
+            labels={t.readingSettings}
+            inline={true}
+          />
         </div>
       )
     }

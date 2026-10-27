@@ -14,6 +14,8 @@ const props = defineProps<{
   labels: UIStrings["readingSettings"];
   /** Extra classes to merge onto the trigger button. */
   buttonClass?: string;
+  /** When true, skip the gear button and render the panel inline (always visible). */
+  inline?: boolean;
 }>();
 
 const store = useReadingStore();
@@ -81,8 +83,11 @@ function stepFont(delta: number) {
 </script>
 
 <template>
-  <div class="relative">
+  <div
+    :class="props.inline ? '' : 'relative inline-flex size-8 items-center'"
+  >
     <button
+      v-if="!props.inline"
       ref="triggerRef"
       type="button"
       :class="[
@@ -97,7 +102,7 @@ function stepFont(delta: number) {
       @click="toggle"
     >
       <svg
-        class="absolute top-1/2 left-1/2 size-5 sm:size-6 -translate-x-1/2 -translate-y-1/2 stroke-current"
+        class="absolute top-1/2 left-1/2 size-6 -translate-x-1/2 -translate-y-1/2 stroke-current"
         viewBox="0 0 24 24"
         fill="none"
         stroke-width="2"
@@ -113,12 +118,16 @@ function stepFont(delta: number) {
     </button>
 
     <div
-      v-show="isOpen"
+      v-if="props.inline || isOpen"
       ref="panelRef"
       id="reading-settings-panel"
       role="dialog"
       :aria-label="labels.panelTitle"
-      class="bg-background border-border absolute right-0 z-50 mt-2 w-64 rounded-lg border p-4 shadow-lg"
+      :class="[
+        props.inline
+          ? 'w-full px-1 py-3'
+          : 'bg-background border-border absolute right-0 z-50 mt-2 w-64 rounded-lg border p-4 shadow-lg',
+      ]"
     >
       <div class="mb-4 flex items-center justify-between">
         <span class="text-sm font-semibold">{{ labels.panelTitle }}</span>
