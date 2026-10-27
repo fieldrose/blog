@@ -46,7 +46,7 @@ const seriesPosts = allPosts
       >· 共 {seriesPosts.length} 篇</span
     >
   </div>
-  <ol class="list-decimal space-y-1.5 pl-5">
+  <ul class="list-decimal space-y-1.5 pl-5">
     {
       seriesPosts.map((p, idx) => {
         const isCurrent = p.id === currentPost.id;
@@ -54,20 +54,18 @@ const seriesPosts = allPosts
         return (
           <li>
             {isCurrent ? (
-              <span class="text-accent font-medium">
-                {idx + 1}. {p.data.title}
-              </span>
+              <span class="text-accent font-medium">{p.data.title}</span>
             ) : (
               <a
                 href={url}
                 class="text-foreground/80 hover:text-accent no-underline"
               >
-                {idx + 1}. {p.data.title}
+                {p.data.title}
               </a>
             )}
           </li>
         );
       })
     }
-  </ol>
+  </ul>
 </section>
