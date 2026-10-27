@@ -14,6 +14,7 @@ import ShareLinks from "./_components/ShareLinks.astro";
 import BackButton from "./_components/BackButton.astro";
 import BackToTopButton from "./_components/BackToTopButton.astro";
 import AdjacentPostNav from "./_components/AdjacentPostNav.astro";
+import SeriesCard from "@/components/SeriesCard.astro";
 import PostReactions from "@/components/react/PostReactions.tsx";
 import { useTranslations } from "@/i18n";
 import { hasSupabasePublicEnv } from "@/lib/env";
@@ -74,6 +75,8 @@ const {
   timezone,
   tags,
   hideEditPost,
+  series,
+  seriesOrder,
 } = post.data;
 
 const { Content } = await render(post);
@@ -139,6 +142,8 @@ const ogImage = ogImageUrl
       </span>
       <EditPost {hideEditPost} {post} class="max-sm:hidden" />
     </div>
+
+    {series && <SeriesCard currentPost={post} />}
 
     <article
       id="article"

@@ -1,0 +1,73 @@
+---
+import { getCollection } from "astro:content";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import { getPostUrl } from "@/utils/getPostPaths";
+import config from "@/config";
+
+type Props = {
+  currentPost: {
+    id: string;
+    filePath?: string;
+    data: {
+      series?: string;
+      seriesOrder?: number;
+      title: string;
+    };
+  };
+};
+
+const { currentPost } = Astro.props;
+const seriesName = currentPost.data.series;
+
+if (!seriesName) {
+  return Astro.slots.empty();
+}
+
+const locale = Astro.currentLocale ?? config.site.lang;
+
+const allPosts = await getCollection("posts", ({ data }) => !data.draft);
+const seriesPosts = allPosts
+  .filter(p => p.data.series === seriesName)
+  .sort((a, b) => (a.data.seriesOrder ?? 0) - (b.data.seriesOrder ?? 0));
+---
+
+<section
+  class="border-muted-foreground/30 bg-muted/40 mb-8 rounded-lg border border-dashed p-4 text-sm"
+>
+  <div class="mb-3 flex items-center gap-2">
+    <span class="text-muted-foreground">专栏</span>
+    <a
+      href={getRelativeLocaleUrl(locale, `series/${seriesName}/`)}
+      class="text-foreground hover:text-accent font-medium no-underline"
+    >
+      {seriesName}
+    </a>
+    <span class="text-muted-foreground text-xs"
+      >· 共 {seriesPosts.length} 篇</span
+    >
+  </div>
+  <ol class="list-decimal space-y-1.5 pl-5">
+    {
+      seriesPosts.map((p, idx) => {
+        const isCurrent = p.id === currentPost.id;
+        const url = getPostUrl(p.id, p.filePath, locale);
+        return (
+          <li>
+            {isCurrent ? (
+              <span class="text-accent font-medium">
+                {idx + 1}. {p.data.title}
+              </span>
+            ) : (
+              <a
+                href={url}
+                class="text-foreground/80 hover:text-accent no-underline"
+              >
+                {idx + 1}. {p.data.title}
+              </a>
+            )}
+          </li>
+        );
+      })
+    }
+  </ol>
+</section>
