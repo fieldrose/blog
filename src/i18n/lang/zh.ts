@@ -8,6 +8,9 @@ export default {
     about: "关于",
     archives: "归档",
     search: "搜索",
+    language: "语言",
+    theme: "主题",
+    settings: "设置",
   },
   post: {
     publishedAt: "发布时间",
@@ -111,7 +114,7 @@ export default {
   },
   readingSettings: {
     buttonTitle: "阅读设置",
-    panelTitle: "阅读设置",
+    panelTitle: "文字设置",
     fontSize: "字号",
     lineHeight: "行距",
     contentWidth: "内容宽度",

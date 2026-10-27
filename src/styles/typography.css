@@ -66,6 +66,8 @@
     }
 
     table {
+      @apply block w-full overflow-x-auto;
+
       th,
       td {
         @apply border-border border p-2;
@@ -112,7 +114,7 @@
     }
 
     pre {
-      @apply focus-visible:outline-accent focus-visible:border-transparent focus-visible:outline-2 focus-visible:outline-dashed;
+      @apply focus-visible:outline-accent focus-visible:border-transparent focus-visible:outline-2 focus-visible:outline-dashed overflow-x-auto;
     }
   }
 

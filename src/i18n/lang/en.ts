@@ -8,6 +8,9 @@ export default {
     about: "About",
     archives: "Archives",
     search: "Search",
+    language: "Language",
+    theme: "Theme",
+    settings: "Settings",
   },
   post: {
     publishedAt: "Published at",
@@ -111,7 +114,7 @@ export default {
   },
   readingSettings: {
     buttonTitle: "Reading settings",
-    panelTitle: "Reading settings",
+    panelTitle: "Text settings",
     fontSize: "Font size",
     lineHeight: "Line height",
     contentWidth: "Content width",

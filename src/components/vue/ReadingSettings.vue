@@ -12,6 +12,8 @@ import type { UIStrings } from "@/i18n/types";
 
 const props = defineProps<{
   labels: UIStrings["readingSettings"];
+  /** Extra classes to merge onto the trigger button. */
+  buttonClass?: string;
 }>();
 
 const store = useReadingStore();
@@ -83,7 +85,10 @@ function stepFont(delta: number) {
     <button
       ref="triggerRef"
       type="button"
-      class="focus-outline hover:[&>svg]:stroke-accent relative size-12 p-4 sm:size-8"
+      :class="[
+        'focus-outline hover:[&>svg]:stroke-accent relative size-8 p-0',
+        props.buttonClass ?? '',
+      ]"
       :title="labels.buttonTitle"
       :aria-label="labels.buttonTitle"
       :aria-expanded="isOpen"
@@ -92,7 +97,7 @@ function stepFont(delta: number) {
       @click="toggle"
     >
       <svg
-        class="absolute top-1/2 left-1/2 size-6 -translate-x-1/2 -translate-y-1/2 stroke-current"
+        class="absolute top-1/2 left-1/2 size-5 sm:size-6 -translate-x-1/2 -translate-y-1/2 stroke-current"
         viewBox="0 0 24 24"
         fill="none"
         stroke-width="2"
