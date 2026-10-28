@@ -83,9 +83,7 @@ function stepFont(delta: number) {
 </script>
 
 <template>
-  <div
-    :class="props.inline ? '' : 'relative inline-flex size-8 items-center'"
-  >
+  <div :class="props.inline ? '' : 'relative inline-flex size-8 items-center'">
     <button
       v-if="!props.inline"
       ref="triggerRef"
@@ -126,7 +124,7 @@ function stepFont(delta: number) {
       :class="[
         props.inline
           ? 'w-full px-1 py-3'
-          : 'bg-background border-border absolute right-0 z-50 mt-2 w-64 rounded-lg border p-4 shadow-lg',
+          : 'bg-background border-border absolute top-full right-0 z-50 mt-2 w-64 rounded-lg border p-4 shadow-lg',
       ]"
     >
       <div class="mb-4 flex items-center justify-between">
@@ -139,6 +137,9 @@ function stepFont(delta: number) {
           {{ labels.reset }}
         </button>
       </div>
+
+      <!-- tips -->
+      <p class="text-muted-foreground mb-4 text-sm">{{ labels.tip }}</p>
 
       <!-- Font size -->
       <fieldset class="mb-4">

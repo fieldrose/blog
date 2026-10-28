@@ -31,6 +31,7 @@ export interface UIStrings {
     page: string;
   };
   home: {
+    heroSignature: string;
     socialLinks: string;
     heroGreeting: string;
     heroIntro: string;
@@ -112,6 +113,7 @@ export interface UIStrings {
     callbackBackHome: string;
   };
   readingSettings: {
+    tip: string;
     buttonTitle: string;
     panelTitle: string;
     fontSize: string;

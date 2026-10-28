@@ -33,7 +33,8 @@ export default {
     page: "Page",
   },
   home: {
-    socialLinks: "Social Links",
+    heroSignature: "Life is a soup, and I'm a fork.",
+    socialLinks: "Personal Repositories",
     heroGreeting: "Hi, I'm Mimas",
     heroIntro:
       "A frontend engineer working mainly with Vue 3 / React + TypeScript (and Astro), focused on frontend engineering: build optimization, micro-frontends, performance and CI/CD.",
@@ -113,6 +114,7 @@ export default {
     callbackBackHome: "Back to home",
   },
   readingSettings: {
+    tip: "Only adjust font size, line height, and content width for the main content.",
     buttonTitle: "Reading settings",
     panelTitle: "Text settings",
     fontSize: "Font size",

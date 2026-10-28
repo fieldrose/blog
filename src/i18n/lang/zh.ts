@@ -33,7 +33,8 @@ export default {
     page: "页数",
   },
   home: {
-    socialLinks: "社交链接",
+    heroSignature: "Life is a soup, and I'm a fork.",
+    socialLinks: "个人仓库",
     heroGreeting: "你好，我是 Mimas",
     heroIntro:
       "一名前端工程师，主力技术栈是 Vue 3 / React + TypeScript，也写 Astro。长期关注前端工程化：构建优化、微前端架构、性能与 CI/CD。",
@@ -113,6 +114,7 @@ export default {
     callbackBackHome: "返回首页",
   },
   readingSettings: {
+    tip: "仅用于调整正文内容的字体大小、行距、内容宽度等",
     buttonTitle: "阅读设置",
     panelTitle: "文字设置",
     fontSize: "字号",
