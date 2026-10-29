@@ -27,7 +27,14 @@ import basicSsl from "@vitejs/plugin-basic-ssl";
 
 export default defineConfig({
   site: config.site.url,
-  adapter: netlify(),
+  // adapter: netlify(),
+  adapter: netlify({
+    devFeatures: {
+      images: true,
+      environmentVariables: false,
+      edgeFunctions: false,
+    },
+  }),
   integrations: [
     mdx(),
     sitemap({

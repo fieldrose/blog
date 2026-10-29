@@ -44,19 +44,17 @@ const t = useTranslations(locale);
     const status = document.getElementById("callback-status");
     const params = new URLSearchParams(window.location.search);
     const next = safeNext(params.get("next"));
-    const code = params.get("code");
     const tokenHash = params.get("token_hash");
     const type = params.get("type") ?? "email";
 
     try {
+      // Creating the client with `detectSessionInUrl: true` already exchanges
+      // the OAuth `?code=` (PKCE) for a session. Calling
+      // exchangeCodeForSession() here as well races with that internal
+      // exchange and the second call fails ("code already used"), which used
+      // to leave the page stuck on the error state even though sign-in
+      // succeeded.
       const supabase = getBrowserSupabase();
-
-      if (code) {
-        const { error } = await supabase.auth.exchangeCodeForSession(code);
-        if (error) throw error;
-        window.location.replace(next);
-        return;
-      }
 
       if (tokenHash) {
         const { error } = await supabase.auth.verifyOtp({
@@ -68,8 +66,13 @@ const t = useTranslations(locale);
         return;
       }
 
-      // Nothing to do — simply go home.
-      window.location.replace("/");
+      // getSession() awaits the SDK's URL detection, so by this point the
+      // code exchange (if any) has completed.
+      const { data, error } = await supabase.auth.getSession();
+      if (error) throw error;
+      if (!data.session) throw new Error("No session in callback URL.");
+
+      window.location.replace(next);
     } catch {
       if (status) status.textContent = status.dataset.error ?? "Auth failed.";
       document.getElementById("callback-home")?.classList.remove("hidden");
