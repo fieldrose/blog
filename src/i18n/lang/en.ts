@@ -81,6 +81,7 @@ export default {
     idea: "Insightful",
     question: "Question",
     unavailable: "Reactions are temporarily unavailable",
+    signInToReact: "Sign in to react",
   },
   auth: {
     signIn: "Sign in",
@@ -146,7 +147,8 @@ export default {
     textDesc:
       "The gradient is clipped to the glyphs and its position animates, creating a moving highlight.",
     hoverTitle: "Hover card",
-    hoverDesc: "The card lifts slightly on hover, with border and shadow shifting together.",
+    hoverDesc:
+      "The card lifts slightly on hover, with border and shadow shifting together.",
     pulseTitle: "Breathing dots",
     pulseDesc: "Three dots scale in sequence to indicate a pending state.",
   },

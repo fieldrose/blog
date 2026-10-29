@@ -79,6 +79,8 @@ export interface UIStrings {
     question: string;
     /** Shown when the reactions backend is unavailable. */
     unavailable: string;
+    /** Prompt when a signed-out user hovers/clicks the bar. */
+    signInToReact: string;
   };
   auth: {
     signIn: string;

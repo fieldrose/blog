@@ -2,7 +2,6 @@ import type { APIRoute } from "astro";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import {
   REACTION_TYPES,
-  CLIENT_ID_HEADER,
   type ReactionCounts,
   type ReactionType,
   type ReactionsResponse,
@@ -11,36 +10,23 @@ import { isPublishedPostSlug, normalizeSlug } from "@/lib/server/posts";
 import { jsonError, jsonOk } from "@/lib/server/http";
 import { rateLimit } from "@/lib/server/rateLimit";
 import { authenticate, dailyRateLimitKey } from "@/lib/server/auth";
-import {
-  voteBodySchema,
-  reactionParamSchema,
-  clientIdSchema,
-} from "@/lib/server/reactionValidation";
+import { voteBodySchema, reactionParamSchema } from "@/lib/server/reactionValidation";
 import { hasSupabase, getAnonSupabase } from "@/lib/supabase/anon";
-import { hasAdminSupabase, getAdminSupabase } from "@/lib/supabase/admin";
 import { getUserSupabase } from "@/lib/supabase/asUser";
 
 export const prerender = false;
 
 const WRITE_WINDOW_MS = 60_000;
 const USER_WRITE_LIMIT = 60;
-const ANON_WRITE_LIMIT = 30;
 
 function zeroCounts(): ReactionCounts {
   return { like: 0, fire: 0, idea: 0, question: 0 };
 }
 
-function readClientId(request: Request): string | null {
-  const raw = request.headers.get(CLIENT_ID_HEADER);
-  if (!raw) return null;
-  const parsed = clientIdSchema.safeParse(raw);
-  return parsed.success ? parsed.data : null;
-}
-
 async function fetchState(
   supabase: SupabaseClient,
   slug: string,
-  identity: { userId?: string; clientId?: string }
+  userId?: string
 ): Promise<ReactionsResponse> {
   const counts = zeroCounts();
 
@@ -58,21 +44,17 @@ async function fetchState(
       counts[reaction] = row.count as number;
   }
 
-  let query = supabase
-    .schema("public")
-    .from("reactions")
-    .select("reaction")
-    .eq("post_slug", slug);
-
-  if (identity.userId) {
-    query = query.eq("user_id", identity.userId);
-  } else if (identity.clientId) {
-    query = query.eq("client_id", identity.clientId);
-  } else {
+  if (!userId) {
     return { counts, selected: [] };
   }
 
-  const { data: selectedRows, error: selectedError } = await query;
+  const { data: selectedRows, error: selectedError } = await supabase
+    .schema("public")
+    .from("reactions")
+    .select("reaction")
+    .eq("post_slug", slug)
+    .eq("user_id", userId);
+
   if (selectedError) throw selectedError;
 
   const selected = (selectedRows ?? [])
@@ -96,7 +78,6 @@ export const GET: APIRoute = async ({ params, request }) => {
   }
 
   const auth = await authenticate(request);
-  const clientId = readClientId(request);
 
   try {
     const supabase =
@@ -105,9 +86,7 @@ export const GET: APIRoute = async ({ params, request }) => {
     const state = await fetchState(
       supabase,
       slug,
-      auth.kind === "user"
-        ? { userId: auth.userId }
-        : { clientId: clientId ?? undefined }
+      auth.kind === "user" ? auth.userId : undefined
     );
 
     return jsonOk(state, {
@@ -140,74 +119,34 @@ export const POST: APIRoute = async ({ params, request, clientAddress }) => {
   }
 
   const auth = await authenticate(request);
-  if (auth.kind === "invalid") {
-    return jsonError("UNAUTHORIZED", "Invalid or expired session token.");
+  if (auth.kind !== "user") {
+    return jsonError("UNAUTHORIZED", "Sign in to react to posts.");
   }
 
   const { reaction } = parsed.data;
 
   try {
-    if (auth.kind === "user") {
-      if (
-        !rateLimit(
-          dailyRateLimitKey(clientAddress, `user-${auth.userId}`),
-          USER_WRITE_LIMIT,
-          WRITE_WINDOW_MS
-        )
-      ) {
-        return jsonError("RATE_LIMITED", "Too many requests. Try again later.");
-      }
-
-      const supabase = getUserSupabase(auth.token);
-      const { error } = await supabase
-        .schema("public")
-        .from("reactions")
-        .upsert(
-          { post_slug: slug, reaction, user_id: auth.userId },
-          { onConflict: "post_slug,reaction,user_id", ignoreDuplicates: true }
-        );
-      if (error) throw error;
-
-      const state = await fetchState(supabase, slug, { userId: auth.userId });
-      return jsonOk(state);
-    }
-
-    // Anonymous path: requires a valid client_id (sent as a header by
-    // apiFetch) and the service-role client.
-    const clientId = readClientId(request);
-    if (!clientId) {
-      return jsonError(
-        "VALIDATION_ERROR",
-        "Anonymous votes require a client_id (UUID)."
-      );
-    }
-    if (!hasAdminSupabase()) {
-      return jsonError(
-        "SUPABASE_NOT_CONFIGURED",
-        "Anonymous reactions need SUPABASE_SERVICE_ROLE_KEY on the server."
-      );
-    }
     if (
       !rateLimit(
-        dailyRateLimitKey(clientAddress, "anon"),
-        ANON_WRITE_LIMIT,
+        dailyRateLimitKey(clientAddress, `user-${auth.userId}`),
+        USER_WRITE_LIMIT,
         WRITE_WINDOW_MS
       )
     ) {
       return jsonError("RATE_LIMITED", "Too many requests. Try again later.");
     }
 
-    const admin = getAdminSupabase();
-    const { error } = await admin
+    const supabase = getUserSupabase(auth.token);
+    const { error } = await supabase
       .schema("public")
       .from("reactions")
       .upsert(
-        { post_slug: slug, reaction, client_id: clientId },
-        { onConflict: "post_slug,reaction,client_id", ignoreDuplicates: true }
+        { post_slug: slug, reaction, user_id: auth.userId },
+        { onConflict: "post_slug,reaction,user_id", ignoreDuplicates: true }
       );
     if (error) throw error;
 
-    const state = await fetchState(admin, slug, { clientId });
+    const state = await fetchState(supabase, slug, auth.userId);
     return jsonOk(state);
   } catch {
     return jsonError("INTERNAL_ERROR", "Failed to record reaction.");
@@ -228,70 +167,32 @@ export const DELETE: APIRoute = async ({ params, request, clientAddress }) => {
   }
 
   const auth = await authenticate(request);
-  if (auth.kind === "invalid") {
-    return jsonError("UNAUTHORIZED", "Invalid or expired session token.");
+  if (auth.kind !== "user") {
+    return jsonError("UNAUTHORIZED", "Sign in to react to posts.");
   }
 
   try {
-    if (auth.kind === "user") {
-      if (
-        !rateLimit(
-          dailyRateLimitKey(clientAddress, `user-${auth.userId}`),
-          USER_WRITE_LIMIT,
-          WRITE_WINDOW_MS
-        )
-      ) {
-        return jsonError("RATE_LIMITED", "Too many requests. Try again later.");
-      }
-
-      const supabase = getUserSupabase(auth.token);
-      const { error } = await supabase
-        .schema("public")
-        .from("reactions")
-        .delete()
-        .eq("post_slug", slug)
-        .eq("reaction", reaction.data)
-        .eq("user_id", auth.userId);
-      if (error) throw error;
-
-      const state = await fetchState(supabase, slug, { userId: auth.userId });
-      return jsonOk(state);
-    }
-
-    const clientId = readClientId(request);
-    if (!clientId) {
-      return jsonError(
-        "VALIDATION_ERROR",
-        "Anonymous votes require an x-client-id header."
-      );
-    }
-    if (!hasAdminSupabase()) {
-      return jsonError(
-        "SUPABASE_NOT_CONFIGURED",
-        "Anonymous reactions need SUPABASE_SERVICE_ROLE_KEY on the server."
-      );
-    }
     if (
       !rateLimit(
-        dailyRateLimitKey(clientAddress, "anon"),
-        ANON_WRITE_LIMIT,
+        dailyRateLimitKey(clientAddress, `user-${auth.userId}`),
+        USER_WRITE_LIMIT,
         WRITE_WINDOW_MS
       )
     ) {
       return jsonError("RATE_LIMITED", "Too many requests. Try again later.");
     }
 
-    const admin = getAdminSupabase();
-    const { error } = await admin
+    const supabase = getUserSupabase(auth.token);
+    const { error } = await supabase
       .schema("public")
       .from("reactions")
       .delete()
       .eq("post_slug", slug)
       .eq("reaction", reaction.data)
-      .eq("client_id", clientId);
+      .eq("user_id", auth.userId);
     if (error) throw error;
 
-    const state = await fetchState(admin, slug, { clientId });
+    const state = await fetchState(supabase, slug, auth.userId);
     return jsonOk(state);
   } catch {
     return jsonError("INTERNAL_ERROR", "Failed to remove reaction.");

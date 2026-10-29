@@ -81,6 +81,7 @@ export default {
     idea: "有启发",
     question: "有疑问",
     unavailable: "反馈功能暂不可用",
+    signInToReact: "登录后反馈",
   },
   auth: {
     signIn: "登录",
