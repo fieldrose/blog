@@ -256,9 +256,6 @@ importers:
       vue:
         specifier: ^3.5.42
         version: 3.5.42(typescript@6.0.3)
-      web-vitals:
-        specifier: ^6.2.2
-        version: 6.2.2
       zod:
         specifier: ^4.6.5
         version: 4.6.5
@@ -5978,9 +5975,6 @@ packages:
   web-streams-polyfill@3.0.3:
     resolution: {integrity: sha512-d2H/t0eqRNM4w2WvmTdoeIvzAUSpK7JmATB8Nr2lb7nQ9BTIJVjbQ/TRFVEh2gUH1HwclPdoPtfMoFfetXaZnA==}
     engines: {node: '>= 8'}
-
-  web-vitals@6.2.2:
-    resolution: {integrity: sha512-oto5x6dLEgrRqfcWed+pZEUb2q6ikbFmqF54CRDhI/QGbn+qxC49b4C4OkbH+kb9C3a8shpFD3SgR9kRcs80ZQ==}
 
   webidl-conversions@3.0.0:
     resolution: {integrity: sha512-GOK494qXZl0XBbr/YPRW2BL6oLfe+d0KDSWndKH7NdxJwJ0fCdhQG46Q2D7BmIS6cN/FJgtju8srRt/jlG9abA==}
@@ -12631,8 +12625,6 @@ snapshots:
   web-namespaces@2.0.1: {}
 
   web-streams-polyfill@3.0.3: {}
-
-  web-vitals@6.2.2: {}
 
   webidl-conversions@3.0.0: {}
 

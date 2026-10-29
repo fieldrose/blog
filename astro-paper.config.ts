@@ -31,7 +31,6 @@ export default defineAstroPaperConfig({
     // New dynamic features — enabled incrementally as their modules land.
     auth: true,
     reactions: true,
-    analytics: true,
     aiAssistant: true,
     pwa: false,
     readingSettings: true,

@@ -133,28 +133,19 @@ export interface UIStrings {
     message: string;
     goHome: string;
   };
-  stats: {
+  demos: {
     /** <title> + page heading. */
     title: string;
     description: string;
-    loading: string;
-    unavailable: string;
-    noData: string;
-    totalPv: string;
-    totalUv: string;
-    pvLabel: string;
-    uvLabel: string;
-    topPostsTitle: string;
-    vitalsTitle: string;
-    reactionsTitle: string;
-    viewsLabel: string;
-    metricLcp: string;
-    metricCls: string;
-    metricInp: string;
-    ratingGood: string;
-    ratingNeedsImprovement: string;
-    ratingPoor: string;
     /** Footer entry. */
-    statsLink: string;
+    link: string;
+    blobTitle: string;
+    blobDesc: string;
+    textTitle: string;
+    textDesc: string;
+    hoverTitle: string;
+    hoverDesc: string;
+    pulseTitle: string;
+    pulseDesc: string;
   };
 }

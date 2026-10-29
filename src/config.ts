@@ -35,7 +35,6 @@ const config: ResolvedAstroPaperConfig = {
     search: userConfig.features?.search ?? "pagefind",
     auth: userConfig.features?.auth ?? false,
     reactions: userConfig.features?.reactions ?? false,
-    analytics: userConfig.features?.analytics ?? false,
     aiAssistant: userConfig.features?.aiAssistant ?? false,
     pwa: userConfig.features?.pwa ?? false,
     readingSettings: userConfig.features?.readingSettings ?? true,

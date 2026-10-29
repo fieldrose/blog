@@ -14,7 +14,7 @@ const { noMarginTop = false, class: className, ...attrs } = Astro.props;
 const locale = Astro.currentLocale ?? config.site.lang;
 const t = useTranslations(locale);
 const currentYear = new Date().getFullYear();
-const statsUrl = getRelativeLocaleUrl(locale, "stats");
+const demosUrl = getRelativeLocaleUrl(locale, "demos");
 ---
 
 <footer
@@ -26,19 +26,13 @@ const statsUrl = getRelativeLocaleUrl(locale, "stats");
   >
     <Socials />
     <div class="my-2 flex flex-col items-center whitespace-nowrap sm:flex-row">
-      {
-        config.features.analytics && (
-          <>
-            <a
-              href={statsUrl}
-              class="text-muted-foreground hover:text-accent underline underline-offset-4 transition-colors"
-            >
-              {t.stats.statsLink}
-            </a>
-            <span class="hidden sm:inline">&nbsp;|&nbsp;</span>
-          </>
-        )
-      }
+      <a
+        href={demosUrl}
+        class="text-muted-foreground hover:text-accent underline underline-offset-4 transition-colors"
+      >
+        {t.demos.link}
+      </a>
+      <span class="hidden sm:inline">&nbsp;|&nbsp;</span>
       <span>{t.footer.copyright} &#169; {currentYear}</span>
       <span class="hidden sm:inline">&nbsp;|&nbsp;</span>
       <span>{t.footer.allRightsReserved}</span>

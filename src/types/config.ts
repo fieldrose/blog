@@ -63,8 +63,6 @@ interface FeaturesConfig {
   auth?: boolean;
   /** Per-post emoji reactions. Defaults to false. */
   reactions?: boolean;
-  /** Privacy-friendly analytics collection + /stats page. Defaults to false. */
-  analytics?: boolean;
   /** RAG AI assistant island. Defaults to false (auto-off without AI env). */
   aiAssistant?: boolean;
   /** PWA: web manifest + service worker. Defaults to false. */

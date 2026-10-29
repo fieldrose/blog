@@ -5,7 +5,6 @@ import { getRelativeLocaleUrl } from "astro:i18n";
 import { resolveDefaultOgImagePath } from "@/utils/resolveDefaultOgImagePath";
 import { getAssetPath } from "@/utils/withBase";
 import config from "@/config";
-import { hasSupabasePublicEnv } from "@/lib/env";
 import "@/styles/global.css";
 
 type Props = {
@@ -151,26 +150,5 @@ const rssHref = getRelativeLocaleUrl(
     <script>
       import "@/scripts/theme";
     </script>
-    {
-      config.features.analytics && hasSupabasePublicEnv && (
-        <script>
-          import { trackPageview } from "@/lib/analytics";
-          import { initWebVitals } from "@/lib/web-vitals";
-
-          // Skip local development so test traffic never reaches production stats.
-          const isLocal = ["localhost", "127.0.0.1"].includes(
-            window.location.hostname
-          );
-
-          if (!isLocal) {
-            // astro:page-load fires on first load AND after every View Transition.
-            document.addEventListener("astro:page-load", () => {
-              trackPageview(document.documentElement.lang);
-            });
-            initWebVitals();
-          }
-        </script>
-      )
-    }
   </body>
 </html>
