@@ -1,0 +1,54 @@
+---
+// 只渲染 demo-stage 内部的内容；卡片外壳（.demo-card / h2 / p / .demo-stage）由 DemoCard.astro 负责。
+---
+
+<span class="blob blob-a"></span>
+<span class="blob blob-b"></span>
+<span class="blob blob-c"></span>
+
+<style>
+  .blob {
+    position: absolute;
+    width: 55%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    filter: blur(28px);
+    opacity: 0.75;
+    will-change: transform;
+  }
+
+  .blob-a {
+    top: -10%;
+    left: -5%;
+    background: var(--color-accent);
+    animation: drift-a 9s ease-in-out infinite alternate;
+  }
+
+  .blob-b {
+    bottom: -20%;
+    right: -5%;
+    background: color-mix(in oklab, var(--color-accent) 45%, var(--color-foreground));
+    animation: drift-b 11s ease-in-out infinite alternate;
+  }
+
+  .blob-c {
+    top: 25%;
+    left: 35%;
+    background: color-mix(in oklab, var(--color-accent) 25%, var(--color-background));
+    animation: drift-c 7s ease-in-out infinite alternate;
+  }
+
+  @keyframes drift-a {
+    to { transform: translate3d(35%, 25%, 0) scale(1.15); }
+  }
+  @keyframes drift-b {
+    to { transform: translate3d(-30%, -20%, 0) scale(0.9); }
+  }
+  @keyframes drift-c {
+    to { transform: translate3d(-25%, 30%, 0) scale(1.1); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .blob { animation: none; }
+  }
+</style>

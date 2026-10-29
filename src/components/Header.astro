@@ -217,10 +217,9 @@ const isActive = (path: string) => {
 <!-- 移动端右侧抽屉 -->
 <div
   id="menu-overlay"
-  class="pointer-events-none fixed inset-0 z-40 bg-black/50 opacity-0 transition-opacity duration-300 sm:hidden"
+  class="pointer-events-none fixed inset-0 z-40 bg-black/50 backdrop-blur-sm opacity-0 transition-opacity duration-300 sm:hidden"
   aria-hidden="true"
->
-</div>
+></div>
 
 <aside
   id="menu-drawer"
@@ -351,6 +350,14 @@ const isActive = (path: string) => {
     </div>
 
     {
+      showAuth && (
+        <div class="border-border my-2 border-t pt-2">
+          <UserMenu client:idle labels={t.auth} variant="drawer" />
+        </div>
+      )
+    }
+
+    {
       showReadingSettings && (
         <div class="border-border mt-2 border-t pt-2">
           <ReadingSettings
@@ -358,14 +365,6 @@ const isActive = (path: string) => {
             labels={t.readingSettings}
             inline={true}
           />
-        </div>
-      )
-    }
-
-    {
-      showAuth && (
-        <div class="border-border mt-2 border-t pt-2">
-          <UserMenu client:idle labels={t.auth} />
         </div>
       )
     }
@@ -384,7 +383,14 @@ const isActive = (path: string) => {
       drawer.classList.remove("translate-x-full");
       overlay.classList.remove("pointer-events-none", "opacity-0");
       overlay.setAttribute("aria-hidden", "false");
-      document.body.style.overflow = "hidden";
+      // 锁 body 滚动（同时处理 iOS Safari 的惯性滚动）
+      const scrollY = window.scrollY;
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.left = "0";
+      document.body.style.right = "0";
+      document.body.style.width = "100%";
+      document.body.style.touchAction = "none";
       menuBtn.setAttribute("aria-expanded", "true");
     };
 
@@ -392,9 +398,42 @@ const isActive = (path: string) => {
       drawer.classList.add("translate-x-full");
       overlay.classList.add("pointer-events-none", "opacity-0");
       overlay.setAttribute("aria-hidden", "true");
-      document.body.style.overflow = "";
+      // 恢复 body 滚动
+      const top = document.body.style.top;
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.left = "";
+      document.body.style.right = "";
+      document.body.style.width = "";
+      document.body.style.touchAction = "";
+      const restoredY = top ? -parseInt(top, 10) : 0;
+      if (restoredY) window.scrollTo(0, restoredY);
       menuBtn.setAttribute("aria-expanded", "false");
     };
+
+    // ---------- 触摸穿透防护 ----------
+    // iOS Safari 上 body.overflow = hidden 不能阻止惯性滚动，
+    // 所以 overlay 上额外拦截 touchmove（不拦 touchstart，否则 click 事件不派发）。
+    // 抽屉自身内部需要正常滚动，所以不阻止 drawer 内部的 touch。
+    const isDrawerOpen = () => menuBtn.getAttribute("aria-expanded") === "true";
+
+    // overlay: 触摸移动 → 阻止穿透；点击 → 关闭（依赖 click 事件）
+    overlay.addEventListener(
+      "touchmove",
+      (e) => {
+        if (isDrawerOpen()) e.preventDefault();
+      },
+      { passive: false },
+    );
+
+    // 抽屉内部 touchmove 停止冒泡，防止事件穿透到 overlay → body
+    drawer.addEventListener(
+      "touchmove",
+      (e) => {
+        if (isDrawerOpen()) e.stopPropagation();
+      },
+      { passive: true },
+    );
 
     menuBtn.addEventListener("click", () => {
       const isOpen = menuBtn.getAttribute("aria-expanded") === "true";
@@ -460,6 +499,13 @@ const isActive = (path: string) => {
       overlay.classList.add("pointer-events-none", "opacity-0");
       overlay.setAttribute("aria-hidden", "true");
     }
+    // 完整恢复 body 样式（position: fixed 会在 SPA 切换后残留）
+    document.body.style.position = "";
+    document.body.style.top = "";
+    document.body.style.left = "";
+    document.body.style.right = "";
+    document.body.style.width = "";
+    document.body.style.touchAction = "";
     document.body.style.overflow = "";
   });
 

@@ -1,0 +1,57 @@
+---
+import type { DemoMeta } from "@/types/demo";
+
+interface Props {
+  slug: string;
+  meta: DemoMeta;
+  /** 当前站点 locale，用于从 meta.title / description 取对应语言 */
+  locale: "zh" | "en";
+}
+
+const { slug, meta, locale } = Astro.props;
+const title = meta.title[locale];
+const description = meta.description[locale];
+---
+
+<section class="demo-card" data-slug={slug}>
+  <h2 class="demo-title">{title}</h2>
+  <p class="demo-desc">{description}</p>
+  <!-- stage 内部内容由调用方（demos/index.astro）按 framework 注入 -->
+  <div
+    class="demo-stage"
+    aria-hidden={meta.framework === "astro" ? "true" : undefined}
+  >
+    <slot />
+  </div>
+</section>
+
+<style>
+  .demo-card {
+    border: 1px solid var(--color-border);
+    border-radius: 0.75rem;
+    padding: 1rem;
+    background: var(--color-background);
+  }
+
+  .demo-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+
+  .demo-desc {
+    color: var(--color-muted-foreground);
+    font-size: 0.8rem;
+    line-height: 1.6;
+    margin-top: 0.35rem;
+    min-height: 2.6rem;
+  }
+
+  .demo-stage {
+    position: relative;
+    margin-top: 0.75rem;
+    height: 11rem;
+    overflow: hidden;
+    border-radius: 0.5rem;
+    background: var(--color-muted);
+  }
+</style>

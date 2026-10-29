@@ -87,6 +87,10 @@ export default {
     signIn: "Sign in",
     signUp: "Sign up",
     signOut: "Sign out",
+    signOutConfirmTitle: "Sign out?",
+    signOutConfirmBody: "You'll need to sign in again to like posts or publish.",
+    signOutConfirmAction: "Sign out",
+    signOutCancel: "Cancel",
     loginTab: "Sign in",
     registerTab: "Sign up",
     dialogAriaLabel: "Sign in or create an account",
@@ -138,18 +142,7 @@ export default {
   demos: {
     title: "Demos",
     description:
-      "A few pure-CSS effects — gradients, motion and hover feedback, with no external dependencies.",
+      "A handful of small front-end effects — gradients, motion, hover feedback, no external deps.",
     link: "Demos",
-    blobTitle: "Flowing gradient glow",
-    blobDesc:
-      "Layered blurred color blobs drift along different paths to form a shifting backdrop.",
-    textTitle: "Gradient text",
-    textDesc:
-      "The gradient is clipped to the glyphs and its position animates, creating a moving highlight.",
-    hoverTitle: "Hover card",
-    hoverDesc:
-      "The card lifts slightly on hover, with border and shadow shifting together.",
-    pulseTitle: "Breathing dots",
-    pulseDesc: "Three dots scale in sequence to indicate a pending state.",
   },
 } satisfies UIStrings;

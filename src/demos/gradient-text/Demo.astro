@@ -1,0 +1,41 @@
+---
+---
+
+<div class="stage-inner">
+  <span class="gradient-text">Gradient</span>
+</div>
+
+<style>
+  .stage-inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+  }
+
+  .gradient-text {
+    font-size: 2.25rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    background: linear-gradient(
+      100deg,
+      var(--color-accent),
+      var(--color-foreground),
+      var(--color-accent)
+    );
+    background-size: 250% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: shift 6s linear infinite;
+  }
+
+  @keyframes shift {
+    to { background-position: 250% 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .gradient-text { animation: none; }
+  }
+</style>

@@ -1,0 +1,53 @@
+---
+
+---
+
+<div class="stage-inner">
+  <span class="pulse-dot"></span>
+  <span class="pulse-dot"></span>
+  <span class="pulse-dot"></span>
+</div>
+
+<style>
+  .stage-inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    gap: 0.5rem;
+  }
+
+  .pulse-dot {
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 50%;
+    background: var(--color-accent);
+    animation: pulse 1.2s ease-in-out infinite;
+  }
+
+  .pulse-dot:nth-child(2) {
+    animation-delay: 0.15s;
+  }
+  .pulse-dot:nth-child(3) {
+    animation-delay: 0.3s;
+  }
+
+  @keyframes pulse {
+    0%,
+    100% {
+      transform: scale(0.6);
+      opacity: 0.4;
+    }
+    50% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pulse-dot {
+      animation: none;
+    }
+  }
+</style>

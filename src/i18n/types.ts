@@ -86,6 +86,10 @@ export interface UIStrings {
     signIn: string;
     signUp: string;
     signOut: string;
+    signOutConfirmTitle: string;
+    signOutConfirmBody: string;
+    signOutConfirmAction: string;
+    signOutCancel: string;
     loginTab: string;
     registerTab: string;
     dialogAriaLabel: string;
@@ -139,15 +143,7 @@ export interface UIStrings {
     /** <title> + page heading. */
     title: string;
     description: string;
-    /** Footer entry. */
+    /** Footer entry / nav link. */
     link: string;
-    blobTitle: string;
-    blobDesc: string;
-    textTitle: string;
-    textDesc: string;
-    hoverTitle: string;
-    hoverDesc: string;
-    pulseTitle: string;
-    pulseDesc: string;
   };
 }

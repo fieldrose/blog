@@ -87,6 +87,10 @@ export default {
     signIn: "登录",
     signUp: "注册",
     signOut: "退出登录",
+    signOutConfirmTitle: "确认退出？",
+    signOutConfirmBody: "退出后需要重新登录才能点赞或发布内容。",
+    signOutConfirmAction: "退出登录",
+    signOutCancel: "取消",
     loginTab: "登录",
     registerTab: "注册",
     dialogAriaLabel: "登录或注册",
@@ -137,16 +141,7 @@ export default {
   },
   demos: {
     title: "前端演示",
-    description:
-      "用纯 CSS 实现的几个小效果：渐变、动效与悬停反馈，无外部依赖。",
+    description: "一些纯前端小效果 —— 渐变、动效与悬停反馈，无外部依赖。",
     link: "前端演示",
-    blobTitle: "流动的渐变光晕",
-    blobDesc: "多层模糊色块沿不同路径缓慢漂移，形成持续变化的背景。",
-    textTitle: "渐变文字",
-    textDesc: "渐变裁切到文字字形上并改变位置，产生流动的高光。",
-    hoverTitle: "悬浮卡片",
-    hoverDesc: "悬停时轻微抬升，边框与阴影随之变化。",
-    pulseTitle: "呼吸的加载点",
-    pulseDesc: "三个点依次缩放，用来表示等待状态。",
   },
 } satisfies UIStrings;

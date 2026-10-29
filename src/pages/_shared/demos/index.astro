@@ -4,10 +4,51 @@ import Header from "@/components/Header.astro";
 import Breadcrumb from "@/components/Breadcrumb.astro";
 import Main from "@/components/Main.astro";
 import Footer from "@/components/Footer.astro";
+import DemoCard from "@/components/demo/DemoCard.astro";
+import type { DemoMeta } from "@/types/demo";
 import { useTranslations } from "@/i18n";
 import config from "@/config";
 
-const locale = Astro.currentLocale ?? config.site.lang;
+// ---------- 静态 import 所有 demo 组件 ----------
+// Astro 7 不支持 <component is={变量}> 动态渲染组件，
+// 必须在模板里直接写 <ComponentName />，所以所有 demo 组件都要静态 import。
+//
+// framework 约定：
+//   astro  → 纯 SSR，直接 <Foo />
+//   react  → island，<Foo client:visible />
+//   vue    → island，<Foo client:visible />
+import BlobGlow from "@/demos/blob-glow/Demo.astro";
+import GradientText from "@/demos/gradient-text/Demo.astro";
+import HoverCard from "@/demos/hover-card/Demo.astro";
+import PulseDots from "@/demos/pulse-dots/Demo.astro";
+import ReactCounter from "@/demos/react-counter/Demo.tsx";
+import VueCounter from "@/demos/vue-counter/Demo.vue";
+
+// ---------- slug → 组件 注册表 ----------
+// 仅用于运行时存在性检查；实际渲染必须在模板里显式写。
+const COMPONENT_REGISTRY: Record<string, any> = {
+  "blob-glow": BlobGlow,
+  "gradient-text": GradientText,
+  "hover-card": HoverCard,
+  "pulse-dots": PulseDots,
+  "react-counter": ReactCounter,
+  "vue-counter": VueCounter,
+};
+
+// ---------- glob 拿所有 meta ----------
+const metaGlobs = import.meta.glob<{ default: DemoMeta }>(
+  "@/demos/*/meta.ts",
+  { eager: true },
+);
+
+// ---------- 合并 + 排序 ----------
+const metas = Object.entries(metaGlobs).map(([path, mod]) => {
+  const slug = path.split("/").slice(-2, -1)[0]!;
+  return { slug, meta: mod.default };
+});
+metas.sort((a, b) => a.meta.order - b.meta.order);
+
+const locale = (Astro.currentLocale ?? config.site.lang) as "zh" | "en";
 const t = useTranslations(locale);
 ---
 
@@ -21,220 +62,23 @@ const t = useTranslations(locale);
     <p class="text-muted-foreground mb-8 text-sm">{t.demos.description}</p>
 
     <div class="grid gap-6 sm:grid-cols-2">
-      <section class="demo-card">
-        <h2 class="demo-title">{t.demos.blobTitle}</h2>
-        <p class="demo-desc">{t.demos.blobDesc}</p>
-        <div class="demo-stage" aria-hidden="true">
-          <span class="blob blob-a"></span>
-          <span class="blob blob-b"></span>
-          <span class="blob blob-c"></span>
-        </div>
-      </section>
-
-      <section class="demo-card">
-        <h2 class="demo-title">{t.demos.textTitle}</h2>
-        <p class="demo-desc">{t.demos.textDesc}</p>
-        <div class="demo-stage flex items-center justify-center">
-          <span class="gradient-text">Gradient</span>
-        </div>
-      </section>
-
-      <section class="demo-card">
-        <h2 class="demo-title">{t.demos.hoverTitle}</h2>
-        <p class="demo-desc">{t.demos.hoverDesc}</p>
-        <div class="demo-stage flex items-center justify-center">
-          <div class="hover-card">
-            <span class="hover-card-dot"></span>
-            <span>Hover me</span>
-          </div>
-        </div>
-      </section>
-
-      <section class="demo-card">
-        <h2 class="demo-title">{t.demos.pulseTitle}</h2>
-        <p class="demo-desc">{t.demos.pulseDesc}</p>
-        <div class="demo-stage flex items-center justify-center gap-2">
-          <span class="pulse-dot"></span>
-          <span class="pulse-dot"></span>
-          <span class="pulse-dot"></span>
-        </div>
-      </section>
+      {
+        metas.map(({ slug, meta }) => (
+          <DemoCard slug={slug} meta={meta} locale={locale}>
+            {slug === "blob-glow" && <BlobGlow />}
+            {slug === "gradient-text" && <GradientText />}
+            {slug === "hover-card" && <HoverCard />}
+            {slug === "pulse-dots" && <PulseDots />}
+            {/* React/Vue island 需要 client:visible 才能 hydration */}
+            {slug === "react-counter" && <ReactCounter client:visible />}
+            {slug === "vue-counter" && <VueCounter client:visible />}
+            {!COMPONENT_REGISTRY[slug] && (
+              <p class="text-red-500 text-sm">[demos] 组件未注册：{slug}</p>
+            )}
+          </DemoCard>
+        ))
+      }
     </div>
   </Main>
   <Footer />
 </Layout>
-
-<style>
-  .demo-card {
-    border: 1px solid var(--color-border);
-    border-radius: 0.75rem;
-    padding: 1rem;
-    background: var(--color-background);
-  }
-
-  .demo-title {
-    font-size: 0.95rem;
-    font-weight: 600;
-  }
-
-  .demo-desc {
-    color: var(--color-muted-foreground);
-    font-size: 0.8rem;
-    line-height: 1.6;
-    margin-top: 0.35rem;
-    min-height: 2.6rem;
-  }
-
-  .demo-stage {
-    position: relative;
-    margin-top: 0.75rem;
-    height: 11rem;
-    overflow: hidden;
-    border-radius: 0.5rem;
-    background: var(--color-muted);
-  }
-
-  /* 流动的渐变光晕 */
-  .blob {
-    position: absolute;
-    width: 55%;
-    aspect-ratio: 1;
-    border-radius: 50%;
-    filter: blur(28px);
-    opacity: 0.75;
-    will-change: transform;
-  }
-
-  .blob-a {
-    top: -10%;
-    left: -5%;
-    background: var(--color-accent);
-    animation: drift-a 9s ease-in-out infinite alternate;
-  }
-
-  .blob-b {
-    bottom: -20%;
-    right: -5%;
-    background: color-mix(in oklab, var(--color-accent) 45%, var(--color-foreground));
-    animation: drift-b 11s ease-in-out infinite alternate;
-  }
-
-  .blob-c {
-    top: 25%;
-    left: 35%;
-    background: color-mix(in oklab, var(--color-accent) 25%, var(--color-background));
-    animation: drift-c 7s ease-in-out infinite alternate;
-  }
-
-  @keyframes drift-a {
-    to {
-      transform: translate3d(35%, 25%, 0) scale(1.15);
-    }
-  }
-
-  @keyframes drift-b {
-    to {
-      transform: translate3d(-30%, -20%, 0) scale(0.9);
-    }
-  }
-
-  @keyframes drift-c {
-    to {
-      transform: translate3d(-25%, 30%, 0) scale(1.1);
-    }
-  }
-
-  /* 渐变文字 */
-  .gradient-text {
-    font-size: 2.25rem;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    background: linear-gradient(
-      100deg,
-      var(--color-accent),
-      var(--color-foreground),
-      var(--color-accent)
-    );
-    background-size: 250% 100%;
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    animation: shift 6s linear infinite;
-  }
-
-  @keyframes shift {
-    to {
-      background-position: 250% 0;
-    }
-  }
-
-  /* 悬浮卡片 */
-  .hover-card {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.6rem 1rem;
-    border-radius: 0.5rem;
-    border: 1px solid var(--color-border);
-    background: var(--color-background);
-    font-size: 0.85rem;
-    transition:
-      transform 0.25s ease,
-      border-color 0.25s ease,
-      box-shadow 0.25s ease;
-  }
-
-  .hover-card:hover {
-    transform: translateY(-4px);
-    border-color: var(--color-accent);
-    box-shadow: 0 8px 24px color-mix(in oklab, var(--color-accent) 25%, transparent);
-  }
-
-  .hover-card-dot {
-    width: 0.5rem;
-    height: 0.5rem;
-    border-radius: 50%;
-    background: var(--color-accent);
-  }
-
-  /* 呼吸的加载点 */
-  .pulse-dot {
-    width: 0.55rem;
-    height: 0.55rem;
-    border-radius: 50%;
-    background: var(--color-accent);
-    animation: pulse 1.2s ease-in-out infinite;
-  }
-
-  .pulse-dot:nth-child(2) {
-    animation-delay: 0.15s;
-  }
-
-  .pulse-dot:nth-child(3) {
-    animation-delay: 0.3s;
-  }
-
-  @keyframes pulse {
-    0%,
-    100% {
-      transform: scale(0.6);
-      opacity: 0.4;
-    }
-    50% {
-      transform: scale(1);
-      opacity: 1;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .blob,
-    .gradient-text,
-    .pulse-dot {
-      animation: none;
-    }
-
-    .hover-card {
-      transition: none;
-    }
-  }
-</style>
