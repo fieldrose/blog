@@ -8,8 +8,7 @@ export default defineAstroPaperConfig({
     title: "Mimas Blog",
     description: "Mimas 的个人技术博客 —— 前端、框架与工程实践笔记。",
     author: "Mimas",
-    profile: "https://satna.ing",
-    ogImage: "default-og.jpg",
+    profile: "https://github.com/fieldrose",
     lang: "zh",
     timezone: "Asia/Shanghai",
     dir: "ltr",
@@ -26,7 +25,7 @@ export default defineAstroPaperConfig({
     showBackButton: true,
     editPost: {
       enabled: true,
-      url: "https://github.com/fieldrose/astro-paper/edit/main/",
+      url: "https://github.com/fieldrose/blog/edit/main/",
     },
     search: "pagefind",
     // New dynamic features — enabled incrementally as their modules land.

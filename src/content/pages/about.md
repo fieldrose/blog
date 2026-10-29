@@ -1,37 +1,14 @@
 ---
-title: "About"
-description: "A bit about me and this blog."
+title: "关于"
+description: "关于我和这个博客。"
 ---
 
-AstroPaper is a minimal, accessible and SEO-friendly blog theme built with [Astro](https://astro.build/) and [Tailwind CSS](https://tailwindcss.com/).
+你好，我是 Mimas，一名前端开发。
 
-![Astro Paper](@/assets/images/astropaper-og.jpg)
+日常主要使用 Vue 3 与 TypeScript，也使用 Astro、React。关注的方向偏向工程侧：构建链路、老环境兼容、存量项目迁移与前端性能，喜欢把方案落到可验证的细节上，而不停留在选型讨论。
 
-AstroPaper provides a solid foundation for blogs, or even portfolios\_ with full markdown support, built-in dark mode, and a clean layout that works out-of-the-box.
+这个博客用于沉淀工作中的实践记录，内容以项目经历和前端工程为主，偶尔写一些框架与工具的笔记。文章尽量保留当时的约束与取舍过程，而不是只给出结论。
 
-The blog posts in this theme also serve as guides, docs or example articles\_ making AstroPaper a flexible starting point for your next content-driven site.
+博客本身基于 Astro 构建，内容以 Markdown / MDX 维护，搜索使用 Pagefind，评论与登录由 Supabase 提供。
 
-## Features
-
-AstroPaper comes with a set of useful features that make content publishing easy and effective:
-
-- SEO-friendly
-- Fast performance
-- Light & dark mode
-- Highly customizable
-- Organizable blog posts
-- Responsive & accessible
-- Static search with [PageFind](https://pagefind.app/)
-- Automatic social image generation
-
-and so much more.
-
-## Show your support
-
-If you like [AstroPaper](https://github.com/satnaing/astro-paper), consider giving it a star ⭐️.
-
-Found a bug 🐛 or have an improvement ✨ in mind? Feel free to open an [issue](https://github.com/satnaing/astro-paper/issues), submit a [pull request](https://github.com/satnaing/astro-paper/pulls) or start a [discussion](https://github.com/satnaing/astro-paper/discussions).
-
-If you find this theme helpful, you can also [sponsor me on GitHub](https://github.com/sponsors/satnaing) or [buy me a coffee](https://buymeacoffee.com/satnaing) to show your support — every penny counts.
-
-Kyay zuu! 🙏🏼
+代码与项目：<https://github.com/fieldrose>
