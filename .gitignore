@@ -2,6 +2,9 @@
 dist/
 .netlify/
 
+# cache
+.vite-verify-cache/
+
 # generated types
 .astro/
 
