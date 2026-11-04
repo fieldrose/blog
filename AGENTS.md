@@ -23,6 +23,19 @@ This project uses OpenSpec (`openspec/`, schema `spec-driven`, artifacts in Chin
 - New UI strings must be added to both `src/i18n/lang/zh.ts` and `src/i18n/lang/en.ts`
   (and the `UIStrings` type). Every page needs zh + en thin wrapper pages or it 404s.
 
+## Documentation generation (doc-gen)
+
+All document/post generation goes through the `doc-gen` skill or the `/doc <topic>` command
+(`.trae/commands/doc.md`).
+
+- Rule library: `.trae/rules/doc-gen/` (`00-context` … `90-checklist`). The skill only
+  orchestrates — every standard lives in the rule files; update them there and all
+  generations pick it up automatically.
+- Every generated document must open with the project-background block from `00-context.md`
+  and pass the `90-checklist.md` self-check before delivery.
+- Defaults: Simplified Chinese prose; document types are `blog` (content collections) and
+  `tech` (design / research / proposal docs).
+
 ## Documentation
 
 Full documentation: https://docs.astro.build
