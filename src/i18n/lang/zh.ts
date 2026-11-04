@@ -20,7 +20,7 @@ export default {
     sharePostViaEmail: "通过邮箱分享文章",
     tagLabel: "标签",
     backToTop: "返回顶部",
-    goBack: "返回",
+    goBack: "首页",
     editPage: "编辑页面",
     previousPost: "上一篇文章",
     nextPost: "下一篇文章",

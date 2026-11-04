@@ -33,7 +33,7 @@ description: "180 个异构业务以 URL 为边界集成的现实约束下，保
 
 **结果**
 
-- 否决微前端：评估 qiankun 与 SystemJS，二者均要求对子应用做侵入式改造（HTML Entry、构建产物格式等）；在存量系统不可控、改造面过大的前提下成本不可行。
+- 否决微前端：评估 qiankun、SystemJS/single-spa 与 Web Components 三类方案，详见《[主流微前端方案调研](/zh/posts/微前端/主流微前端方案调研/)》。三者均要求对子应用做侵入式改造（HTML Entry、构建产物格式、生命周期钩子等）；在存量系统不可控、改造面过大的前提下成本不可行。
 - 结论：保留 iframe 作为存量集成手段；新业务在 SPA 内以 vue-router 站内切换实现类原生过渡，老业务通过客户端方法打开新 tab 并指定 URL。
 - 一致性：所有跨域（接口与 iframe）由后端转发收敛为同源，规避跨域与鉴权问题；iframe 高度自适应统一由父页面接管——同源下直接观察内部 document（MutationObserver + ResizeObserver，必要时按需轮询兜底），跨域场景才需子页面 `postMessage` 上报。
 - 边界：新版接管入口、角色、卡片渲染与新增业务，存量异构系统继续以 URL 为边界集成。
