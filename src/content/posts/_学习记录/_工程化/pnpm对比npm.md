@@ -2,8 +2,8 @@
 author: Mimas
 pubDatetime: 2026-03-12T11:00:00Z
 modDatetime: 2026-04-08T03:30:00Z
-title: "npm/pnpm简明记录"
-slug: npm&pnpm-note
+title: "pnpm/npm对比"
+slug: pnpm对比npm
 featured: false
 draft: false
 tags:

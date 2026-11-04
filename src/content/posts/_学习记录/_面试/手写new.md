@@ -1,8 +1,8 @@
 ---
 author: Mimas
 pubDatetime: 2024-07-20T14:05:00Z
-title: "手写 new：一个操作符背后的原型链四步曲"
-slug: js-new-operator-handwrite
+title: "手写new：一个操作符背后的原型链四步曲"
+slug: 手写new
 featured: false
 draft: false
 tags:

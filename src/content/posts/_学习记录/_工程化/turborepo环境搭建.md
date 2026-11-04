@@ -3,7 +3,7 @@ author: Mimas
 pubDatetime: 2025-03-12T11:00:00Z
 modDatetime: 2025-05-08T03:30:00Z
 title: "pnpm + Turborepo：一个能打的 Monorepo 是怎么搭起来的"
-slug: pnpm-turborepo-monorepo
+slug: turborepo环境搭建
 featured: false
 draft: false
 tags:

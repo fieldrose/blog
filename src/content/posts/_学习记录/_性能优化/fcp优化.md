@@ -2,7 +2,7 @@
 author: Mimas
 pubDatetime: 2026-04-10T09:50:00Z
 title: "FCP 从 3.2s 到 1.1s：一次前端性能优化的体系化复盘"
-slug: frontend-performance-fcp-lcp
+slug: fcp优化
 featured: true
 draft: false
 tags:
