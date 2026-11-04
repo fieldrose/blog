@@ -33,7 +33,7 @@ export default {
     page: "页数",
   },
   home: {
-    heroSignature: "纵有千般意，难舀一滴水。",
+    heroSignature: "纵有千般意，逝水去无声。",
     socialLinks: "个人仓库",
     heroGreeting: "你好，我是 Mimas",
     heroIntro:
