@@ -88,7 +88,8 @@ export default {
     signUp: "Sign up",
     signOut: "Sign out",
     signOutConfirmTitle: "Sign out?",
-    signOutConfirmBody: "You'll need to sign in again to like posts or publish.",
+    signOutConfirmBody:
+      "You'll need to sign in again to like posts or publish.",
     signOutConfirmAction: "Sign out",
     signOutCancel: "Cancel",
     loginTab: "Sign in",
@@ -145,4 +146,5 @@ export default {
       "A handful of small front-end effects — gradients, motion, hover feedback, no external deps.",
     link: "Demos",
   },
+  dateFormat: "D MMM, YYYY",
 } satisfies UIStrings;

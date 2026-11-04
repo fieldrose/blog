@@ -144,4 +144,5 @@ export default {
     description: "一些纯前端小效果 —— 渐变、动效与悬停反馈，无外部依赖。",
     link: "前端演示",
   },
+  dateFormat: "YYYY年M月D日",
 } satisfies UIStrings;

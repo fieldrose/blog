@@ -146,4 +146,6 @@ export interface UIStrings {
     /** Footer entry / nav link. */
     link: string;
   };
+  /** dayjs 日期格式字符串，用于 Datetime 组件。 */
+  dateFormat: string;
 }
