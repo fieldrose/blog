@@ -12,6 +12,7 @@ import LinkButton from "@/components/LinkButton.astro";
 import { getSortedPosts } from "@/utils/getSortedPosts";
 import { useTranslations } from "@/i18n";
 import config from "@/config";
+import HeroSignature from "@/components/react/HeroSignature.tsx";
 
 const { socials, posts: postsConfig } = config;
 
@@ -47,12 +48,8 @@ const homePath = getRelativeLocaleUrl(locale, "");
         <IconRss class="inline-block size-5 scale-125 rtl:-rotate-90" />
         <span>RSS</span>
       </a> -->
-      <p
-        class="text-muted-foreground text-md -mt-1 mb-1.5 leading-relaxed italic"
-      >
-        {t.home.heroSignature}
-      </p>
-
+      <!-- 签名 -->
+      <HeroSignature signature={t.home.heroSignature} client:load />
       <p>{t.home.heroIntro}</p>
       <p class="mt-2">{t.home.heroFullstack}</p>
       {
