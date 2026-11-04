@@ -25,6 +25,8 @@ import react from "@astrojs/react";
 import netlify from "@astrojs/netlify";
 import basicSsl from "@vitejs/plugin-basic-ssl";
 
+const USE_SSL = process.env.DEV_SSL === "true";
+
 export default defineConfig({
   site: config.site.url,
   // adapter: netlify(),
@@ -76,7 +78,7 @@ export default defineConfig({
     },
   },
   vite: {
-    plugins: [tailwindcss(), basicSsl()],
+    plugins: [tailwindcss(), ...(USE_SSL ? [basicSsl()] : [])],
     // Force Vite to pre-bundle @pagefind/default-ui so the dynamic
     // `await import("@pagefind/default-ui")` in search.astro resolves at dev time.
     // Without this, Vite's scanner misses the Astro <script> dynamic import
