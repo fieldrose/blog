@@ -17,12 +17,14 @@ import config from "@/config";
 //   astro  → 纯 SSR，直接 <Foo />
 //   react  → island，<Foo client:visible />
 //   vue    → island，<Foo client:visible />
+//   native → 直接输出 src/demos/<slug>/Demo.html 原始片段，不引入任何组件
 import BlobGlow from "@/demos/blob-glow/Demo.astro";
 import GradientText from "@/demos/gradient-text/Demo.astro";
 import HoverCard from "@/demos/hover-card/Demo.astro";
 import PulseDots from "@/demos/pulse-dots/Demo.astro";
 import ReactCounter from "@/demos/react-counter/Demo.tsx";
 import VueCounter from "@/demos/vue-counter/Demo.vue";
+import SkeletonVue from "@/demos/skeleton-vue/Demo.vue";
 
 // ---------- slug → 组件 注册表 ----------
 // 仅用于运行时存在性检查；实际渲染必须在模板里显式写。
@@ -33,7 +35,23 @@ const COMPONENT_REGISTRY: Record<string, any> = {
   "pulse-dots": PulseDots,
   "react-counter": ReactCounter,
   "vue-counter": VueCounter,
+  "skeleton-vue": SkeletonVue,
 };
+
+// ---------- native 原始片段 ----------
+// native 类型不经过任何框架组件，直接输出 Demo.html 原文（含可选的 style/script）。
+// 脚本若需在客户端路由切换后重复执行，由 demo 自己在标签上加 data-astro-rerun。
+const nativeHtml = import.meta.glob<string>("@/demos/*/Demo.html", {
+  query: "?raw",
+  import: "default",
+  eager: true,
+});
+const nativeBySlug: Record<string, string> = Object.fromEntries(
+  Object.entries(nativeHtml).map(([path, html]) => [
+    path.split("/").slice(-2, -1)[0]!,
+    html,
+  ]),
+);
 
 // ---------- glob 拿所有 meta ----------
 const metaGlobs = import.meta.glob<{ default: DemoMeta }>(
@@ -72,8 +90,18 @@ const t = useTranslations(locale);
             {/* React/Vue island 需要 client:visible 才能 hydration */}
             {slug === "react-counter" && <ReactCounter client:visible />}
             {slug === "vue-counter" && <VueCounter client:visible />}
-            {!COMPONENT_REGISTRY[slug] && (
+            {slug === "skeleton-vue" && <SkeletonVue client:visible />}
+            {/* native：直接注入原始片段，不引入框架 */}
+            {meta.framework === "native" && nativeBySlug[slug] && (
+              <Fragment set:html={nativeBySlug[slug]} />
+            )}
+            {meta.framework !== "native" && !COMPONENT_REGISTRY[slug] && (
               <p class="text-red-500 text-sm">[demos] 组件未注册：{slug}</p>
+            )}
+            {meta.framework === "native" && !nativeBySlug[slug] && (
+              <p class="text-red-500 text-sm">
+                [demos] 缺少 Demo.html：{slug}
+              </p>
             )}
           </DemoCard>
         ))

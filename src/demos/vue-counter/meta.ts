@@ -1,7 +1,7 @@
 import type { DemoMeta } from "@/types/demo";
 
 export default {
-  order: 6,
+  order: 8,
   framework: "vue",
   title: { zh: "Vue 计数器", en: "Vue counter" },
   description: {

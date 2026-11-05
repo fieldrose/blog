@@ -1,7 +1,7 @@
 import type { DemoMeta } from "@/types/demo";
 
 export default {
-  order: 5,
+  order: 7,
   framework: "react",
   title: { zh: "React 计数器", en: "React counter" },
   description: {

@@ -15,7 +15,21 @@ const description = meta.description[locale];
 
 <section class="demo-card" data-slug={slug}>
   <h2 class="demo-title">{title}</h2>
-  <p class="demo-desc">{description}</p>
+  <div class="demo-desc-wrap" data-demo-desc-wrap>
+    <!-- 描述本身是指令/脚本的点击目标：溢出时点任意位置（含行尾省略号）都能打开气泡 -->
+    <button
+      type="button"
+      class="demo-desc"
+      data-demo-desc
+      aria-expanded="false"
+    >
+      <span class="demo-desc-text" data-demo-desc-text>{description}</span>
+    </button>
+    <!-- 悬浮气泡：与原描述同位置，打开时遮住截断文字并完整展示 -->
+    <div class="demo-desc-bubble" data-demo-desc-bubble role="tooltip" hidden>
+      {description}
+    </div>
+  </div>
   <!-- stage 内部内容由调用方（demos/index.astro）按 framework 注入 -->
   <div
     class="demo-stage"
@@ -38,12 +52,78 @@ const description = meta.description[locale];
     font-weight: 600;
   }
 
+  .demo-desc-wrap {
+    position: relative;
+    margin-top: 0.35rem;
+  }
+
+  /* 还原成纯文本外观的按钮，整块描述区域都是点击目标 */
   .demo-desc {
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: none;
+    text-align: left;
+    font: inherit;
+    color: inherit;
+  }
+
+  .demo-desc-wrap[data-overflow="true"] .demo-desc {
+    cursor: pointer;
+  }
+
+  .demo-desc:focus-visible {
+    border-radius: 0.25rem;
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  /* 固定三行高度，让所有卡片高度一致；超出部分由浏览器行尾省略号承接 */
+  .demo-desc-text {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+    height: calc(0.8rem * 1.6 * 3);
     color: var(--color-muted-foreground);
     font-size: 0.8rem;
     line-height: 1.6;
-    margin-top: 0.35rem;
-    min-height: 2.6rem;
+  }
+
+  /* 仅用于测量完整高度，不参与展示 */
+  .demo-desc-text-measure {
+    display: block;
+    height: auto;
+    overflow: visible;
+  }
+
+  /* 打开气泡时隐藏截断文字，由气泡完整呈现 */
+  .demo-desc-wrap[data-open="true"] .demo-desc {
+    visibility: hidden;
+  }
+
+  /* 气泡覆盖描述区并向下悬浮，不占文档流、不撑高卡片 */
+  .demo-desc-bubble {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 30;
+    min-height: calc(0.8rem * 1.6 * 3);
+    padding: 0.4rem 0.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    background: var(--color-background);
+    box-shadow: 0 8px 24px rgb(0 0 0 / 0.12);
+    color: var(--color-foreground);
+    font-size: 0.8rem;
+    line-height: 1.6;
+    cursor: pointer;
+  }
+
+  .demo-desc-bubble[hidden] {
+    display: none;
   }
 
   .demo-stage {
@@ -55,3 +135,58 @@ const description = meta.description[locale];
     background: var(--color-muted);
   }
 </style>
+
+<script>
+  // 描述超过三行时，点击描述区（含行尾省略号）在原位置弹出悬浮气泡完整展示文字
+  document
+    .querySelectorAll<HTMLElement>("[data-demo-desc-wrap]")
+    .forEach(wrap => {
+      const trigger = wrap.querySelector<HTMLButtonElement>("[data-demo-desc]");
+      const text = wrap.querySelector<HTMLElement>("[data-demo-desc-text]");
+      const bubble = wrap.querySelector<HTMLElement>("[data-demo-desc-bubble]");
+      if (!trigger || !text || !bubble || wrap.dataset.bound === "1") return;
+      wrap.dataset.bound = "1";
+
+      // 临时取消截断量出完整高度，再与固定三行高度比较
+      const syncOverflow = () => {
+        const clamped = text.getBoundingClientRect().height;
+        text.classList.add("demo-desc-text-measure");
+        const full = text.getBoundingClientRect().height;
+        text.classList.remove("demo-desc-text-measure");
+        wrap.dataset.overflow = String(full > clamped + 1);
+      };
+
+      const setOpen = (open: boolean) => {
+        wrap.dataset.open = String(open);
+        bubble.hidden = !open;
+        trigger.setAttribute("aria-expanded", String(open));
+      };
+
+      syncOverflow();
+      // 字体加载完成后行高可能变化，需要重新判断是否溢出
+      document.fonts?.ready.then(syncOverflow);
+      window.addEventListener("resize", syncOverflow);
+
+      trigger.addEventListener("click", () => {
+        // 未溢出时描述不可展开
+        if (wrap.dataset.overflow !== "true") return;
+        setOpen(wrap.dataset.open !== "true");
+      });
+
+      // 点击气泡本身即关闭
+      bubble.addEventListener("click", () => setOpen(false));
+
+      document.addEventListener("click", event => {
+        if (
+          wrap.dataset.open === "true" &&
+          !wrap.contains(event.target as Node)
+        ) {
+          setOpen(false);
+        }
+      });
+      document.addEventListener("keydown", event => {
+        if (event.key === "Escape" && wrap.dataset.open === "true")
+          setOpen(false);
+      });
+    });
+</script>
