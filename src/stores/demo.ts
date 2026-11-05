@@ -1,10 +1,6 @@
 import { atom } from "nanostores";
 
-/**
- * Framework-agnostic shared UI state for the framework-islands demo article.
- * React (`@nanostores/react`) and Vue (`@nanostores/vue`) islands subscribe
- * to the same module-level atom, proving cross-framework state sharing.
- */
+// 拟一个计数器状态
 export const counterAtom = atom(0);
 
 export function incrementCounter() {
