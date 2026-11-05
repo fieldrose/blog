@@ -134,6 +134,8 @@ export default {
     lineComfortable: "Comfortable",
     lineLoose: "Loose",
     lineExtraLoose: "Extra loose",
+    animationTitle: "Animation settings",
+    simpleAnimation: "Simple animation",
   },
   notFound: {
     title: "404 Not Found",

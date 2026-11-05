@@ -133,6 +133,8 @@ export interface UIStrings {
     lineComfortable: string;
     lineLoose: string;
     lineExtraLoose: string;
+    animationTitle: string;
+    simpleAnimation: string;
   };
   notFound: {
     title: string;

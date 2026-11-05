@@ -84,6 +84,7 @@ function stepFont(delta: number) {
 
 <template>
   <div :class="props.inline ? '' : 'relative inline-flex size-8 items-center'">
+    <!-- 阅读设置触发按钮 -->
     <button
       v-if="!props.inline"
       ref="triggerRef"
@@ -114,7 +115,7 @@ function stepFont(delta: number) {
         />
       </svg>
     </button>
-
+    <!-- 设置面板 -->
     <div
       v-if="props.inline || isOpen"
       ref="panelRef"
@@ -127,6 +128,7 @@ function stepFont(delta: number) {
           : 'bg-background border-border absolute top-full right-0 z-50 mt-2 w-64 rounded-lg border p-4 shadow-lg',
       ]"
     >
+      <!-- 阅读设置面板标题 -->
       <div class="mb-4 flex items-center justify-between">
         <span class="text-sm font-semibold">{{ labels.panelTitle }}</span>
         <button
@@ -138,10 +140,10 @@ function stepFont(delta: number) {
         </button>
       </div>
 
-      <!-- tips -->
+      <!-- tips 提示信息 -->
       <p class="text-muted-foreground mb-4 text-sm">{{ labels.tip }}</p>
 
-      <!-- Font size -->
+      <!-- Font size 字体大小 -->
       <fieldset class="mb-4">
         <legend class="mb-2 text-sm">{{ labels.fontSize }}</legend>
         <div class="flex items-center gap-2">
@@ -177,7 +179,7 @@ function stepFont(delta: number) {
         </div>
       </fieldset>
 
-      <!-- Line height -->
+      <!-- Line height 行高 -->
       <fieldset class="mb-4">
         <legend class="mb-2 text-sm">{{ labels.lineHeight }}</legend>
         <div class="flex flex-wrap gap-2">
@@ -203,7 +205,7 @@ function stepFont(delta: number) {
         </div>
       </fieldset>
 
-      <!-- Content width -->
+      <!-- Content width 内容宽度 -->
       <fieldset>
         <legend class="mb-2 text-sm">{{ labels.contentWidth }}</legend>
         <div class="flex gap-2">
@@ -228,6 +230,29 @@ function stepFont(delta: number) {
           </label>
         </div>
       </fieldset>
+
+      <!-- 动画设置 -->
+      <div class="mt-4 mb-4">
+        <span class="text-sm font-semibold">{{ labels.animationTitle }}</span>
+      </div>
+
+      <!-- 简略动画效果 -->
+      <label class="flex items-center gap-2 text-xs">
+        <input
+          type="checkbox"
+          name="reader-simple-animation"
+          :checked="
+            hydrated ? store.simpleAnimation : READING_DEFAULTS.simpleAnimation
+          "
+          class="accent-accent"
+          @change="
+            store.setSimpleAnimation(
+              ($event.target as HTMLInputElement).checked
+            )
+          "
+        />
+        <span>{{ labels.simpleAnimation }}</span>
+      </label>
     </div>
   </div>
 </template>

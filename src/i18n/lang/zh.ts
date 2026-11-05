@@ -133,6 +133,8 @@ export default {
     lineComfortable: "舒适",
     lineLoose: "宽松",
     lineExtraLoose: "超宽",
+    animationTitle: "动画设置",
+    simpleAnimation: "简略动画效果",
   },
   notFound: {
     title: "404 页面不存在",

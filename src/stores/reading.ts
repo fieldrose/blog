@@ -1,13 +1,17 @@
 import { defineStore } from "pinia";
 import { watchEffect } from "vue";
 
-/** Persisted shape version; bump when the stored object changes incompatibly. */
+// 读取设置
 const STORAGE_KEY = "reading-settings";
 const STORAGE_VERSION = 1;
 
-/** Whitelist of fields persisted to localStorage. */
-const PERSIST_FIELDS = ["fontScale", "lineHeight", "contentWidth"] as const;
-type PersistField = (typeof PERSIST_FIELDS)[number];
+// 保存设置
+const PERSIST_FIELDS = [
+  "fontScale",
+  "lineHeight",
+  "contentWidth",
+  "simpleAnimation",
+] as const;
 
 export type ContentWidth = "narrow" | "normal" | "wide";
 
@@ -28,13 +32,14 @@ export const CONTENT_WIDTH_OPTIONS: ContentWidth[] = [
   "normal",
   "wide",
 ];
-
+// 默认值
 const DEFAULTS = {
   fontScale: 1,
   lineHeight: 1.75,
   contentWidth: "normal" as ContentWidth,
+  simpleAnimation: false,
 };
-/** SSR baseline used to keep the first client render markup identical. */
+
 export const READING_DEFAULTS = DEFAULTS;
 
 function clampFontScale(value: number): number {
@@ -71,6 +76,8 @@ function readPersisted(): Partial<typeof DEFAULTS> | null {
       out.lineHeight = parsed.lineHeight;
     if (isValidContentWidth(parsed.contentWidth))
       out.contentWidth = parsed.contentWidth;
+    if (typeof parsed.simpleAnimation === "boolean")
+      out.simpleAnimation = parsed.simpleAnimation;
     return out;
   } catch {
     return null;
@@ -100,18 +107,19 @@ export const useReadingStore = defineStore("reading", {
     setContentWidth(value: ContentWidth) {
       if (isValidContentWidth(value)) this.contentWidth = value;
     },
+    setSimpleAnimation(value: boolean) {
+      this.simpleAnimation = value;
+    },
     reset() {
       this.fontScale = DEFAULTS.fontScale;
       this.lineHeight = DEFAULTS.lineHeight;
       this.contentWidth = DEFAULTS.contentWidth;
+      this.simpleAnimation = DEFAULTS.simpleAnimation;
     },
   },
 });
 
-/**
- * Keep <html> CSS variables in sync with the store. Runs once per store
- * instance and cleans up on app unmount.
- */
+// 同步阅读设置的 CSS 变量
 export function syncReadingCssVariables(
   store: ReturnType<typeof useReadingStore>
 ) {
@@ -120,14 +128,12 @@ export function syncReadingCssVariables(
       fontScale: store.fontScale,
       lineHeight: store.lineHeight,
       contentWidth: store.contentWidth,
+      simpleAnimation: store.simpleAnimation,
     });
   });
 }
 
-/**
- * Pinia plugin: persist the reading store to localStorage on every change,
- * and seed it on init. Scoped to the "reading" store only.
- */
+// pinia 插件：持久化存储
 export function readingPersistPlugin({
   store,
 }: {
@@ -145,7 +151,7 @@ export function readingPersistPlugin({
       }
       localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
     } catch {
-      /* storage full / disabled — ignore */
+      // 忽略存储错误
     }
   });
 }
