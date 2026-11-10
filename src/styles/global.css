@@ -37,3 +37,126 @@
 :target {
   scroll-margin-block: 1rem;
 }
+
+/* ===== Mermaid 图表主题覆盖 ===== */
+/* Mermaid base 主题把颜色硬编码在 SVG 内部的 <style> 块里，
+   以 id 选择器（#mermaid-0）作用于节点、连线、文字等元素；
+   这里用 CSS 变量覆盖关键 token，让明暗主题能自动切换。 */
+.app-prose svg[id^="mermaid-"] {
+  font-family: var(--font-app), system-ui, sans-serif !important;
+  fill: var(--foreground) !important;
+}
+
+/* 箭头头部（marker 三角形，需要 fill） */
+.app-prose svg[id^="mermaid-"] .marker,
+.app-prose svg[id^="mermaid-"] .marker.cross,
+.app-prose svg[id^="mermaid-"] .arrowheadPath,
+.app-prose svg[id^="mermaid-"] .root .anchor path {
+  fill: var(--foreground) !important;
+  stroke: var(--foreground) !important;
+}
+
+/* 连线（仅描边路径，必须保持 fill: none，否则会崩成实心块） */
+.app-prose svg[id^="mermaid-"] .flowchart-link,
+.app-prose svg[id^="mermaid-"] .edgePaths .path {
+  fill: none !important;
+  stroke: var(--foreground) !important;
+}
+
+/* 文字与标签 */
+.app-prose svg[id^="mermaid-"] .label,
+.app-prose svg[id^="mermaid-"] .label text,
+.app-prose svg[id^="mermaid-"] .label span,
+.app-prose svg[id^="mermaid-"] .cluster-label text,
+.app-prose svg[id^="mermaid-"] .cluster-label span,
+.app-prose svg[id^="mermaid-"] .flowchartTitleText {
+  fill: var(--foreground) !important;
+  color: var(--foreground) !important;
+}
+
+/* 节点形状 */
+.app-prose svg[id^="mermaid-"] .node rect,
+.app-prose svg[id^="mermaid-"] .node circle,
+.app-prose svg[id^="mermaid-"] .node ellipse,
+.app-prose svg[id^="mermaid-"] .node polygon,
+.app-prose svg[id^="mermaid-"] .node path {
+  fill: var(--muted) !important;
+  stroke: var(--border) !important;
+}
+
+/* 连线标签背景 */
+.app-prose svg[id^="mermaid-"] .edgeLabel,
+.app-prose svg[id^="mermaid-"] .edgeLabel p,
+.app-prose svg[id^="mermaid-"] .edgeLabel rect {
+  background-color: var(--background) !important;
+  fill: var(--background) !important;
+}
+
+/* 子图（cluster）容器 */
+.app-prose svg[id^="mermaid-"] .cluster rect {
+  fill: transparent !important;
+  stroke: var(--border) !important;
+}
+
+/* SVG 页面背景（Mermaid 有时会加一层淡底） */
+.app-prose svg[id^="mermaid-"] .background rect,
+.app-prose svg[id^="mermaid-"] rect.background {
+  fill: transparent !important;
+}
+
+/* 图片 / 图标形状，继承节点的配色 */
+.app-prose svg[id^="mermaid-"] .icon-shape,
+.app-prose svg[id^="mermaid-"] .image-shape,
+.app-prose svg[id^="mermaid-"] .icon-shape p,
+.app-prose svg[id^="mermaid-"] .image-shape p,
+.app-prose svg[id^="mermaid-"] .icon-shape .label rect,
+.app-prose svg[id^="mermaid-"] .image-shape .label rect {
+  background-color: var(--muted) !important;
+  fill: var(--muted) !important;
+}
+
+/* 图表整体：可点击放大，光标提示 */
+.app-prose svg[id^="mermaid-"] {
+  cursor: zoom-in;
+}
+
+/* ===== Mermaid 放大蒙层 ===== */
+.mermaid-zoom-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 24px;
+  opacity: 0;
+  transition: opacity 280ms ease-out;
+  cursor: zoom-out;
+}
+
+.mermaid-zoom-overlay--show {
+  opacity: 1;
+}
+
+.mermaid-zoom-svg {
+  /* 初始略小 + 透明，show 时过渡到充满视口 */
+  max-width: 60vw;
+  max-height: 60vh;
+  transform: scale(0.85);
+  opacity: 0;
+  transition:
+    max-width 320ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    max-height 320ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    transform 320ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    opacity 280ms ease-out;
+  background: var(--background);
+  border-radius: 6px;
+}
+
+.mermaid-zoom-overlay--show .mermaid-zoom-svg {
+  max-width: 92vw;
+  max-height: 92vh;
+  transform: scale(1);
+  opacity: 1;
+}

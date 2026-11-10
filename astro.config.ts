@@ -11,6 +11,7 @@ import { unified } from "@astrojs/markdown-remark";
 import remarkToc from "remark-toc";
 import remarkCollapse from "remark-collapse";
 import rehypeCallouts from "rehype-callouts";
+import rehypeMermaid from "rehype-mermaid";
 import {
   transformerNotationDiff,
   transformerNotationHighlight,
@@ -58,12 +59,27 @@ export default defineConfig({
     },
   },
   markdown: {
+    syntaxHighlight: {
+      type: "shiki",
+      excludeLangs: ["mermaid"],
+    },
     processor: unified({
       remarkPlugins: [
         remarkToc,
         [remarkCollapse, { test: "Table of contents" }],
       ],
-      rehypePlugins: [rehypeCallouts],
+      rehypePlugins: [
+        rehypeCallouts,
+        [
+          rehypeMermaid,
+          {
+            strategy: "inline-svg",
+            mermaidConfig: {
+              theme: "base",
+            },
+          },
+        ],
+      ],
     }),
     shikiConfig: {
       themes: { light: "min-light", dark: "night-owl" },
