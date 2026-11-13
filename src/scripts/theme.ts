@@ -67,3 +67,5 @@ window
     themeValue = matches ? DARK : LIGHT;
     persist();
   });
+
+export {};
