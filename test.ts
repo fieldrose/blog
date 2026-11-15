@@ -1,20 +1,24 @@
-type Test = {
-  (a: number): number;
-  isCalled: boolean;
-  //...
-};
+// 类型侧：通过声明合并给数组补上 myFilter 的方法签名
+interface Array<T> {
+  myFilter(f: (item: T, index: number, array: T[]) => boolean): T[]
+}
 
-const test: Test = a => {
-  if (test.isCalled) {
-    return a;
+// 实现侧：挂到原型上，原来的 array 参数改由 this 接收
+Array.prototype.myFilter = function <T>(
+  this: T[],
+  f: (item: T, index: number, array: T[]) => boolean
+): T[] {
+  const result: T[] = []
+  for (let i = 0; i < this.length; i++) {
+    if (f(this[i], i, this)) {
+      result.push(this[i])
+    }
   }
-  test.isCalled = true;
-  return a;
-};
-test.isCalled = false;
+  return result
+}
 
-console.log(test.isCalled); // false
-console.log(test(1)); // 1
-console.log(test.isCalled); // true（第一次调用后变成 true）
-console.log(test(2)); // 2
-console.log(test.isCalled); // true
+const result = [1, 2, 3, 4, 5]
+  .myFilter(_ => _ < 3)
+  .map(_ => _ * 10)
+
+console.log(result) // [10, 20]
