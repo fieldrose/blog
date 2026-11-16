@@ -1,6 +1,7 @@
 # build output
 dist/
 .netlify/
+.wrangler/
 
 # cache
 .vite-verify-cache/
@@ -20,6 +21,7 @@ pnpm-debug.log*
 # environment variables
 .env
 .env.local
+.dev.vars
 .env.*.local
 .env.production
 

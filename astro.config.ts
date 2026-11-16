@@ -24,20 +24,27 @@ import { localeCodes } from "./src/i18n/locales";
 import vue from "@astrojs/vue";
 import react from "@astrojs/react";
 import netlify from "@astrojs/netlify";
+import cloudflare from "@astrojs/cloudflare";
 import basicSsl from "@vitejs/plugin-basic-ssl";
 
 const USE_SSL = process.env.DEV_SSL === "true";
+const USE_CLOUDFLARE = process.env.ASTRO_ADAPTER === "cloudflare";
 
 export default defineConfig({
   site: config.site.url,
-  // adapter: netlify(),
-  adapter: netlify({
-    devFeatures: {
-      images: true,
-      environmentVariables: false,
-      edgeFunctions: false,
-    },
-  }),
+  adapter: USE_CLOUDFLARE
+    ? cloudflare({
+        imageService: "compile",
+        prerenderEnvironment: "node",
+      })
+    : netlify({
+        devFeatures: {
+          images: true,
+          environmentVariables: false,
+          edgeFunctions: false,
+        },
+      }),
+  ...(USE_CLOUDFLARE ? { session: false } : {}),
   integrations: [
     mdx(),
     sitemap({

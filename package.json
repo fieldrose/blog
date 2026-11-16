@@ -18,6 +18,7 @@
     "dev": "astro dev",
     "dev:ssl": "DEV_SSL=true astro dev",
     "build": "astro check && astro build && pagefind --site dist && shx cp -r dist/pagefind public/",
+    "build:cloudflare": "cross-env-shell ASTRO_ADAPTER=cloudflare \"astro check && astro build && pagefind --site dist/client && shx cp cloudflare/_redirects dist/client/_redirects\"",
     "preview": "astro preview",
     "sync": "astro sync",
     "astro": "astro",
@@ -26,6 +27,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@astrojs/cloudflare": "14.3.4",
     "@astrojs/markdown-remark": "^7.3.1",
     "@astrojs/mdx": "^8.0.1",
     "@astrojs/netlify": "^8.2.6",
@@ -71,6 +73,7 @@
     "@types/react-dom": "^19.3.0",
     "@typescript-eslint/parser": "^8.62.0",
     "@vitejs/plugin-basic-ssl": "^2.3.0",
+    "cross-env": "^10.1.0",
     "eslint": "^10.6.0",
     "eslint-plugin-astro": "^2.1.1",
     "pagefind": "^1.5.2",
@@ -79,7 +82,8 @@
     "prettier-plugin-astro": "0.14.1",
     "prettier-plugin-tailwindcss": "^0.8.0",
     "shx": "^0.4.0",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "wrangler": "^4.162.0"
   },
   "packageManager": "pnpm@12.11.2+sha512.25a51652a196785af5f28bda6dfe8dc582ebefa4ac1d180221ce1390231c5fb76637822ea4b6e4633ce74acdcb0a77f725af11bad38177fdeddaee818a955cb9"
 }
