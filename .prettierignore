@@ -12,6 +12,7 @@
 !eslint.config.js
 !README.md
 !.vscode
+!/test.ts
 
 # Ignore MDX files
 *.mdx
