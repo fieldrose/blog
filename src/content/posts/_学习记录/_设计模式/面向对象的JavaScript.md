@@ -97,7 +97,7 @@ class Dog extends Animal {
   }
 }
 
-const chorus = (animals) => animals.map((animal) => animal.speak());
+const chorus = animals => animals.map(animal => animal.speak());
 ```
 
 - 子类覆写父类方法，`chorus` 只依赖父类声明的接口；JavaScript 没有 `abstract`，基类方法抛错是常见替代，继承带来的强耦合在模式实现中往往不必要。
@@ -131,13 +131,13 @@ function getSpeed(vehicle) {
   }
 }
 
-const getSpeed2 = (vehicle) => vehicle.speed();
+const getSpeed2 = vehicle => vehicle.speed();
 ```
 
-| 方案 | 新增类型时的改动 | 分支数量 | 类型判断位置 |
-| --- | --- | --- | --- |
-| `switch` 分发 | 修改 `getSpeed` | 随类型线性增长 | 集中在分发函数 |
-| 多态 | 新增一个对象或子类 | 无 | 不存在 |
+| 方案          | 新增类型时的改动   | 分支数量       | 类型判断位置   |
+| ------------- | ------------------ | -------------- | -------------- |
+| `switch` 分发 | 修改 `getSpeed`    | 随类型线性增长 | 集中在分发函数 |
+| 多态          | 新增一个对象或子类 | 无             | 不存在         |
 
 - 类型固定且只有两三种时 `switch` 的可读性更好；类型持续增加、各分支逻辑较长时，多态把变化点局部化。
 
@@ -165,13 +165,13 @@ function createCounter() {
 
 ```js
 function createUploader(endpoint) {
-  const validate = (file) => file.size > 0 && file.size < 10 * 1024 * 1024;
+  const validate = file => file.size > 0 && file.size < 10 * 1024 * 1024;
   return {
     async upload(file) {
       if (!validate(file)) throw new Error("invalid file");
       const body = new FormData();
       body.append("file", file);
-      return fetch(endpoint, { method: "POST", body }).then((res) => res.json());
+      return fetch(endpoint, { method: "POST", body }).then(res => res.json());
     },
   };
 }
@@ -190,7 +190,7 @@ interface Cache {
 export function createCache(): Cache {
   const store = new Map<string, unknown>();
   return {
-    get: (key) => store.get(key),
+    get: key => store.get(key),
     set: (key, value) => void store.set(key, value),
   };
 }
@@ -202,28 +202,28 @@ export function createCache(): Cache {
 
 封装变化指识别最可能改动的部分，把它隔离到独立单元，其余代码只依赖稳定的抽象。
 
-| 变化点 | 隔离方式 | 对应模式 |
-| --- | --- | --- |
+| 变化点   | 隔离方式             | 对应模式 |
+| -------- | -------------------- | -------- |
 | 算法实现 | 抽出可替换的策略对象 | 策略模式 |
-| 创建过程 | 工厂函数或工厂方法 | 工厂模式 |
+| 创建过程 | 工厂函数或工厂方法   | 工厂模式 |
 | 访问开销 | 代理层推迟或合并调用 | 代理模式 |
 
 - 判断标准是「改动是否会波及调用方」：会波及的部分需要隔离，不会波及的就地实现即可；过度抽象会让调用链变长。
 
 #### 3.5 四种私有手段
 
-| 手段 | 隔离强度 | 运行时开销 | 适用场景 |
-| --- | --- | --- | --- |
-| 闭包 | 强，词法不可达 | 常驻变量环境 | 工厂函数、模块模式 |
-| `Symbol` | 弱，仅规避命名冲突 | 可忽略 | 内部标记、避免覆盖 |
-| `#` 私有字段 | 强，语法级限制 | 可忽略 | `class` 内部状态 |
-| 模块作用域 | 强，未导出即不可见 | 无 | 文件级单例与状态 |
+| 手段         | 隔离强度           | 运行时开销   | 适用场景           |
+| ------------ | ------------------ | ------------ | ------------------ |
+| 闭包         | 强，词法不可达     | 常驻变量环境 | 工厂函数、模块模式 |
+| `Symbol`     | 弱，仅规避命名冲突 | 可忽略       | 内部标记、避免覆盖 |
+| `#` 私有字段 | 强，语法级限制     | 可忽略       | `class` 内部状态   |
+| 模块作用域   | 强，未导出即不可见 | 无           | 文件级单例与状态   |
 
 ```js
 // Closure
 function createWallet() {
   let balance = 0;
-  return { deposit: (n) => (balance += n), getBalance: () => balance };
+  return { deposit: n => (balance += n), getBalance: () => balance };
 }
 
 // Symbol: skipped by Object.keys, reachable via Reflect.ownKeys
@@ -240,7 +240,7 @@ class Account {
 
 // Module scope: unexported bindings stay private
 const state = new Map();
-export const get = (key) => state.get(key);
+export const get = key => state.get(key);
 export const set = (key, value) => state.set(key, value);
 ```
 
