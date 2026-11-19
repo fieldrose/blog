@@ -4,6 +4,8 @@ export default {
   nav: {
     home: "首页",
     posts: "文章",
+    series: "专栏",
+    categories: "分类",
     tags: "标签",
     about: "关于",
     archives: "归档",
@@ -43,6 +45,24 @@ export default {
     featured: "推荐文章",
     recentPosts: "最新文章",
     allPosts: "所有文章",
+    series: "专栏",
+    allSeries: "全部专栏",
+    topics: "专题",
+    allTopics: "全部专题",
+  },
+  topics: {
+    count: "{{count}} 篇",
+    empty: "暂无专题",
+  },
+  tags: {
+    theme: "主题",
+    tech: "技术",
+    other: "其他",
+    count: "{{count}} 篇",
+  },
+  categories: {
+    all: "全部",
+    count: "共 {{count}} 篇",
   },
   footer: {
     copyright: "版权",
@@ -57,6 +77,16 @@ export default {
 
     postsTitle: "文章",
     postsDesc: "所有文章",
+
+    seriesTitle: "专栏",
+    seriesDesc: "按主题组织的系列文章",
+    seriesCount: "共 {{count}} 篇",
+
+    categoriesTitle: "分类",
+    categoriesDesc: "按知识域组织的文章分类",
+
+    topicsTitle: "专题",
+    topicsDesc: "跨专栏的阅读路径",
 
     archivesTitle: "归档",
     archivesDesc: "所有归档的文章",

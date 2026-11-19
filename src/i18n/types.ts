@@ -2,6 +2,8 @@ export interface UIStrings {
   nav: {
     home: string;
     posts: string;
+    series: string;
+    categories: string;
     tags: string;
     about: string;
     archives: string;
@@ -39,6 +41,29 @@ export interface UIStrings {
     featured: string;
     recentPosts: string;
     allPosts: string;
+    series: string;
+    allSeries: string;
+    topics: string;
+    allTopics: string;
+  };
+  topics: {
+    /** 专题条目数，`{{count}}` 为占位符。 */
+    count: string;
+    empty: string;
+  };
+  tags: {
+    /** 标签页分组标题。 */
+    theme: string;
+    tech: string;
+    other: string;
+    /** 标签旁的文章数，`{{count}}` 为占位符。 */
+    count: string;
+  };
+  categories: {
+    /** 文章列表芯片行里的「全部」。 */
+    all: string;
+    /** 分类的文章数，`{{count}}` 为占位符。 */
+    count: string;
   };
   footer: {
     copyright: string;
@@ -53,6 +78,17 @@ export interface UIStrings {
 
     postsTitle: string;
     postsDesc: string;
+
+    seriesTitle: string;
+    seriesDesc: string;
+    /** 专栏文章数，`{{count}}` 为占位符。 */
+    seriesCount: string;
+
+    categoriesTitle: string;
+    categoriesDesc: string;
+
+    topicsTitle: string;
+    topicsDesc: string;
 
     archivesTitle: string;
     archivesDesc: string;

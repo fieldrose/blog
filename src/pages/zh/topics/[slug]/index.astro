@@ -1,0 +1,7 @@
+---
+export { getStaticPaths } from "@/pages/_shared/topics/[slug]/index.astro";
+import Parent from "@/pages/_shared/topics/[slug]/index.astro";
+const props = Astro.props;
+---
+
+<Parent {...props} />

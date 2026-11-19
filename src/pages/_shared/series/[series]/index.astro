@@ -7,6 +7,7 @@ import Main from "@/components/Main.astro";
 import Breadcrumb from "@/components/Breadcrumb.astro";
 import Card from "@/components/Card.astro";
 import Footer from "@/components/Footer.astro";
+import { tplStr, useTranslations } from "@/i18n";
 import config from "@/config";
 
 export async function getStaticPaths({}: GetStaticPathsOptions) {
@@ -24,6 +25,7 @@ export async function getStaticPaths({}: GetStaticPathsOptions) {
 
 const { seriesName } = Astro.props;
 const locale = Astro.currentLocale ?? config.site.lang;
+const t = useTranslations(locale);
 
 const posts = await getCollection("posts", ({ data }) => !data.draft);
 const seriesPosts = posts
@@ -35,15 +37,12 @@ const seriesPosts = posts
   <Header />
   <Breadcrumb />
 
-  <Main pageTitle={seriesName} pageDesc={`共 ${seriesPosts.length} 篇文章`}>
-    <ol class="list-decimal space-y-6 pl-6">
-      {
-        seriesPosts.map(data => (
-          <li class="[&>article]:!mb-0">
-            <Card {...data} />
-          </li>
-        ))
-      }
+  <Main
+    pageTitle={seriesName}
+    pageDesc={tplStr(t.pages.seriesCount, { count: seriesPosts.length })}
+  >
+    <ol class="list-decimal pl-6">
+      {seriesPosts.map(data => <Card {...data} />)}
     </ol>
   </Main>
 

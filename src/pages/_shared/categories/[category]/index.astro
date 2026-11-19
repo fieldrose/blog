@@ -1,0 +1,80 @@
+---
+import type { GetStaticPaths } from "astro";
+import { getCollection } from "astro:content";
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Breadcrumb from "@/components/Breadcrumb.astro";
+import Main from "@/components/Main.astro";
+import Card from "@/components/Card.astro";
+import Footer from "@/components/Footer.astro";
+import { getCategoryTree, parseCategoryFromPath } from "@/utils/getCategories";
+import { getSortedPosts } from "@/utils/getSortedPosts";
+import { categoryMeta } from "@/data/categories";
+import { tplStr, useTranslations } from "@/i18n";
+import config from "@/config";
+
+export const getStaticPaths = (async () => {
+  const posts = await getCollection("posts");
+  return getCategoryTree(posts).map(category => ({
+    params: { category: category.slug },
+    props: { categoryName: category.name },
+  }));
+}) satisfies GetStaticPaths;
+
+const { categoryName } = Astro.props;
+
+const locale = Astro.currentLocale ?? config.site.lang;
+const t = useTranslations(locale);
+
+const posts = await getCollection("posts");
+const categoryPosts = getSortedPosts(posts).filter(
+  post => parseCategoryFromPath(post.filePath).category === categoryName
+);
+
+// 无二级分类的文章直接置顶，其余按二级分类分组
+const ungrouped: typeof categoryPosts = [];
+const groups = new Map<string, typeof categoryPosts>();
+for (const post of categoryPosts) {
+  const { subcategory } = parseCategoryFromPath(post.filePath);
+  if (!subcategory) {
+    ungrouped.push(post);
+    continue;
+  }
+  groups.set(subcategory, [...(groups.get(subcategory) ?? []), post]);
+}
+
+const countLabel = tplStr(t.categories.count, { count: categoryPosts.length });
+const description = categoryMeta[categoryName]?.description;
+---
+
+<Layout title={`${categoryName} | ${config.site.title}`}>
+  <Header />
+  <Breadcrumb />
+
+  <Main
+    pageTitle={categoryName}
+    pageDesc={description ? `${countLabel} · ${description}` : countLabel}
+  >
+    {ungrouped.length > 0 && <ul>{ungrouped.map(data => <Card {...data} />)}</ul>}
+
+    {
+      Array.from(groups.entries()).map(([name, groupPosts]) => (
+        <section class="mt-8">
+          <h2 class="flex items-baseline gap-x-2 text-xl font-semibold tracking-wide">
+            {name}
+            <span class="text-muted-foreground text-sm font-normal">
+              {tplStr(t.categories.count, { count: groupPosts.length })}
+            </span>
+          </h2>
+          <ul>
+            {groupPosts.map(data => (
+              <Card {...data} />
+            ))}
+          </ul>
+        </section>
+      ))
+    }
+  </Main>
+
+  <Footer />
+</Layout>

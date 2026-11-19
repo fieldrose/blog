@@ -3,6 +3,8 @@ import { getRelativeLocaleUrl } from "astro:i18n";
 import IconUnderline from "@/assets/icons/IconUnderline.svg";
 import IconMenuDeep from "@/assets/icons/IconMenuDeep.svg";
 import IconArchive from "@/assets/icons/IconArchive.svg";
+import IconFolder from "@/assets/icons/IconFolder.svg";
+import IconBook2 from "@/assets/icons/IconBook2.svg";
 import IconSunHigh from "@/assets/icons/IconSunHigh.svg";
 import IconSearch from "@/assets/icons/IconSearch.svg";
 import IconMoon from "@/assets/icons/IconMoon.svg";
@@ -70,8 +72,8 @@ const isActive = (path: string) => {
       {site.title}
     </a>
 
-    <!-- 桌面端水平导航 -->
-    <nav class="ms-auto hidden sm:flex sm:items-center sm:gap-x-4">
+    <!-- 桌面端水平导航（4 个文本链接 + 图标区，md 以下收起为抽屉） -->
+    <nav class="ms-auto hidden md:flex md:items-center md:gap-x-2">
       <a
         href={getRelativeLocaleUrl(locale, "posts")}
         class:list={[
@@ -80,6 +82,15 @@ const isActive = (path: string) => {
         ]}
       >
         {t.nav.posts}
+      </a>
+      <a
+        href={getRelativeLocaleUrl(locale, "series")}
+        class:list={[
+          "hover:text-accent block px-2 py-1 font-medium",
+          { "active-nav": isActive("/series") },
+        ]}
+      >
+        {t.nav.series}
       </a>
       <a
         href={getRelativeLocaleUrl(locale, "tags")}
@@ -99,28 +110,24 @@ const isActive = (path: string) => {
       >
         {t.nav.about}
       </a>
-      {
-        features.showArchives && (
-          <LinkButton
-            href={getRelativeLocaleUrl(locale, "archives")}
-            class:list={[
-              "focus-outline relative size-8",
-              { "active-nav": isActive("/archives") },
-            ]}
-            title={t.nav.archives}
-            aria-label={t.nav.archives}
-          >
-            <IconArchive class="absolute top-1/2 left-1/2 size-6 -translate-x-1/2 -translate-y-1/2" />
-            <span class="sr-only">{t.nav.archives}</span>
-            {isActive("/archives") && (
-              <IconUnderline
-                aria-hidden="true"
-                class="absolute bottom-0 w-6 scale-125"
-              />
-            )}
-          </LinkButton>
-        )
-      }
+      <LinkButton
+        href={getRelativeLocaleUrl(locale, "categories")}
+        class:list={[
+          "focus-outline relative size-8",
+          { "active-nav": isActive("/categories") },
+        ]}
+        title={t.nav.categories}
+        aria-label={t.nav.categories}
+      >
+        <IconFolder class="absolute top-1/2 left-1/2 size-6 -translate-x-1/2 -translate-y-1/2" />
+        <span class="sr-only">{t.nav.categories}</span>
+        {isActive("/categories") && (
+          <IconUnderline
+            aria-hidden="true"
+            class="absolute bottom-0 w-6 scale-125"
+          />
+        )}
+      </LinkButton>
       {
         features.search !== false && (
           <LinkButton
@@ -204,7 +211,7 @@ const isActive = (path: string) => {
     <!-- 移动端汉堡按钮（与标题同行，靠右） -->
     <button
       id="menu-btn"
-      class="focus-outline p-2 sm:hidden"
+      class="focus-outline p-2 md:hidden"
       aria-label={t.a11y.openMenu}
       aria-expanded="false"
       aria-controls="menu-drawer"
@@ -217,13 +224,13 @@ const isActive = (path: string) => {
 <!-- 移动端右侧抽屉 -->
 <div
   id="menu-overlay"
-  class="pointer-events-none fixed inset-0 z-40 bg-black/50 backdrop-blur-sm opacity-0 transition-opacity duration-300 sm:hidden"
+  class="pointer-events-none fixed inset-0 z-40 bg-black/50 backdrop-blur-sm opacity-0 transition-opacity duration-300 md:hidden"
   aria-hidden="true"
 ></div>
 
 <aside
   id="menu-drawer"
-  class="bg-background border-border fixed top-0 right-0 z-50 flex h-full w-72 max-w-[85vw] translate-x-full flex-col border-l shadow-xl transition-transform duration-300 ease-out sm:hidden"
+  class="bg-background border-border fixed top-0 right-0 z-50 flex h-full w-72 max-w-[85vw] translate-x-full flex-col border-l shadow-xl transition-transform duration-300 ease-out md:hidden"
   role="dialog"
   aria-modal="true"
   aria-label="Navigation"
@@ -252,6 +259,26 @@ const isActive = (path: string) => {
       >
         <IconEdit class="size-5" />
         {t.nav.posts}
+      </a>
+      <a
+        href={getRelativeLocaleUrl(locale, "categories")}
+        class:list={[
+          "hover:bg-muted hover:text-accent flex items-center gap-3 rounded-lg px-4 py-3 text-base font-medium transition-colors",
+          isActive("/categories") && "bg-accent/10 text-accent",
+        ]}
+      >
+        <IconFolder class="size-5" />
+        {t.nav.categories}
+      </a>
+      <a
+        href={getRelativeLocaleUrl(locale, "series")}
+        class:list={[
+          "hover:bg-muted hover:text-accent flex items-center gap-3 rounded-lg px-4 py-3 text-base font-medium transition-colors",
+          isActive("/series") && "bg-accent/10 text-accent",
+        ]}
+      >
+        <IconBook2 class="size-5" />
+        {t.nav.series}
       </a>
       <a
         href={getRelativeLocaleUrl(locale, "tags")}

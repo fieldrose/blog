@@ -2,6 +2,9 @@ const THEME_KEY = "theme";
 const LIGHT = "light";
 const DARK = "dark";
 
+/** 桌面导航与移动抽屉各有一个切换按钮。 */
+const TOGGLE_SELECTORS = ["#theme-btn", "#theme-btn-mobile"];
+
 function getPreferredTheme(): string {
   const stored = localStorage.getItem(THEME_KEY);
   if (stored) return stored;
@@ -24,7 +27,9 @@ function reflect(): void {
   const root = document.firstElementChild;
   root?.setAttribute("data-theme", themeValue);
   root?.classList.toggle("dark", themeValue === DARK);
-  document.querySelector("#theme-btn")?.setAttribute("aria-label", themeValue);
+  for (const selector of TOGGLE_SELECTORS) {
+    document.querySelector(selector)?.setAttribute("aria-label", themeValue);
+  }
 
   // Fill <meta name="theme-color"> with the computed background colour so
   // Android's browser chrome matches the page background.
@@ -36,10 +41,16 @@ function reflect(): void {
 
 function setup(): void {
   reflect();
-  document.querySelector("#theme-btn")?.addEventListener("click", () => {
-    themeValue = themeValue === LIGHT ? DARK : LIGHT;
-    persist();
-  });
+  for (const selector of TOGGLE_SELECTORS) {
+    const button = document.querySelector<HTMLElement>(selector);
+    // after-swap 会重建 DOM，但保留同一元素时避免重复绑定导致来回切换
+    if (!button || button.dataset.themeBound === "true") continue;
+    button.dataset.themeBound = "true";
+    button.addEventListener("click", () => {
+      themeValue = themeValue === LIGHT ? DARK : LIGHT;
+      persist();
+    });
+  }
 }
 
 setup();

@@ -7,14 +7,63 @@ import Main from "@/components/Main.astro";
 import Footer from "@/components/Footer.astro";
 import Tag from "@/components/Tag.astro";
 import { getUniqueTags } from "@/utils/getUniqueTags";
-import { useTranslations } from "@/i18n";
+import { postFilter } from "@/utils/postFilter";
+import { slugifyStr } from "@/utils/slugify";
+import { tagGroups } from "@/data/tagGroups";
+import { tplStr, useTranslations } from "@/i18n";
 import config from "@/config";
 
-const posts = await getCollection("posts", ({ data }) => !data.draft);
+const posts = (await getCollection("posts")).filter(postFilter);
 const tags = getUniqueTags(posts);
+
+// 统计口径与 getUniqueTags 的去重口径一致：按 slug 聚合，单篇内重复标签只计一次
+const tagCounts = new Map<string, number>();
+for (const post of posts) {
+  for (const tag of new Set(post.data.tags)) {
+    const key = slugifyStr(tag);
+    tagCounts.set(key, (tagCounts.get(key) ?? 0) + 1);
+  }
+}
+
+const tagGroupOf = new Map<string, string>();
+for (const group of tagGroups) {
+  for (const name of group.tags) tagGroupOf.set(slugifyStr(name), group.key);
+}
 
 const locale = Astro.currentLocale ?? config.site.lang;
 const t = useTranslations(locale);
+
+type TagItem = (typeof tags)[number];
+
+const grouped: { key: string; title: string; items: TagItem[] }[] = [
+  ...tagGroups.map(group => ({
+    key: group.key,
+    title: t.tags[group.key],
+    items: [] as TagItem[],
+  })),
+  // 未登记分组的标签归入「其他」，配置为空时退化为一组且不显示组标题
+  {
+    key: "other",
+    title: tagGroups.length === 0 ? "" : t.tags.other,
+    items: [] as TagItem[],
+  },
+];
+
+for (const item of tags) {
+  const key = tagGroupOf.get(item.tag) ?? "other";
+  const target = grouped.find(group => group.key === key) ?? grouped[grouped.length - 1];
+  target.items.push(item);
+}
+
+for (const group of grouped) {
+  group.items.sort(
+    (a, b) =>
+      (tagCounts.get(b.tag) ?? 0) - (tagCounts.get(a.tag) ?? 0) ||
+      a.tagName.localeCompare(b.tagName)
+  );
+}
+
+const visibleGroups = grouped.filter(group => group.items.length > 0);
 ---
 
 <Layout title={`${t.pages.tagsTitle} | ${config.site.title}`}>
@@ -23,9 +72,26 @@ const t = useTranslations(locale);
   <Breadcrumb />
 
   <Main pageTitle={t.pages.tagsTitle} pageDesc={t.pages.tagsDesc}>
-    <ul class="flex flex-wrap gap-6">
-      {tags.map(({ tag, tagName }) => <Tag {tag} {tagName} />)}
-    </ul>
+    {
+      visibleGroups.map(group => (
+        <section class="mt-10 first:mt-0">
+          {group.title && (
+            <h2 class="text-xl font-semibold tracking-wide">{group.title}</h2>
+          )}
+          <ul class:list={["flex flex-wrap gap-x-6 gap-y-3", { "mt-4": !!group.title }]}>
+            {group.items.map(({ tag, tagName }) => (
+              <Tag
+                {tag}
+                {tagName}
+                countLabel={tplStr(t.tags.count, {
+                  count: tagCounts.get(tag) ?? 0,
+                })}
+              />
+            ))}
+          </ul>
+        </section>
+      ))
+    }
   </Main>
 
   <Footer />

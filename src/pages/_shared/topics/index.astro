@@ -1,0 +1,54 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Breadcrumb from "@/components/Breadcrumb.astro";
+import Main from "@/components/Main.astro";
+import Footer from "@/components/Footer.astro";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import { resolveTopics } from "@/utils/getTopics";
+import { tplStr, useTranslations } from "@/i18n";
+import config from "@/config";
+
+const posts = await getCollection("posts");
+const resolvedTopics = resolveTopics(posts);
+
+const locale = Astro.currentLocale ?? config.site.lang;
+const t = useTranslations(locale);
+---
+
+<Layout title={`${t.pages.topicsTitle} | ${config.site.title}`}>
+  <Header />
+  <Breadcrumb />
+
+  <Main pageTitle={t.pages.topicsTitle} pageDesc={t.pages.topicsDesc}>
+    {
+      resolvedTopics.length === 0 ? (
+        <p class="text-muted-foreground">{t.topics.empty}</p>
+      ) : (
+        <ul class="space-y-4">
+          {resolvedTopics.map(topic => (
+            <li>
+              <a
+                href={getRelativeLocaleUrl(locale, `topics/${topic.slug}/`)}
+                class="border-muted-foreground/30 bg-muted/30 hover:border-accent block rounded-lg border border-dashed p-4 text-current no-underline transition"
+              >
+                <div class="flex items-baseline justify-between gap-3">
+                  <span class="text-lg font-medium">{topic.title}</span>
+                  <span class="text-muted-foreground text-sm whitespace-nowrap">
+                    {tplStr(t.topics.count, { count: topic.items.length })}
+                  </span>
+                </div>
+                <p class="text-muted-foreground mt-1 text-sm">
+                  {topic.description}
+                </p>
+              </a>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </Main>
+
+  <Footer />
+</Layout>

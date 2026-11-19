@@ -2,6 +2,7 @@
 import { getRelativeLocaleUrl } from "astro:i18n";
 import { stripBase, stripLocale } from "@/utils/withBase";
 import { useTranslations } from "@/i18n";
+import { topics } from "@/data/topics";
 import config from "@/config";
 
 const locale = Astro.currentLocale ?? config.site.lang;
@@ -26,12 +27,21 @@ const decodeSegment = (value: string) => {
 
 const navLabels: Record<string, string> = {
   posts: t.nav.posts,
+  series: t.nav.series,
+  categories: t.nav.categories,
+  topics: t.pages.topicsTitle,
   tags: t.nav.tags,
   about: t.nav.about,
   archives: t.nav.archives,
   search: t.nav.search,
   demos: t.demos.link,
 };
+
+// 专题详情页的 URL 段是英文 slug，面包屑展示专题标题而非原样 slug
+const topicLabels: Record<string, string> =
+  breadcrumbList[0] === "topics"
+    ? Object.fromEntries(topics.map(topic => [topic.slug, topic.title]))
+    : {};
 
 // if breadcrumb is Home > Posts > [page] <etc>
 // replace Posts with localized "Posts (page number)"
@@ -73,11 +83,17 @@ if (breadcrumbList[0] === "tags" && !isNaN(Number(breadcrumbList[2]))) {
         index + 1 === breadcrumbList.length ? (
           <li>
             <span
-              class:list={["capitalize opacity-75", { lowercase: index > 0 }]}
+              class:list={[
+                "capitalize opacity-75",
+                // 仅标签段需要归一化小写，避免系列名如 JavaScript 被改成 javascript
+                { lowercase: index > 0 && breadcrumbList[0] === "tags" },
+              ]}
               aria-current="page"
             >
               {/* make the last part lowercase in Home > Tags > some-tag */}
-              {navLabels[breadcrumb] ?? decodeSegment(breadcrumb)}
+              {navLabels[breadcrumb] ??
+                topicLabels[breadcrumb] ??
+                decodeSegment(breadcrumb)}
             </span>
           </li>
         ) : (

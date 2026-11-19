@@ -9,6 +9,8 @@ import Card from "@/components/Card.astro";
 import Footer from "@/components/Footer.astro";
 import Pagination from "@/components/Pagination.astro";
 import { getSortedPosts } from "@/utils/getSortedPosts";
+import { getCategoryTree } from "@/utils/getCategories";
+import { getRelativeLocaleUrl } from "astro:i18n";
 import { useTranslations } from "@/i18n";
 import config from "@/config";
 
@@ -21,6 +23,9 @@ const { page } = Astro.props;
 
 const locale = Astro.currentLocale ?? config.site.lang;
 const t = useTranslations(locale);
+
+const allPosts = await getCollection("posts");
+const categories = getCategoryTree(allPosts);
 ---
 
 <Layout title={`${t.pages.postsTitle} | ${config.site.title}`}>
@@ -29,6 +34,28 @@ const t = useTranslations(locale);
   <Breadcrumb />
 
   <Main pageTitle={t.pages.postsTitle} pageDesc={t.pages.postsDesc}>
+    <nav
+      class="mb-6 flex flex-wrap gap-2 text-sm"
+      aria-label={t.pages.categoriesTitle}
+    >
+      <a
+        href={getRelativeLocaleUrl(locale, "posts")}
+        class="border-accent bg-accent/10 text-accent rounded-full border px-3 py-1 no-underline"
+        aria-current="page"
+      >
+        {t.categories.all}
+      </a>
+      {
+        categories.map(category => (
+          <a
+            href={getRelativeLocaleUrl(locale, `categories/${category.slug}/`)}
+            class="border-muted-foreground/30 hover:border-accent hover:text-accent rounded-full border px-3 py-1 no-underline transition"
+          >
+            {category.name}
+          </a>
+        ))
+      }
+    </nav>
     <ul>
       {page.data.map(data => <Card {...data} />)}
     </ul>

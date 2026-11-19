@@ -10,7 +10,9 @@ import Socials from "@/components/Socials.astro";
 import Card from "@/components/Card.astro";
 import LinkButton from "@/components/LinkButton.astro";
 import { getSortedPosts } from "@/utils/getSortedPosts";
-import { useTranslations } from "@/i18n";
+import { getSeriesList } from "@/utils/getSeriesList";
+import { resolveTopics } from "@/utils/getTopics";
+import { tplStr, useTranslations } from "@/i18n";
 import config from "@/config";
 import HeroSignature from "@/components/react/HeroSignature.tsx";
 
@@ -23,6 +25,16 @@ const posts = await getCollection("posts");
 const sortedPosts = getSortedPosts(posts);
 const featuredPosts = sortedPosts.filter(({ data }) => data.featured);
 const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
+const seriesList = getSeriesList(sortedPosts);
+// 首页只做预览：按文章数取内容最厚的 6 个，完整列表见 /series
+const seriesPreview = [...seriesList]
+  .sort((a, b) => b.count - a.count)
+  .slice(0, 6);
+const resolvedTopics = resolveTopics(sortedPosts);
+const topTopics = resolvedTopics.slice(0, 3);
+// 全部入口只在确实有未展示项时出现，避免和区块内容重复
+const hasMoreSeries = seriesList.length > seriesPreview.length;
+const hasMoreTopics = resolvedTopics.length > topTopics.length;
 const homePath = getRelativeLocaleUrl(locale, "");
 ---
 
@@ -63,6 +75,103 @@ const homePath = getRelativeLocaleUrl(locale, "");
         )
       }
     </section>
+
+    {
+      seriesList.length > 0 && (
+        <section
+          id="series"
+          class:list={[
+            "pt-12 pb-6",
+            {
+              "border-border border-b":
+                featuredPosts.length > 0 || recentPosts.length > 0,
+            },
+          ]}
+        >
+          <div class="flex items-baseline justify-between gap-4">
+            <h2 class="text-2xl font-semibold tracking-wide">
+              {t.home.series}
+            </h2>
+            {
+              hasMoreSeries && (
+                <a
+                  href={getRelativeLocaleUrl(locale, "series")}
+                  class="text-muted-foreground hover:text-accent text-sm whitespace-nowrap transition-colors"
+                >
+                  {t.home.allSeries}
+                </a>
+              )
+            }
+          </div>
+          <ul class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {seriesPreview.map(s => (
+              <li>
+                <a
+                  href={getRelativeLocaleUrl(locale, `series/${s.name}/`)}
+                  class="border-muted-foreground/30 bg-muted/20 hover:border-accent hover:text-accent flex flex-col gap-1 rounded-lg border border-dashed px-4 py-3 text-current no-underline transition"
+                >
+                  <span class="font-medium">{s.name}</span>
+                  <span class="text-muted-foreground text-xs">
+                    {tplStr(t.pages.seriesCount, { count: s.count })}
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    {
+      topTopics.length > 0 && (
+        <section
+          id="topics"
+          class:list={[
+            "pt-12 pb-6",
+            {
+              "border-border border-b":
+                featuredPosts.length > 0 || recentPosts.length > 0,
+            },
+          ]}
+        >
+          <div class="flex items-baseline justify-between gap-4">
+            <h2 class="text-2xl font-semibold tracking-wide">
+              {t.home.topics}
+            </h2>
+            {
+              hasMoreTopics && (
+                <a
+                  href={getRelativeLocaleUrl(locale, "topics")}
+                  class="text-muted-foreground hover:text-accent text-sm whitespace-nowrap transition-colors"
+                >
+                  {t.home.allTopics}
+                </a>
+              )
+            }
+          </div>
+          <ul class="mt-4 grid gap-3 sm:grid-cols-2">
+            {topTopics.map(topic => (
+              <li>
+                <a
+                  href={getRelativeLocaleUrl(locale, `topics/${topic.slug}/`)}
+                  class="border-muted-foreground/30 bg-muted/20 hover:border-accent hover:text-accent flex h-full flex-col gap-1 rounded-lg border border-dashed px-4 py-3 text-current no-underline transition"
+                >
+                  <span class="flex items-baseline justify-between gap-3">
+                    <span class="font-medium">{topic.title}</span>
+                    <span class="text-muted-foreground text-xs whitespace-nowrap">
+                      {tplStr(t.topics.count, { count: topic.items.length })}
+                    </span>
+                  </span>
+                  <span class="text-muted-foreground text-sm">
+                    {topic.description}
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
 
     {
       featuredPosts.length > 0 && (

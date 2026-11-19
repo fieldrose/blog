@@ -4,6 +4,8 @@ export default {
   nav: {
     home: "Home",
     posts: "Posts",
+    series: "Series",
+    categories: "Categories",
     tags: "Tags",
     about: "About",
     archives: "Archives",
@@ -43,6 +45,24 @@ export default {
     featured: "Featured",
     recentPosts: "Recent Posts",
     allPosts: "All Posts",
+    series: "Series",
+    allSeries: "All Series",
+    topics: "Topics",
+    allTopics: "All Topics",
+  },
+  topics: {
+    count: "{{count}} posts",
+    empty: "No topics yet.",
+  },
+  tags: {
+    theme: "Topics",
+    tech: "Tech",
+    other: "Other",
+    count: "{{count}} posts",
+  },
+  categories: {
+    all: "All",
+    count: "{{count}} posts",
   },
   footer: {
     copyright: "Copyright",
@@ -57,6 +77,16 @@ export default {
 
     postsTitle: "Posts",
     postsDesc: "All the articles I've posted.",
+
+    seriesTitle: "Series",
+    seriesDesc: "Series of articles organized by topic.",
+    seriesCount: "{{count}} posts",
+
+    categoriesTitle: "Categories",
+    categoriesDesc: "Articles organized by knowledge area.",
+
+    topicsTitle: "Topics",
+    topicsDesc: "Curated reading paths across series.",
 
     archivesTitle: "Archives",
     archivesDesc: "All the articles I've archived.",
