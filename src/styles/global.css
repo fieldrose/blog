@@ -74,6 +74,12 @@
   color: var(--foreground) !important;
 }
 
+/* Mermaid 把标签里的换行序列化成 `<br></br>`，浏览器把 `</br>` 也当作换行，
+   而节点高度仍按一行计算，导致后续文字被裁切；去掉紧邻的重复换行即可还原。 */
+.app-prose svg[id^="mermaid-"] br + br {
+  display: none;
+}
+
 /* 节点形状 */
 .app-prose svg[id^="mermaid-"] .node rect,
 .app-prose svg[id^="mermaid-"] .node circle,
