@@ -24,6 +24,11 @@ export interface UIStrings {
     editPage: string;
     previousPost: string;
     nextPost: string;
+    /** Previous/next chapter label used when the post belongs to a series. */
+    previousInSeries: string;
+    nextInSeries: string;
+    /** Link back to the series index page. */
+    backToSeries: string;
     tocHeading: string;
     tocOpen: string;
   };

@@ -26,6 +26,9 @@ export default {
     editPage: "Edit page",
     previousPost: "Previous Post",
     nextPost: "Next Post",
+    previousInSeries: "Previous section",
+    nextInSeries: "Next section",
+    backToSeries: "Back to series",
     tocHeading: "Table of contents",
     tocOpen: "Open Table of contents",
   },
@@ -65,8 +68,8 @@ export default {
     count: "{{count}} posts",
   },
   footer: {
-    copyright: "Copyright",
-    allRightsReserved: "All rights reserved.",
+    copyright: "",
+    allRightsReserved: "Please credit me if you use my content.",
   },
   pages: {
     tagTitle: "Tag",

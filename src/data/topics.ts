@@ -30,8 +30,7 @@ export const topics: Topic[] = [
   {
     slug: "interview",
     title: "面试专题",
-    description:
-      "从语言基础到网络与设计原则的一条复习路径，按依赖顺序排列。",
+    description: "从语言基础到网络与设计原则的一条复习路径，按依赖顺序排列。",
     items: [
       { id: "js基础", note: "原型链与作用域是所有手写题的底子" },
       { id: "闭包和高阶函数", note: "闭包的形成条件与内存影响" },
@@ -53,7 +52,6 @@ export const topics: Topic[] = [
       { id: "前端性能指标体系", note: "先明确度量线，再谈优化手段" },
       { id: "浏览器环境下的性能测量", note: "PerformanceObserver 的采集口径" },
       { id: "WebView与Hybrid环境下的性能指标", note: "容器与页面是两套时钟" },
-      { id: "fcp优化", note: "一次端到端改造的完整链路与指标变化" },
       { id: "加载阶段优化", note: "下载多少、何时下载、能否不下载" },
       { id: "渲染与首屏优化", note: "关键渲染路径与流式渲染" },
       { id: "运行时与交互优化", note: "长任务拆分与 INP" },

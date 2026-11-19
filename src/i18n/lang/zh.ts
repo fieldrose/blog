@@ -26,6 +26,9 @@ export default {
     editPage: "编辑页面",
     previousPost: "上一篇文章",
     nextPost: "下一篇文章",
+    previousInSeries: "上一节",
+    nextInSeries: "下一节",
+    backToSeries: "返回专栏目录",
     tocHeading: "目录",
     tocOpen: "展开目录",
   },
@@ -65,8 +68,8 @@ export default {
     count: "共 {{count}} 篇",
   },
   footer: {
-    copyright: "版权",
-    allRightsReserved: "所有权利保留",
+    copyright: "",
+    allRightsReserved: "转载请注明出处",
   },
   pages: {
     tagTitle: "标签",
