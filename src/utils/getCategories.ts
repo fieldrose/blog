@@ -1,5 +1,5 @@
 import type { CollectionEntry } from "astro:content";
-import { BLOG_PATH } from "@/content.config";
+import { BLOG_PATH } from "@/utils/blogPath";
 import { categoryMeta, UNCATEGORIZED } from "@/data/categories";
 import { postFilter } from "./postFilter";
 
@@ -92,6 +92,7 @@ export function getCategoryTree(
         ),
     }))
     .sort(
-      (a, b) => orderOf(a.name) - orderOf(b.name) || a.name.localeCompare(b.name, "zh")
+      (a, b) =>
+        orderOf(a.name) - orderOf(b.name) || a.name.localeCompare(b.name, "zh")
     );
 }

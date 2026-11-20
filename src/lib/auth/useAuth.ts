@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import type { User } from "@supabase/supabase-js";
 import { getBrowserSupabase } from "@/lib/supabase/client";
@@ -46,12 +46,18 @@ export function useAuthUser(): User | null {
     gcTime: Infinity,
     initialData: null,
   });
+  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
+    setHydrated(true);
     ensureAuthSubscription();
   }, []);
 
-  return data as User | null;
+  // Islands are prerendered without a session, and the shared QueryClient may
+  // already hold one by the time a later island hydrates (UserMenu runs first).
+  // Rendering the signed-in state on the first client pass mismatches the
+  // server HTML (React #418), so hold the signed-out state until hydrated.
+  return hydrated ? (data as User | null) : null;
 }
 
 export function useAuth() {

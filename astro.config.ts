@@ -18,6 +18,7 @@ import {
   transformerNotationWordHighlight,
 } from "@shikijs/transformers";
 import { transformerFileName } from "./src/utils/transformers/fileName";
+import { postMetaPlugin } from "./src/utils/postMetaPlugin";
 import config from "./astro-paper.config";
 import { localeCodes } from "./src/i18n/locales";
 
@@ -101,7 +102,11 @@ export default defineConfig({
     },
   },
   vite: {
-    plugins: [tailwindcss(), ...(USE_SSL ? [basicSsl()] : [])],
+    plugins: [
+      tailwindcss(),
+      postMetaPlugin(),
+      ...(USE_SSL ? [basicSsl()] : []),
+    ],
     // Force Vite to pre-bundle @pagefind/default-ui so the dynamic
     // `await import("@pagefind/default-ui")` in search.astro resolves at dev time.
     // Without this, Vite's scanner misses the Astro <script> dynamic import
