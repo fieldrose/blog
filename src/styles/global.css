@@ -39,6 +39,22 @@
 }
 
 /* ===== Mermaid 图表主题覆盖 ===== */
+/* 图表在浏览器端渲染：渲染前只展示源码，去掉代码块外观避免闪烁。 */
+.app-prose pre.mermaid {
+  padding: 0 !important;
+  border: 0 !important;
+  background-color: transparent !important;
+  overflow-x: auto;
+  text-align: center;
+}
+
+.app-prose pre.mermaid svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin-inline: auto;
+}
+
 /* Mermaid base 主题把颜色硬编码在 SVG 内部的 <style> 块里，
    以 id 选择器（#mermaid-0）作用于节点、连线、文字等元素；
    这里用 CSS 变量覆盖关键 token，让明暗主题能自动切换。 */

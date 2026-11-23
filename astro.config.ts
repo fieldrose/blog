@@ -81,10 +81,13 @@ export default defineConfig({
         [
           rehypeMermaid,
           {
-            strategy: "inline-svg",
-            mermaidConfig: {
-              theme: "base",
-            },
+            // Mermaid diagrams are rendered in the browser. Build-time rendering
+            // needs Playwright's Chromium, which CI build images (Cloudflare
+            // Workers Builds, Netlify) do not provide. Astro's content loader
+            // only logs that failure and stores an empty body, which shipped
+            // posts with a blank article. `pre-mermaid` keeps the diagram source
+            // in the HTML and lets the client render it (see src/scripts/mermaid.ts).
+            strategy: "pre-mermaid",
           },
         ],
       ],

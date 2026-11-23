@@ -79,6 +79,8 @@ function open(src: SVGSVGElement) {
 
 document.addEventListener("astro:page-load", setup);
 document.addEventListener("astro:after-swap", setup);
+// Diagrams are rendered on the client after page load, so bind once they land.
+document.addEventListener("mermaid:rendered", setup);
 
 if (document.readyState !== "loading") {
   setup();
