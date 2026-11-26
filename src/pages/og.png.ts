@@ -3,6 +3,7 @@ import satori from "satori";
 import sharp from "sharp";
 import { fontData, experimental_getFontFileURL } from "astro:assets";
 import { getFontPathByWeight } from "@/utils/getFontPathByWeight";
+import { stripStaticAssetPrefix } from "@/utils/withBase";
 import config from "@/config";
 
 export const GET: APIRoute = async context => {
@@ -15,12 +16,16 @@ export const GET: APIRoute = async context => {
   }
 
   const [regularData, boldData] = await Promise.all([
-    fetch(experimental_getFontFileURL(regularFontPath, context.url)).then(res =>
-      res.arrayBuffer()
-    ),
-    fetch(experimental_getFontFileURL(boldFontPath, context.url)).then(res =>
-      res.arrayBuffer()
-    ),
+    fetch(
+      stripStaticAssetPrefix(
+        experimental_getFontFileURL(regularFontPath, context.url)
+      )
+    ).then(res => res.arrayBuffer()),
+    fetch(
+      stripStaticAssetPrefix(
+        experimental_getFontFileURL(boldFontPath, context.url)
+      )
+    ).then(res => res.arrayBuffer()),
   ]);
 
   // React 19 types no longer accept satori's plain node objects directly;

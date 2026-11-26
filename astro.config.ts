@@ -30,6 +30,8 @@ import basicSsl from "@vitejs/plugin-basic-ssl";
 
 const USE_SSL = process.env.DEV_SSL === "true";
 const USE_CLOUDFLARE = process.env.ASTRO_ADAPTER === "cloudflare";
+// Set only for static hosts that mount browser assets under a versioned prefix.
+const ASSETS_PREFIX = process.env.PUBLIC_ASSET_PREFIX;
 
 export default defineConfig({
   site: config.site.url,
@@ -39,6 +41,9 @@ export default defineConfig({
         prerenderEnvironment: "node",
       })
     : netlify({
+        // Keep Netlify's image CDN for the Netlify deployment; a plain static
+        // build must emit real image files instead of `/.netlify/images` URLs.
+        ...(ASSETS_PREFIX ? { imageCDN: false } : {}),
         devFeatures: {
           images: true,
           environmentVariables: false,
@@ -46,6 +51,7 @@ export default defineConfig({
         },
       }),
   ...(USE_CLOUDFLARE ? { session: false } : {}),
+  ...(ASSETS_PREFIX ? { build: { assetsPrefix: ASSETS_PREFIX } } : {}),
   integrations: [
     mdx(),
     sitemap({
