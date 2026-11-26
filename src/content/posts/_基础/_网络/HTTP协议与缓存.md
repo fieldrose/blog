@@ -10,7 +10,7 @@ tags:
   - 网络
   - HTTP
   - 缓存
-series: 网络-前端视角
+series: 网络
 seriesOrder: 1
 description: "从报文字节结构、方法与状态码语义讲到 HTTP/1.1、HTTP/2、HTTP/3 的演进，梳理内容协商与 Vary、强缓存与协商缓存的判定流程并给出 TypeScript 缓存决策实现；再讨论 Cookie 属性、Session 与 JWT 的存储权衡、CORS 预检、CSRF 与 XSS 防护，以及发版缓存与线上排查。"
 ---
@@ -45,7 +45,9 @@ function parseRequest(raw: string): ParsedRequest {
   for (const line of headerLines) {
     const index = line.indexOf(":");
     if (index === -1) continue;
-    headers[line.slice(0, index).trim().toLowerCase()] = line.slice(index + 1).trim();
+    headers[line.slice(0, index).trim().toLowerCase()] = line
+      .slice(index + 1)
+      .trim();
   }
 
   return { method, path, version, headers, body: rest.join("\r\n\r\n") };
@@ -59,15 +61,15 @@ function parseRequest(raw: string): ParsedRequest {
 
 ### 1.2 方法与幂等性
 
-| 方法 | 语义 | 安全 | 幂等 |
-| ---- | ---- | ---- | ---- |
-| GET | 获取资源 | 是 | 是 |
-| HEAD | 获取头部 | 是 | 是 |
-| POST | 提交处理 | 否 | 否 |
-| PUT | 整体替换 | 否 | 是 |
-| PATCH | 局部修改 | 否 | 通常否 |
-| DELETE | 删除资源 | 否 | 是 |
-| OPTIONS | 查询支持能力 | 是 | 是 |
+| 方法    | 语义         | 安全 | 幂等   |
+| ------- | ------------ | ---- | ------ |
+| GET     | 获取资源     | 是   | 是     |
+| HEAD    | 获取头部     | 是   | 是     |
+| POST    | 提交处理     | 否   | 否     |
+| PUT     | 整体替换     | 否   | 是     |
+| PATCH   | 局部修改     | 否   | 通常否 |
+| DELETE  | 删除资源     | 否   | 是     |
+| OPTIONS | 查询支持能力 | 是   | 是     |
 
 - 幂等指重复执行结果一致，不表示没有副作用。
 - 重试只应对幂等请求自动进行，POST 重试需要服务端提供幂等键。
@@ -75,12 +77,12 @@ function parseRequest(raw: string): ParsedRequest {
 
 ### 1.3 状态码
 
-| 区段 | 含义 | 常用码 |
-| ---- | ---- | ------ |
-| 2xx | 成功 | 200、201、204、206 |
-| 3xx | 重定向与缓存 | 301、302、304、307、308 |
-| 4xx | 客户端错误 | 400、401、403、404、409、429 |
-| 5xx | 服务端错误 | 500、502、503、504 |
+| 区段 | 含义         | 常用码                       |
+| ---- | ------------ | ---------------------------- |
+| 2xx  | 成功         | 200、201、204、206           |
+| 3xx  | 重定向与缓存 | 301、302、304、307、308      |
+| 4xx  | 客户端错误   | 400、401、403、404、409、429 |
+| 5xx  | 服务端错误   | 500、502、503、504           |
 
 - 304 表示协商缓存命中，响应不能带消息体。
 - 301 与 308 是永久重定向，会被缓存；302 与 307 是临时重定向，307 保留原方法与请求体。
@@ -128,18 +130,18 @@ flowchart TD
 
 ### 3.2 Cache-Control 指令
 
-| 指令 | 作用 |
-| ---- | ---- |
-| `max-age=N` | 相对过期时间，单位秒 |
-| `s-maxage=N` | 仅对共享缓存生效，优先级高于 `max-age` |
-| `no-cache` | 使用前必须协商 |
-| `no-store` | 不存储任何副本 |
-| `private` | 仅允许浏览器缓存 |
-| `public` | 允许共享缓存 |
-| `must-revalidate` | 过期后必须校验，不能用过期副本 |
-| `immutable` | 有效期内不重新校验 |
-| `stale-while-revalidate=N` | 过期后 N 秒内先返回旧值并后台刷新 |
-| `stale-if-error=N` | 回源失败时在 N 秒内继续返回旧值 |
+| 指令                       | 作用                                   |
+| -------------------------- | -------------------------------------- |
+| `max-age=N`                | 相对过期时间，单位秒                   |
+| `s-maxage=N`               | 仅对共享缓存生效，优先级高于 `max-age` |
+| `no-cache`                 | 使用前必须协商                         |
+| `no-store`                 | 不存储任何副本                         |
+| `private`                  | 仅允许浏览器缓存                       |
+| `public`                   | 允许共享缓存                           |
+| `must-revalidate`          | 过期后必须校验，不能用过期副本         |
+| `immutable`                | 有效期内不重新校验                     |
+| `stale-while-revalidate=N` | 过期后 N 秒内先返回旧值并后台刷新      |
+| `stale-if-error=N`         | 回源失败时在 N 秒内继续返回旧值        |
 
 - 哈希文件名的静态资源适合 `max-age=31536000, immutable`。
 - HTML 适合 `no-cache`，保证入口指向最新资源。
@@ -164,10 +166,12 @@ function isFresh(entry: CacheEntry, now = Date.now()): boolean {
 
 function canRevalidate(
   entry: CacheEntry,
-  requestHeaders: { ifNoneMatch?: string; ifModifiedSince?: string },
+  requestHeaders: { ifNoneMatch?: string; ifModifiedSince?: string }
 ): boolean {
   if (entry.etag && requestHeaders.ifNoneMatch === entry.etag) return true;
-  return Boolean(entry.lastModified && requestHeaders.ifModifiedSince === entry.lastModified);
+  return Boolean(
+    entry.lastModified && requestHeaders.ifModifiedSince === entry.lastModified
+  );
 }
 ```
 
@@ -186,14 +190,14 @@ function canRevalidate(
 
 ### 4.1 Cookie 属性
 
-| 属性 | 作用 |
-| ---- | ---- |
-| `Domain` | 生效域名，设置后包含子域 |
-| `Path` | 生效路径 |
-| `Expires` / `Max-Age` | 过期时间，缺省为会话 Cookie |
-| `Secure` | 仅 HTTPS 传输 |
-| `HttpOnly` | 禁止 JS 读取，降低 XSS 窃取风险 |
-| `SameSite` | 跨站请求是否携带，Strict、Lax、None |
+| 属性                  | 作用                                |
+| --------------------- | ----------------------------------- |
+| `Domain`              | 生效域名，设置后包含子域            |
+| `Path`                | 生效路径                            |
+| `Expires` / `Max-Age` | 过期时间，缺省为会话 Cookie         |
+| `Secure`              | 仅 HTTPS 传输                       |
+| `HttpOnly`            | 禁止 JS 读取，降低 XSS 窃取风险     |
+| `SameSite`            | 跨站请求是否携带，Strict、Lax、None |
 
 - `SameSite=None` 必须同时设置 `Secure`。
 - `SameSite=Lax` 是现代浏览器的默认值，跨站 POST 不携带，顶层 GET 导航携带。

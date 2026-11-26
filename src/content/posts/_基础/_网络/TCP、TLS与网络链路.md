@@ -11,7 +11,7 @@ tags:
   - TCP
   - TLS
   - DNS
-series: 网络-前端视角
+series: 网络
 seriesOrder: 2
 description: "把一次请求拆成 DNS、TCP、TLS 与内容传输：三次握手与四次挥手的状态与开销、滑动窗口与拥塞控制、Nagle 与延迟 ACK 的相互影响、QUIC 与 HTTP/3 的改进、TLS 1.2 与 1.3 的握手差异与证书校验，以及 DNS 解析层级、CDN 调度和前端在连接复用上的可控项。"
 ---
@@ -26,13 +26,13 @@ description: "把一次请求拆成 DNS、TCP、TLS 与内容传输：三次握�
 
 ### 1.1 TCP 与 UDP
 
-| 特性 | TCP | UDP |
-| ---- | --- | --- |
-| 连接 | 面向连接 | 无连接 |
-| 可靠性 | 确认、重传、有序 | 不保证送达与顺序 |
-| 传输形式 | 字节流 | 数据报 |
-| 拥塞控制 | 有 | 无（由应用自行处理） |
-| 头部开销 | 20 字节起 | 8 字节 |
+| 特性     | TCP                      | UDP                     |
+| -------- | ------------------------ | ----------------------- |
+| 连接     | 面向连接                 | 无连接                  |
+| 可靠性   | 确认、重传、有序         | 不保证送达与顺序        |
+| 传输形式 | 字节流                   | 数据报                  |
+| 拥塞控制 | 有                       | 无（由应用自行处理）    |
+| 头部开销 | 20 字节起                | 8 字节                  |
 | 典型用途 | HTTP/1.1、HTTP/2、数据库 | DNS、音视频、游戏、QUIC |
 
 - TCP 提供可靠有序的字节流，代价是握手、确认与重传。
@@ -75,7 +75,7 @@ class SlidingWindowSender {
 
   constructor(
     private windowSize: number,
-    private transmit: (seq: number) => void,
+    private transmit: (seq: number) => void
   ) {}
 
   fill(): void {
@@ -130,10 +130,10 @@ class SlidingWindowSender {
 
 ### 3.2 握手差异
 
-| 版本 | 完整握手 | 会话恢复 | 特点 |
-| ---- | -------- | -------- | ---- |
-| TLS 1.2 | 2-RTT | 1-RTT | 支持 RSA 密钥交换，配置复杂 |
-| TLS 1.3 | 1-RTT | 0-RTT | 强制前向安全，精简套件，握手加密 |
+| 版本    | 完整握手 | 会话恢复 | 特点                             |
+| ------- | -------- | -------- | -------------------------------- |
+| TLS 1.2 | 2-RTT    | 1-RTT    | 支持 RSA 密钥交换，配置复杂      |
+| TLS 1.3 | 1-RTT    | 0-RTT    | 强制前向安全，精简套件，握手加密 |
 
 - TLS 1.3 删除了静态 RSA 密钥交换与大量弱算法，默认提供前向安全。
 - 1-RTT 指客户端在第一个往返后即可发送加密应用数据。
@@ -151,7 +151,7 @@ createServer(
     key: readFileSync("key.pem"),
     cert: readFileSync("cert.pem"),
   },
-  (_req, res) => res.end("ok"),
+  (_req, res) => res.end("ok")
 ).listen(8443);
 ```
 
