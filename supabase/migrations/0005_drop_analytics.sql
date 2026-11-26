@@ -1,15 +1,14 @@
--- 0005_drop_analytics.sql — drop the whole analytics schema
--- Apply with: Supabase Dashboard → SQL Editor
--- Idempotent: safe to re-run. No production code writes to these tables
--- since we removed /api/analytics/*, the web-vitals dependency and the
--- client-side collection script.
+-- 0005_drop_analytics.sql — 删除整套统计 schema
+-- 应用方式：Supabase Dashboard → SQL Editor
+-- 幂等：可重复执行。自移除 /api/analytics/*、web-vitals 依赖与客户端采集脚本后，
+-- 已无生产代码写入这些表。
 
--- Views first (depends on tables)
+-- 先删视图（视图依赖表）
 drop view if exists public.stats_30d_daily;
 drop view if exists public.stats_30d_top_posts;
 drop view if exists public.stats_30d_vitals;
 
--- Long-lived aggregates + raw events
+-- 长期聚合表与原始事件表
 drop table if exists public.stats_daily;
 drop table if exists public.stats_daily_visitors;
 drop table if exists public.stats_post_daily;
@@ -17,8 +16,8 @@ drop table if exists public.stats_vitals_daily;
 drop table if exists public.page_view_events;
 drop table if exists public.web_vital_events;
 
--- Functions (must revoke from public before drop — cascade alone is fine but
--- explicit revokes keep the project's "PUBLIC default grants = narrow" rule)
+-- 函数：删除前必须先向 public 回收执行权限（仅靠 cascade 虽可行，
+-- 但显式回收才能维持项目「PUBLIC 默认权限应当收窄」的约定）
 revoke execute on function public.cleanup_analytics_events() from public;
 revoke execute on function public.ingest_pageview(date,text,text,text,text,text,text) from public;
 revoke execute on function public.ingest_web_vital(date,text,text,double precision,text,text,text) from public;

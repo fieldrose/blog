@@ -5,6 +5,7 @@
 
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 
+/* ===== 基础样式：边框统一、焦点轮廓与滚动条配色 ===== */
 @layer base {
   * {
     @apply border-border outline-accent/75;
@@ -22,6 +23,7 @@
   }
 }
 
+/* ===== 自定义 utility：内容宽度、页面布局与激活导航 ===== */
 @utility max-w-app {
   @apply max-w-3xl;
 }
@@ -34,6 +36,7 @@
   @apply underline decoration-wavy decoration-2 underline-offset-8;
 }
 
+/* 锚点定位时在目标元素上方留出滚动间距 */
 :target {
   scroll-margin-block: 1rem;
 }

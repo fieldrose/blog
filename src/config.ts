@@ -1,13 +1,14 @@
 /**
- * Internal resolved configuration used throughout the codebase.
+ * 全站使用的内部已解析配置。
  *
- * Prefer editing `astro-paper.config.ts` instead of this file. This module exists to
- * apply defaults and expose a fully-resolved config shape (`ResolvedAstroPaperConfig`).
+ * 修改配置请优先编辑 `astro-paper.config.ts`；本模块只负责补齐默认值，
+ * 并对外暴露完整解析后的配置形状（`ResolvedAstroPaperConfig`）。
  */
 import userConfig from "@/astro-paper.config";
 import type { ResolvedAstroPaperConfig } from "./types/config";
 import { PUBLIC_GOOGLE_SITE_VERIFICATION } from "astro:env/client";
 
+/** 未配置 ogImage 时使用的默认文件名 */
 const DEFAULT_OG_IMAGE = "og.png";
 
 const config: ResolvedAstroPaperConfig = {

@@ -13,6 +13,7 @@ export async function getStaticPaths() {
     return [];
   }
 
+  // 仅为未设置自定义 ogImage 且非草稿的文章生成动态 OG 图
   const posts = await getCollection("posts").then(p =>
     p.filter(({ data }) => !data.draft && !data.ogImage)
   );
@@ -36,6 +37,7 @@ export const GET: APIRoute = async ({ props, url }) => {
     throw new Error("Cannot find the font path.");
   }
 
+  // 拉取常规与粗体字重字体文件，供 satori 内嵌使用
   const [regularData, boldData] = await Promise.all([
     fetch(
       stripStaticAssetPrefix(experimental_getFontFileURL(regularFontPath, url))
@@ -45,8 +47,8 @@ export const GET: APIRoute = async ({ props, url }) => {
     ).then(res => res.arrayBuffer()),
   ]);
 
-  // React 19 types no longer accept satori's plain node objects directly;
-  // assert against the exact element type satori expects (runtime unchanged).
+  // React 19 类型不再直接接受 satori 的普通节点对象，
+  // 这里断言为 satori 期望的元素类型（运行时不变）。
   const ogElement = {
     type: "div",
     props: {
@@ -170,6 +172,7 @@ export const GET: APIRoute = async ({ props, url }) => {
     },
   } as unknown as Parameters<typeof satori>[0];
 
+  // 用 satori 渲染 SVG，再由 sharp 转为 PNG 返回
   const svg = await satori(ogElement, {
     width: 1200,
     height: 630,

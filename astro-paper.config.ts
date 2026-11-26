@@ -2,8 +2,8 @@ import { defineAstroPaperConfig } from "./src/types/config";
 
 export default defineAstroPaperConfig({
   site: {
-    // Prefer the canonical URL injected via env (Netlify SITE_URL / PUBLIC_SITE_URL).
-    // Falls back to localhost so local builds and CI never produce invalid URLs.
+    // 优先使用环境变量注入的规范 URL（Netlify SITE_URL 或 PUBLIC_SITE_URL），
+    // 回退到 localhost，避免本地构建与 CI 产生无效 URL。
     url: process.env.PUBLIC_SITE_URL ?? "https://localhost:4321/",
     title: "Mimas Blog",
     description: "Mimas 的个人技术博客 —— 前端、框架与工程实践笔记。",
@@ -13,6 +13,7 @@ export default defineAstroPaperConfig({
     timezone: "Asia/Shanghai",
     dir: "ltr",
   },
+  // 文章列表分页，以及定时发布的前置余量（15 分钟内不视为已发布）。
   posts: {
     perPage: 10,
     perIndex: 4,
@@ -28,7 +29,7 @@ export default defineAstroPaperConfig({
       url: "https://github.com/fieldrose/blog/edit/main/",
     },
     search: "pagefind",
-    // New dynamic features — enabled incrementally as their modules land.
+    // 新增的动态能力，随对应模块落地逐步启用。
     auth: true,
     reactions: true,
     aiAssistant: true,

@@ -2,6 +2,7 @@ import type { UIStrings } from "./types";
 
 export { tplStr } from "./format";
 
+// 一次性加载 lang 目录下所有语言字典，避免运行时按需 import
 const modules = import.meta.glob<{ default: UIStrings }>("./lang/*.ts", {
   eager: true,
 });

@@ -4,6 +4,7 @@ import { glob } from "astro/loaders";
 import config from "@/config";
 import { BLOG_PATH } from "@/utils/blogPath";
 
+// 文章集合：正文来源目录由 BLOG_PATH 决定，支持 md / mdx
 const posts = defineCollection({
   loader: glob({ pattern: "**/*.{md,mdx}", base: `./${BLOG_PATH}` }),
   schema: ({ image }) =>
@@ -25,6 +26,7 @@ const posts = defineCollection({
     }),
 });
 
+// 独立页面集合：以 `_` 开头的文件不作为页面收录
 const pages = defineCollection({
   loader: glob({ pattern: "**/[^_]*.{md,mdx}", base: "./src/content/pages" }),
   schema: z.object({

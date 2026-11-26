@@ -8,15 +8,15 @@ function existsInPublic(filename: string): boolean {
 }
 
 /**
- * Resolves the absolute OG image path used for pages/posts.
+ * 解析页面/文章统一使用的 OG 图绝对路径。
  *
- * Security note: `site.ogImage` must be a single filename under `public/` to avoid
- * path traversal or referencing arbitrary files.
+ * 安全约束：`site.ogImage` 必须是 `public/` 下的单个文件名，
+ * 以防止路径穿越或引用任意文件。
  *
- * Behavior:
- * - When `features.dynamicOgImage` is enabled, prefers `public/{site.ogImage}` when present,
- *   otherwise falls back to the generated `/og.png`.
- * - When disabled, requires `public/{site.ogImage}` to exist.
+ * 行为：
+ * - 启用 `features.dynamicOgImage` 时，优先使用存在的 `public/{site.ogImage}`，
+ *   否则回退到生成的 `/og.png`。
+ * - 未启用时，要求 `public/{site.ogImage}` 必须存在。
  */
 export function resolveDefaultOgImagePath(
   config: ResolvedAstroPaperConfig

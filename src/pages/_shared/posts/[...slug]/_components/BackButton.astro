@@ -25,6 +25,7 @@ const t = useTranslations(locale);
 }
 
 <script>
+  // 读取会话中记录的来源地址，回退到访问文章前的页面
   function updateGoBackUrl() {
     const backButton: HTMLAnchorElement | null =
       document.querySelector("#back-button");

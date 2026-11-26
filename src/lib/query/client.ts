@@ -1,16 +1,15 @@
 import { QueryClient } from "@tanstack/vue-query";
 
 /**
- * Module-singleton QueryClient shared by BOTH the React and Vue islands.
+ * 模块级单例 QueryClient，由 React 与 Vue island 共用。
  *
- * react-query and vue-query are thin adapters over query-core, so injecting
- * the same instance lets two frameworks on one page share one cache:
- * identical query keys are deduplicated to a single network request.
+ * react-query 与 vue-query 都是 query-core 之上的薄适配层，注入同一实例
+ * 即可让同一页面上的两套框架共享一份缓存：相同 query key 会去重为
+ * 单次网络请求。
  *
- * We must use vue-query's QueryClient subclass (not the plain query-core
- * class): vue-query's useBaseQuery only subscribes its observer when the
- * client exposes the Vue ref `isRestoring`. The subclass extends the core
- * QueryClient, so react-query accepts it unchanged.
+ * 必须使用 vue-query 的 QueryClient 子类（而非 query-core 的原始类）：
+ * vue-query 的 useBaseQuery 只有在 client 暴露 Vue ref `isRestoring` 时
+ * 才会订阅其 observer。该子类继承自核心 QueryClient，react-query 可原样接受。
  */
 export const queryClient = new QueryClient({
   defaultOptions: {

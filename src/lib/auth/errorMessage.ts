@@ -8,7 +8,7 @@ export interface AuthErrorLabels {
   errGeneric: string;
 }
 
-/** Maps a Supabase AuthError to a localized, user-facing message. */
+/** 将 Supabase AuthError 映射为已本地化、面向用户的提示文案。 */
 export function mapAuthError(
   error: AuthError,
   labels: AuthErrorLabels

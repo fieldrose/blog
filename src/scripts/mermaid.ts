@@ -17,8 +17,8 @@ function loadMermaid(): Promise<Mermaid> {
   mermaidPromise ??= import("mermaid").then(({ default: mermaid }) => {
     mermaid.initialize({
       startOnLoad: false,
-      // "base" keeps colors driven by the CSS token overrides in global.css,
-      // so diagrams follow the light/dark theme without a re-render.
+      // "base" 让配色由 global.css 中的 CSS token 覆盖驱动，
+      // 图表因此无需重渲染即可跟随明暗主题。
       theme: "base",
       fontFamily: "inherit",
     });
@@ -40,13 +40,13 @@ async function renderDiagrams(): Promise<void> {
     await mermaid.run({ nodes: blocks });
     document.dispatchEvent(new CustomEvent("mermaid:rendered"));
   } catch (error) {
-    // Keep the diagram source visible rather than dropping the whole block.
+    // 渲染失败时保留图表源码，避免整块内容消失。
     // eslint-disable-next-line no-console
     console.error("Failed to render Mermaid diagrams", error);
   }
 }
 
-/** Serializes renders: mermaid re-processes a block if it runs concurrently. */
+/** 串行化渲染：并发执行时 mermaid 会重复处理同一块图表。 */
 let rendering: Promise<void> | null = null;
 
 function scheduleRender(): void {

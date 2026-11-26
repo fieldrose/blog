@@ -1,13 +1,12 @@
--- 0003_analytics.sql — privacy-friendly, self-hosted analytics
--- Apply with: supabase db push  (or paste into the Supabase SQL editor)
--- Idempotent: safe to re-run.
+-- 0003_analytics.sql — 注重隐私的自托管统计
+-- 应用方式：supabase db push（或粘贴到 Supabase SQL 编辑器执行）
+-- 幂等：可重复执行。
 --
--- Model: raw events are kept 7 days for troubleshooting only; every
--- accepted event also feeds long-lived, fully aggregated tables that
--- survive raw deletion. Raw tables expose NO row-level access to anon.
+-- 模型：原始事件仅保留 7 天用于排障；每个被接收的事件同时写入长期保留的
+-- 全聚合表，聚合数据在原始数据删除后仍然存在。原始表对 anon 不开放任何行级访问。
 
 -- ─────────────────────────────────────────────────────────────
--- Raw events (service-role writes only; no RLS policy = deny all)
+-- 原始事件（仅 service_role 写入；没有 RLS 策略即全部拒绝）
 -- ─────────────────────────────────────────────────────────────
 create table if not exists public.page_view_events (
   id            bigint generated always as identity primary key,
@@ -41,12 +40,12 @@ create index if not exists web_vital_events_day_idx
 alter table public.page_view_events enable row level security;
 alter table public.web_vital_events enable row level security;
 
--- No policies at all: RLS denies every role except the bypassing service role.
+-- 不设任何策略：除绕过 RLS 的 service_role 外，RLS 拒绝所有角色。
 revoke all on public.page_view_events from anon, authenticated;
 revoke all on public.web_vital_events from anon, authenticated;
 
 -- ─────────────────────────────────────────────────────────────
--- Long-lived aggregates
+-- 长期保留的聚合表
 -- ─────────────────────────────────────────────────────────────
 create table if not exists public.stats_daily (
   day  date primary key,
@@ -75,8 +74,8 @@ create table if not exists public.stats_vitals_daily (
   primary key (day, metric, rating)
 );
 
--- uv rises only when a genuinely new (day, visitor_hash) row is inserted;
--- ON CONFLICT DO NOTHING skips the trigger for repeat visitors.
+-- 仅当插入真正的全新 (day, visitor_hash) 行时 uv 才递增；
+-- ON CONFLICT DO NOTHING 会让回访用户跳过该触发器。
 create or replace function public.bump_daily_uv()
 returns trigger
 language plpgsql
@@ -96,13 +95,13 @@ create trigger on_new_daily_visitor
   after insert on public.stats_daily_visitors
   for each row execute function public.bump_daily_uv();
 
--- Trigger-only helper; never callable directly. (Both the PUBLIC default and
--- Supabase's per-role default function grants must be revoked.)
+-- 仅由触发器调用的辅助函数，不允许直接被调用。（PUBLIC 默认权限与
+-- Supabase 的角色级默认函数权限都必须回收。）
 revoke execute on function public.bump_daily_uv() from public;
 revoke execute on function public.bump_daily_uv() from anon, authenticated;
 
--- Aggregate tables are also locked down directly; access goes through the
--- SECURITY DEFINER views below (which never select visitor_hash).
+-- 聚合表本身也直接锁定；访问统一走下方的 SECURITY DEFINER 视图
+-- （这些视图从不查询 visitor_hash）。
 alter table public.stats_daily enable row level security;
 alter table public.stats_daily_visitors enable row level security;
 alter table public.stats_post_daily enable row level security;
@@ -113,7 +112,7 @@ revoke all on public.stats_post_daily from anon, authenticated;
 revoke all on public.stats_vitals_daily from anon, authenticated;
 
 -- ─────────────────────────────────────────────────────────────
--- 30-day read-only views for the public dashboard
+-- 供公开看板使用的 30 天只读视图
 -- ─────────────────────────────────────────────────────────────
 create or replace view public.stats_30d_daily
 with (security_invoker = off)
@@ -123,8 +122,8 @@ as
   where day > current_date - interval '30 days'
   order by day;
 
--- Merge the /zh|/en locale prefix so one post counts once across locales,
--- and only expose article paths (drops home/list/noise).
+-- 合并 /zh|/en 语言前缀，使同一篇文章跨语言只计一次，
+-- 并且只暴露文章路径（过滤首页、列表等噪声）。
 create or replace view public.stats_30d_top_posts
 with (security_invoker = off)
 as
@@ -146,9 +145,8 @@ as
   group by metric, rating
   order by metric, rating;
 
--- New relations inherit broad default privileges in this project; revoke
--- everything first so the dashboard views are strictly read-only even though
--- they run as the view owner (security_invoker = off).
+-- 本项目新建对象会继承较宽的默认权限，因此先回收全部权限，
+-- 使看板视图即使以视图所有者身份运行（security_invoker = off）也严格只读。
 revoke all on public.stats_30d_daily from anon, authenticated;
 revoke all on public.stats_30d_top_posts from anon, authenticated;
 revoke all on public.stats_30d_vitals from anon, authenticated;
@@ -157,8 +155,7 @@ grant select on public.stats_30d_top_posts to anon, authenticated;
 grant select on public.stats_30d_vitals to anon, authenticated;
 
 -- ─────────────────────────────────────────────────────────────
--- Atomic ingestion RPCs (one round trip; increments stay correct
--- under concurrent writes). service_role only.
+-- 原子写入 RPC（单次往返，并发写入下计数仍然正确），仅 service_role 可用。
 -- ─────────────────────────────────────────────────────────────
 create or replace function public.ingest_pageview(
   p_day date, p_path text, p_referrer text, p_locale text,
@@ -177,7 +174,7 @@ as $$
   values (p_day, 1, 0)
   on conflict (day) do update set pv = public.stats_daily.pv + 1;
 
-  -- Must follow stats_daily insert: the uv trigger updates the existing day row.
+  -- 必须放在 stats_daily 插入之后：uv 触发器更新的是已存在的日期行。
   insert into public.stats_daily_visitors (day, visitor_hash)
   values (p_day, p_visitor_hash)
   on conflict do nothing;
@@ -206,9 +203,8 @@ as $$
     set n = public.stats_vitals_daily.n + 1;
 $$;
 
--- Functions are executable by PUBLIC by default; revoke that first (revoking
--- anon/authenticated alone is insufficient — they inherit PUBLIC), then
--- re-grant only to service_role.
+-- 函数默认对 PUBLIC 可执行，必须先回收该权限（仅回收 anon/authenticated
+-- 不够，它们继承 PUBLIC），再只授权给 service_role。
 revoke execute on function public.ingest_pageview(date,text,text,text,text,text,text) from public;
 revoke execute on function public.ingest_web_vital(date,text,text,double precision,text,text,text) from public;
 revoke execute on function public.ingest_pageview(date,text,text,text,text,text,text) from anon, authenticated;
@@ -217,9 +213,8 @@ grant execute on function public.ingest_pageview(date,text,text,text,text,text,t
 grant execute on function public.ingest_web_vital(date,text,text,double precision,text,text,text) to service_role;
 
 -- ─────────────────────────────────────────────────────────────
--- Opportunistic retention: delete raw rows older than 7 days.
--- Called (low probability) from the collect endpoint; no cron add-on
--- dependency. Aggregate tables are untouched.
+-- 机会式清理：删除 7 天前的原始数据行。
+-- 由采集端点以较低概率调用，不依赖 cron 扩展；聚合表不受影响。
 -- ─────────────────────────────────────────────────────────────
 create or replace function public.cleanup_analytics_events()
 returns void

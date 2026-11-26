@@ -16,6 +16,7 @@ type Props = {
 
 const { site } = config;
 
+// 未显式传入的 SEO 字段回退到站点默认值与当前路径
 const {
   title = site.title,
   description = site.description,
@@ -44,20 +45,20 @@ const rssHref = getRelativeLocaleUrl(
     <link rel="canonical" href={canonicalURL} />
     <meta name="generator" content={Astro.generator} />
 
-    <!-- Font -->
+    <!-- 字体 -->
     <Font
       cssVariable="--font-google-sans-code"
       preload={[{ subset: "latin", weight: 400, style: "normal" }]}
     />
 
-    <!-- Primary meta -->
+    <!-- 主要元信息 -->
     <title>{title}</title>
     <meta name="title" content={title} />
     <meta name="description" content={description} />
     <meta name="author" content={site.author} />
     <link rel="sitemap" href={getStaticAssetPath("sitemap-index.xml")} />
 
-    <!-- Open Graph -->
+    <!-- Open Graph 元信息 -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={site.title} />
     <meta property="og:title" content={title} />
@@ -65,14 +66,14 @@ const rssHref = getRelativeLocaleUrl(
     <meta property="og:url" content={canonicalURL} />
     <meta property="og:image" content={socialImageURL} />
 
-    <!-- Twitter / X -->
+    <!-- Twitter / X 元信息 -->
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:url" content={canonicalURL} />
     <meta property="twitter:title" content={title} />
     <meta property="twitter:description" content={description} />
     <meta property="twitter:image" content={socialImageURL} />
 
-    <!-- RSS autodiscovery -->
+    <!-- RSS 自动发现 -->
     <link
       rel="alternate"
       type="application/rss+xml"
@@ -80,10 +81,10 @@ const rssHref = getRelativeLocaleUrl(
       href={new URL(rssHref, Astro.site)}
     />
 
-    <!-- Filled at runtime by theme.ts to match the current background colour -->
+    <!-- 运行时由 theme.ts 写入，与当前背景色保持一致 -->
     <meta name="theme-color" content="" />
 
-    <!-- Extra head content injected by child layouts (e.g. JSON-LD, article meta) -->
+    <!-- 子布局注入的额外 head 内容（如 JSON-LD、文章元信息） -->
     <slot name="head" />
 
     {
@@ -96,8 +97,8 @@ const rssHref = getRelativeLocaleUrl(
     }
 
     <!--
-      Inline FOUC-prevention script: sets data-theme on <html> before
-      the browser paints. Runs synchronously, no defer/async.
+      内联防闪烁脚本：在浏览器绘制前为 <html> 设置 data-theme。
+      同步执行，不使用 defer/async。
     -->
     <script is:inline>
       (function () {
@@ -109,15 +110,15 @@ const rssHref = getRelativeLocaleUrl(
         const root = document.firstElementChild;
         root?.setAttribute("data-theme", theme);
         root?.classList.toggle("dark", theme === "dark");
-        // Expose value so theme.ts can skip re-detection.
+        // 暴露当前值，供 theme.ts 跳过重复探测
         window.__theme = { value: theme };
       })();
     </script>
 
     <!--
-      Sync reading CSS variables before first paint so persisted font /
-      line-height / content-width don't flash the defaults on reload.
-      Must stay in sync with src/stores/reading.ts (STORAGE_VERSION + fields).
+      首屏绘制前同步阅读偏好对应的 CSS 变量，避免刷新时字体、行高、
+      内容宽度先以默认值闪现。需与 src/stores/reading.ts 的
+      STORAGE_VERSION 与字段保持一致。
     -->
     <script is:inline>
       (function () {
@@ -148,6 +149,7 @@ const rssHref = getRelativeLocaleUrl(
   >
     <slot />
     <script>
+      // 客户端脚本：主题切换、Mermaid 渲染与图表缩放
       import "@/scripts/theme";
       import "@/scripts/mermaid";
       import "@/scripts/mermaid-zoom";

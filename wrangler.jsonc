@@ -1,14 +1,19 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
+  // Worker 名称，对应 Cloudflare 项目
   "name": "mimas-blog",
+  // Cloudflare adapter 的 Worker 入口
   "main": "@astrojs/cloudflare/entrypoints/server",
+  // Workers 运行时兼容日期与兼容开关
   "compatibility_date": "2026-11-16",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  // 静态资源绑定，目录为构建产物 dist
   "assets": {
     "binding": "ASSETS",
     "directory": "./dist",
     "not_found_handling": "404-page"
   },
+  // 开启 Workers 观测，采集日志与指标
   "observability": {
     "enabled": true
   }

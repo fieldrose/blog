@@ -13,7 +13,7 @@ function getPreferredTheme(): string {
     : LIGHT;
 }
 
-// Reuse the value already set by the inline FOUC-prevention script if available.
+// 若内联的防 FOUC 脚本已写入主题值则直接复用。
 let themeValue: string =
   (window as unknown as { __theme?: { value: string } }).__theme?.value ??
   getPreferredTheme();
@@ -31,8 +31,8 @@ function reflect(): void {
     document.querySelector(selector)?.setAttribute("aria-label", themeValue);
   }
 
-  // Fill <meta name="theme-color"> with the computed background colour so
-  // Android's browser chrome matches the page background.
+  // 用计算后的背景色填充 <meta name="theme-color">，
+  // 让 Android 浏览器地址栏与页面背景保持一致。
   const bg = window.getComputedStyle(document.body).backgroundColor;
   document
     .querySelector("meta[name='theme-color']")
@@ -55,11 +55,11 @@ function setup(): void {
 
 setup();
 
-// Re-run after View Transitions navigation.
+// View Transitions 导航后重新执行。
 document.addEventListener("astro:after-swap", setup);
 
-// Carry the theme-color value across View Transitions to prevent the
-// Android navigation bar from flashing during page transitions.
+// 在 View Transitions 之间延续 theme-color 值，
+// 避免页面切换时 Android 导航栏闪烁。
 document.addEventListener("astro:before-swap", event => {
   const color = document
     .querySelector("meta[name='theme-color']")
@@ -71,7 +71,7 @@ document.addEventListener("astro:before-swap", event => {
   }
 });
 
-// Sync with OS-level dark/light preference changes.
+// 跟随系统级明暗偏好的变化。
 window
   .matchMedia("(prefers-color-scheme: dark)")
   .addEventListener("change", ({ matches }) => {

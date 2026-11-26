@@ -1,4 +1,4 @@
-/* Register design tokens for Tailwind v4 */
+/* 把设计 token 注册给 Tailwind v4 */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -11,16 +11,15 @@
 }
 
 /*
- * Dual-tone accent (intentional):
- *   light → #006cac (cool blue, evokes daytime sky)
- *   dark  → #ff6b01 (warm orange, evokes evening sunset)
- * The day/night shift in accent hue is part of the site's
- * "sunrise → sunset" storytelling, not a configuration accident.
- * Links, hover states and active-nav therefore change colour
- * between themes — this is by design.
+ * 双色 accent（有意为之）：
+ *   light → #006cac（冷蓝，对应白昼天空）
+ *   dark  → #ff6b01（暖橙，对应傍晚日落）
+ * accent 色相随昼夜切换是站点「日出 → 日落」的叙事设计，
+ * 并非配置失误；链接、悬停态与 active-nav 因此在两套主题下
+ * 颜色不同，属于预期行为。
  */
 
-/* Light theme values */
+/* 明色主题变量 */
 :root,
 [data-theme="light"] {
   --background: #fdfdfd;
@@ -32,7 +31,7 @@
   --border: #ece9e9;
 }
 
-/* Dark theme values */
+/* 暗色主题变量 */
 [data-theme="dark"] {
   --background: #212737;
   --foreground: #eaedf3;

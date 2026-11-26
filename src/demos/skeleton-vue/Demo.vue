@@ -6,7 +6,7 @@ import { vSkeleton } from "./skeletonDirective";
  * Vue 3 island 示例：
  * - framework: "vue" → 在 .astro 里以 client:visible 挂载
  * - 骨架屏抽离为本地指令 v-skeleton（见 skeletonDirective.ts）
- * - 指令替换的是宿主子节点，这里只需要切换 loading 布尔值
+ * - 指令替换宿主子节点，组件只需切换 loading 布尔值
  */
 const loading = ref(true);
 </script>

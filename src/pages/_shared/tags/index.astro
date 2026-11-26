@@ -25,6 +25,7 @@ for (const post of posts) {
   }
 }
 
+// 建立标签 slug 到展示分组的映射
 const tagGroupOf = new Map<string, string>();
 for (const group of tagGroups) {
   for (const name of group.tags) tagGroupOf.set(slugifyStr(name), group.key);

@@ -1,4 +1,5 @@
 ---
+// 英文标签分页路由包装器，复用 _shared/tags/[tag]/[...page].astro。
 export { getStaticPaths } from "@/pages/_shared/tags/[tag]/[...page].astro";
 import Parent from "@/pages/_shared/tags/[tag]/[...page].astro";
 const props = Astro.props;

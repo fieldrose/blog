@@ -1,3 +1,4 @@
+// 文章表情回应接口：按 slug 处理查询、新增与删除，需登录后写入。
 import type { APIRoute } from "astro";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import {

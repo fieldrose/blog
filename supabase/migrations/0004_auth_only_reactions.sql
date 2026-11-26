@@ -1,28 +1,27 @@
--- 0004_auth_only_reactions.sql — drop anonymous reactions
--- Apply with: Supabase Dashboard → SQL Editor
--- Idempotent: safe to re-run.
+-- 0004_auth_only_reactions.sql — 移除匿名互动
+-- 应用方式：Supabase Dashboard → SQL Editor
+-- 幂等：可重复执行。
 
--- Remove anonymous path: drop client_id column, CHECK constraint, unique index.
--- The upsert now targets (post_slug, reaction, user_id) only.
+-- 移除匿名路径：删除 client_id 列、CHECK 约束与唯一索引。
+-- upsert 此后仅作用于 (post_slug, reaction, user_id)。
 
--- 1. Drop the mutual-exclusion CHECK constraint (user_id OR client_id)
+-- 1. 删除互斥 CHECK 约束（user_id 或 client_id 二选一）
 alter table public.reactions drop constraint if exists reactions_identity_kind;
 
--- 2. Drop the anonymous unique index
+-- 2. 删除匿名唯一索引
 drop index if exists public.reactions_client_uniq;
 
--- 3. Remove client_id from the model (and any existing anon rows they hold)
---    If client_id has real data you want to preserve, do NOT run this —
---    archive those rows first. We expect none here.
+-- 3. 从模型中移除 client_id（连同其持有的匿名行）
+--    若 client_id 中确有需要保留的数据，请勿执行本节——
+--    先归档这些行。此处预期不存在此类数据。
 alter table public.reactions drop column if exists client_id;
 
--- 4. The plain unique index on (post_slug, reaction, user_id) already exists
---    (from 0002_reactions_plain_unique.sql). Nothing to rebuild.
+-- 4. (post_slug, reaction, user_id) 上的普通唯一索引已存在
+--    （见 0002_reactions_plain_unique.sql），无需重建。
 
--- 5. RLS grant: anon has no write. Already true — this is defensive.
+-- 5. RLS 授权：anon 无写入权限。当前已如此，此处为防御性加固。
 revoke insert, update, delete on public.reactions from anon;
--- authenticated writes are kept (service_role API still bypasses RLS).
+-- authenticated 的写入权限保留（service_role API 仍然绕过 RLS）。
 
--- 6. Reaction totals view drops to only user rows (no-op, the view already
---    counts the whole reactions table; client_id rows are gone so the totals
---    match counts by signed-in users only).
+-- 6. 互动总数视图收敛为仅统计登录用户行（等价操作：视图本就统计整张
+--    reactions 表，client_id 行删除后，总数即等同于登录用户的计数）。

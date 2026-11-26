@@ -28,8 +28,8 @@ export const GET: APIRoute = async context => {
     ).then(res => res.arrayBuffer()),
   ]);
 
-  // React 19 types no longer accept satori's plain node objects directly;
-  // assert against the exact element type satori expects (runtime unchanged).
+  // React 19 的类型不再直接接受 satori 的普通节点对象，
+  // 因此断言为 satori 期望的确切元素类型（运行时行为不变）。
   const ogElement = {
     type: "div",
     props: {

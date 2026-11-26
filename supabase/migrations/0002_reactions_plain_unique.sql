@@ -1,14 +1,13 @@
 -- ─────────────────────────────────────────────────────────────
--- Replace the PARTIAL unique indexes with plain ones.
+-- 用普通唯一索引替换原先的部分唯一索引。
 --
--- PostgREST upsert sends `on_conflict=post_slug,reaction,user_id`,
--- and PostgreSQL cannot match an ON CONFLICT target to a partial
--- index unless its WHERE predicate is supplied — the supabase-js
--- upsert API has no way to do that (error 42P10).
+-- PostgREST 的 upsert 会发送 `on_conflict=post_slug,reaction,user_id`，
+-- 而 PostgreSQL 只有在提供 WHERE 谓词时才能把 ON CONFLICT 目标匹配到
+-- 部分索引上，supabase-js 的 upsert API 无法做到这一点（错误 42P10）。
 --
--- A plain btree unique index is equivalent here: PostgreSQL treats
--- NULLs as distinct, so anonymous rows (NULL user_id / client_id)
--- never collide, exactly like the old partial indexes.
+-- 此处普通 btree 唯一索引等价：PostgreSQL 视 NULL 互不相同，
+-- 因此匿名行（user_id / client_id 为 NULL）不会冲突，
+-- 与旧的部分索引行为一致。
 -- ─────────────────────────────────────────────────────────────
 
 drop index if exists public.reactions_user_uniq;

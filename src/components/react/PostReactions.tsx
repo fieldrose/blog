@@ -25,6 +25,7 @@ const EMOJI: Record<ReactionType, string> = {
   question: "\u2753",
 };
 
+// 表情反应条：加载各类型计数与当前选择，未登录时点击引导登录
 function ReactionsBar({
   slug,
   labels,
@@ -41,7 +42,7 @@ function ReactionsBar({
   const user = useAuthUser();
   const [authOpen, setAuthOpen] = useState(false);
 
-  // Backend missing / post unknown — degrade to a quiet inline note.
+  // 后端缺失或文章未知时，降级为一条安静的提示文案
   if (isError && !data) {
     const unavailable =
       error instanceof ApiRequestError &&
@@ -129,8 +130,8 @@ function ReactionsBar({
 }
 
 /**
- * Hydrated with client:visible (React ships only when scrolled into view).
- * Wraps itself in the shared QueryClient provider.
+ * 随 client:visible 进行 hydration（滚动进入视口时才加载 React）。
+ * 组件内部自带上共享的 QueryClient Provider。
  */
 export default function PostReactions({
   slug,

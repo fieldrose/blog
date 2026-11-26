@@ -39,6 +39,7 @@ const t = useTranslations(Astro.currentLocale);
 </div>
 
 <script is:inline data-astro-rerun>
+  // 滚动超过 30% 时显示悬浮按钮，并用圆锥渐变绘制阅读进度环
   function backToTop() {
     const rootElement = document.documentElement;
     const btnContainer = document.querySelector("#btt-btn-container");
@@ -53,6 +54,7 @@ const t = useTranslations(Astro.currentLocale);
       document.documentElement.scrollTop = 0;
     });
 
+    // 缓存可见状态，避免每次滚动都重复切换 class
     let lastVisible = null;
     function handleScroll() {
       const scrollTotal = rootElement.scrollHeight - rootElement.clientHeight;

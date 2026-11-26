@@ -1,4 +1,5 @@
 ---
+// 分类索引页，列出全部一级分类及其文章数。
 import { getCollection } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
@@ -11,6 +12,7 @@ import { categoryMeta } from "@/data/categories";
 import { tplStr, useTranslations } from "@/i18n";
 import config from "@/config";
 
+// 汇总全部文章的分类树，并读取分类描述
 const posts = await getCollection("posts");
 const categories = getCategoryTree(posts);
 

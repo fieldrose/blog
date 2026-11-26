@@ -1,14 +1,14 @@
-#requires -Version 5.1
+﻿#requires -Version 5.1
 <#
-Rebuild the static site and publish it to the Trae hosting site.
+重新构建静态站点并发布到 Trae 托管站点。
 
-Every run must use a fresh versioned static asset prefix, otherwise the
-platform rejects the deployment with SERVICE_993511.
+每次运行必须使用新的带版本静态资源前缀，否则平台会以 SERVICE_993511 拒绝部署。
 
-Example:
+示例：
   pwsh scripts/trae-deploy.ps1
   pwsh scripts/trae-deploy.ps1 -Title "Post: astro islands"
 #>
+# 发布参数：站点标识、目标 URL、应用标签；默认值对应线上站点。
 param(
   [string]$SiteId = "37m3yb8lzbsl1uobsm2",
   [string]$SiteUrl = "https://mimas.ccwu.cc",
@@ -25,6 +25,7 @@ $ErrorActionPreference = "Stop"
 
 $repoRoot = Split-Path -Parent $PSScriptRoot
 
+# 解析 trae-deploy CLI 路径：优先使用显式路径，否则取插件目录中版本号最高的一份。
 function Resolve-DeployCli {
   param([string]$Explicit, [string]$Root)
 
@@ -55,8 +56,8 @@ function Invoke-DeployCli {
   $stderr = ""
   $exitCode = 0
   $previousEap = $ErrorActionPreference
-  # PowerShell 5 turns redirected native stderr into terminating errors when
-  # $ErrorActionPreference is Stop, so relax it around the native call.
+  # PowerShell 5 在 $ErrorActionPreference 为 Stop 时会把原生命令的重定向 stderr
+  # 视为终止性错误，因此在调用原生命令期间临时放宽该设置。
   $ErrorActionPreference = "Continue"
   try {
     $stdout = & $script:CliPath @CliArgs 2> $errFile
@@ -132,8 +133,8 @@ try {
   )
   Copy-Item -LiteralPath (Join-Path $repoRoot "dist") -Destination (Join-Path $sourceDir "public") -Recurse
 
-  # PowerShell 5 wraps native stderr redirection as NativeCommandError under
-  # $ErrorActionPreference = Stop, so send diagnostics to a file instead.
+  # PowerShell 5 在 $ErrorActionPreference = Stop 时会把原生命令的 stderr 重定向
+  # 包装成 NativeCommandError，因此改为把诊断信息写入文件。
   $prepareErrFile = [System.IO.Path]::GetTempFileName()
   $prepareRaw = @()
   $prepareErr = ""

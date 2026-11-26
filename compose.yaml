@@ -1,6 +1,8 @@
+# 本地开发用 compose 服务：在容器内启动 Astro dev server 并挂载仓库源码。
 services:
   app:
     image: ghcr.io/pnpm/pnpm:11.3.0
+    # 将容器 4321 端口映射到宿主机
     ports:
       - 4321:4321
     working_dir: /app
@@ -10,12 +12,14 @@ services:
       && pnpm install --frozen-lockfile
       && pnpm prune
       && pnpm run dev --host 0.0.0.0"
+    # 通过 HTTP 探活确认 dev server 已就绪
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:4321"]
       interval: 10s
       timeout: 5s
       retries: 10
       start_period: 60s
+    # 挂载仓库源码，并隔离容器内的 node_modules
     volumes:
       - ./:/app
       - /app/node_modules

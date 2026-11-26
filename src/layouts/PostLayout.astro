@@ -16,6 +16,7 @@ const { site } = config;
 const { title, description, ogImage, canonicalURL, pubDatetime, modDatetime } =
   Astro.props;
 
+// 生成 BlogPosting 结构化数据（JSON-LD），供搜索引擎解析
 const structuredData = {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
@@ -35,7 +36,7 @@ const structuredData = {
 
 <Layout {title} {description} {ogImage} {canonicalURL}>
   <Fragment slot="head">
-    <!-- Override og:type for article pages -->
+    <!-- 文章页覆盖 og:type -->
     <meta property="og:type" content="article" />
 
     {
@@ -55,6 +56,7 @@ const structuredData = {
       )
     }
 
+    <!-- JSON-LD 结构化数据 -->
     <script
       type="application/ld+json"
       is:inline

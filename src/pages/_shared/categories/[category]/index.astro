@@ -13,6 +13,7 @@ import { categoryMeta } from "@/data/categories";
 import { tplStr, useTranslations } from "@/i18n";
 import config from "@/config";
 
+// 为每个分类 slug 生成静态路径
 export const getStaticPaths = (async () => {
   const posts = await getCollection("posts");
   return getCategoryTree(posts).map(category => ({

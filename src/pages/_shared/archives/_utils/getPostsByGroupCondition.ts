@@ -3,6 +3,9 @@ import type { CollectionEntry } from "astro:content";
 type GroupKey = string | number | symbol;
 type GroupFunction<T> = (item: T, index?: number) => GroupKey;
 
+/**
+ * 按 groupFunction 返回的分组键聚合文章，返回「分组键 → 文章数组」映射。
+ */
 export function getPostsByGroupCondition(
   posts: CollectionEntry<"posts">[],
   groupFunction: GroupFunction<CollectionEntry<"posts">>

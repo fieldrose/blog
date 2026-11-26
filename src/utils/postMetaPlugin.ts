@@ -9,7 +9,7 @@ const SLUG_FIELD = /^slug:\s*["']?([^"'\s#]+)/m;
 export type PostMeta = {
   draft: boolean;
   pubDatetime: string | undefined;
-  /** Content id suffix: the glob loader uses `data.slug` verbatim when set. */
+  /** Content id 后缀：glob 加载器在设置该字段时原样使用 `data.slug`。 */
   slug: string | undefined;
 };
 
@@ -22,16 +22,14 @@ type ResolveContext = {
 };
 
 /**
- * Resolves `?post-meta` imports of markdown files to their frontmatter fields.
+ * 把 markdown 文件的 `?post-meta` 导入解析为其 frontmatter 字段。
  *
- * Server routes need a published-slug whitelist, but importing the real content
- * modules would pull the full markdown pipeline (Shiki grammars, rendered HTML)
- * into the worker bundle. This plugin reads the file at build time and emits
- * only the two fields the whitelist needs.
+ * 服务端路由需要已发布 slug 的白名单，但直接导入真实内容模块会把完整
+ * markdown 管线（Shiki 语法、渲染后的 HTML）带进 worker 打包产物。
+ * 该插件在构建期读取文件，只产出白名单所需的两个字段。
  *
- * Imports are rewritten to opaque virtual ids: Astro's own markdown plugin
- * claims every id containing a `.md`/`.mdx` extension in its `load` hook, and
- * would compile the full entry again.
+ * 导入会被改写成不透明的虚拟 id：Astro 自带的 markdown 插件会在 `load`
+ * 钩子中接管所有含 `.md`/`.mdx` 扩展名的 id，从而把整条内容重新编译一遍。
  */
 export function postMetaPlugin() {
   const fileById = new Map<string, string>();

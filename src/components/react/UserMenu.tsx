@@ -277,7 +277,7 @@ function UserMenuInner({ labels, variant = "header" }: Props) {
   );
 }
 
-/** Header island, hydrated at idle. Self-contained with the shared QueryClient. */
+/** Header island，idle 时 hydration；自带共享的 QueryClient，可独立使用。 */
 export default function UserMenu({ labels, variant }: Props) {
   return (
     <QueryProvider>

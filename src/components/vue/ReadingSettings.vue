@@ -10,11 +10,12 @@ import {
 } from "@/stores/reading";
 import type { UIStrings } from "@/i18n/types";
 
+// 阅读设置面板：调节字号、行高、内容宽度与动画，状态由 reading store 持久化
 const props = defineProps<{
   labels: UIStrings["readingSettings"];
-  /** Extra classes to merge onto the trigger button. */
+  /** 合并到触发按钮上的额外 class。 */
   buttonClass?: string;
-  /** When true, skip the gear button and render the panel inline (always visible). */
+  /** 为 true 时省略齿轮按钮，直接把面板内联渲染（始终可见）。 */
   inline?: boolean;
 }>();
 
@@ -22,8 +23,8 @@ const store = useReadingStore();
 syncReadingCssVariables(store);
 
 const isOpen = ref(false);
-// Until mounted, bind controls to the SSR defaults so the first client
-// render (hydrated with persisted prefs in the store) matches server HTML.
+// 挂载前控件绑定 SSR 默认值，使首次客户端渲染（store 中已恢复持久化偏好）
+// 与服务端 HTML 保持一致，避免 hydration 不匹配。
 const hydrated = ref(false);
 const triggerRef = ref<HTMLButtonElement | null>(null);
 const panelRef = ref<HTMLDivElement | null>(null);

@@ -1,3 +1,4 @@
+/** 英文 UI 文案字典，key 与 UIStrings 类型一一对应。 */
 import type { UIStrings } from "../types";
 
 export default {

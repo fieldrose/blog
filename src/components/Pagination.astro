@@ -6,6 +6,7 @@ import IconArrowRight from "@/assets/icons/IconArrowRight.svg";
 import LinkButton from "./LinkButton.astro";
 import { useTranslations } from "@/i18n";
 
+// 分页导航：上一页、当前页码与下一页，仅一页时整体不渲染
 type Props = {
   page: Page<CollectionEntry<"posts">>;
 };

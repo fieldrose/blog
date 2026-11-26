@@ -1,5 +1,10 @@
 import type { FontData } from "astro:assets";
 
+/**
+ * 按字重与样式查找字体文件的 URL，供 satori 生成 OG 图时注入字体。
+ * `options.style` 默认 normal、`options.format` 默认 truetype；
+ * 命中多个候选时取第一个匹配格式，未匹配到返回 undefined。
+ */
 export function getFontPathByWeight(
   fonts: FontData[],
   weight: number,

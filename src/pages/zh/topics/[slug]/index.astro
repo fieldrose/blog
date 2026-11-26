@@ -1,4 +1,5 @@
 ---
+// 中文专题详情路由包装器，复用 _shared/topics/[slug]/index.astro。
 export { getStaticPaths } from "@/pages/_shared/topics/[slug]/index.astro";
 import Parent from "@/pages/_shared/topics/[slug]/index.astro";
 const props = Astro.props;

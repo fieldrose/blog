@@ -1,4 +1,5 @@
 ---
+// 单个专栏详情页，按 seriesOrder 排序展示文章。
 import { getCollection } from "astro:content";
 import type { GetStaticPathsOptions } from "astro";
 import Layout from "@/layouts/Layout.astro";
@@ -10,6 +11,7 @@ import Footer from "@/components/Footer.astro";
 import { tplStr, useTranslations } from "@/i18n";
 import config from "@/config";
 
+// 为每个系列名生成静态路径
 export async function getStaticPaths({}: GetStaticPathsOptions) {
   const posts = await getCollection("posts", ({ data }) => !data.draft);
   const seriesNames = new Set<string>();

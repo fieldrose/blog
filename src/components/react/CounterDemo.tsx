@@ -2,8 +2,8 @@ import { useStore } from "@nanostores/react";
 import { counterAtom, incrementCounter, resetCounter } from "@/stores/demo";
 
 /**
- * React 19 island bound to the framework-agnostic nanostores atom.
- * Paired with the Vue CounterDemo on the framework-islands demo article.
+ * 绑定到与框架无关的 nanostores atom 的 React 19 island。
+ * 在框架岛屿演示文章中与 Vue CounterDemo 配对使用。
  */
 export default function CounterDemo() {
   const count = useStore(counterAtom);

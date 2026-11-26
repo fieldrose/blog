@@ -3,6 +3,10 @@ import type { ReactionType, ReactionsResponse } from "@/types/api";
 import { apiJson } from "@/lib/http";
 import { queryKeys } from "./keys";
 
+/**
+ * 查询指定文章的互动统计与当前用户的选中态。
+ * `slug` 为空时禁用查询，避免请求无效路径。
+ */
 export function useReactions(slug: string) {
   return useQuery({
     queryKey: queryKeys.reactions(slug),
@@ -12,10 +16,10 @@ export function useReactions(slug: string) {
 }
 
 /**
- * Toggle a reaction with an optimistic update.
- * - onMutate: apply the expected next state immediately and snapshot the old one
- * - onError: roll back to the snapshot
- * - onSettled: trust server state (response body), otherwise refetch
+ * 切换互动状态，采用乐观更新。
+ * - onMutate：立即写入预期的新状态，并快照旧状态
+ * - onError：回滚到快照
+ * - onSettled：以服务端响应体为准，否则重新请求
  */
 export function useToggleReaction(slug: string) {
   const queryClient = useQueryClient();

@@ -1,3 +1,4 @@
+// 输出 robots.txt，声明爬虫规则并指向 sitemap。
 import type { APIRoute } from "astro";
 
 const getRobotsTxt = (sitemapURL: URL) => `

@@ -1,7 +1,11 @@
 ---
+# Commitizen 配置：遵循 Conventional Commits 约定
 commitizen:
   name: cz_conventional_commits
+  # git tag 格式，例如 v1.2.3
   tag_format: v$version
+  # 版本号提升时同步更新 CHANGELOG
   update_changelog_on_bump: true
+  # 版本号来源与版本语义
   version_provider: npm
   version_scheme: semver

@@ -1,11 +1,11 @@
 import { defineStore } from "pinia";
 import { watchEffect } from "vue";
 
-// 读取设置
+// localStorage 中阅读设置的存储键与版本号
 const STORAGE_KEY = "reading-settings";
 const STORAGE_VERSION = 1;
 
-// 保存设置
+// 需要持久化的字段
 const PERSIST_FIELDS = [
   "fontScale",
   "lineHeight",
@@ -42,6 +42,7 @@ const DEFAULTS = {
 
 export const READING_DEFAULTS = DEFAULTS;
 
+// 把字号缩放限制在合法区间，并对齐到步长
 function clampFontScale(value: number): number {
   if (!Number.isFinite(value)) return DEFAULTS.fontScale;
   const stepped = Math.round(value / FONT_SCALE_STEP) * FONT_SCALE_STEP;
@@ -61,6 +62,7 @@ function isValidContentWidth(value: unknown): value is ContentWidth {
   );
 }
 
+// 从 localStorage 读取并校验持久化设置，版本不符或解析失败时返回 null
 function readPersisted(): Partial<typeof DEFAULTS> | null {
   if (typeof localStorage === "undefined") return null;
   try {
@@ -84,6 +86,7 @@ function readPersisted(): Partial<typeof DEFAULTS> | null {
   }
 }
 
+// 把状态写入根元素 CSS 变量，供文章样式读取
 function applyCssVariables(state: typeof DEFAULTS) {
   if (typeof document === "undefined") return;
   const root = document.documentElement;
@@ -95,6 +98,7 @@ function applyCssVariables(state: typeof DEFAULTS) {
   );
 }
 
+// 阅读设置 store：字号、行高、内容宽度与简略动画
 export const useReadingStore = defineStore("reading", {
   state: () => ({ ...DEFAULTS, ...(readPersisted() ?? {}) }),
   actions: {

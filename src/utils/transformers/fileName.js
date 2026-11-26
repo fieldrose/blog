@@ -1,22 +1,22 @@
 /**
- * CustomShiki transformer that adds file name labels to code blocks.
+ * 自定义 Shiki transformer，为代码块添加文件名标签。
  *
- * This transformer looks for the `file="filename"` meta attribute in code blocks
- * and creates a styled label showing the filename. It supports two different
- * styling options and can optionally hide the green dot indicator.
+ * 该 transformer 读取代码块中的 `file="filename"` meta 属性，
+ * 生成一个展示文件名的样式化标签。支持两种样式变体，
+ * 并可选隐藏绿色圆点指示器。
  *
- * @param {Object} options - Configuration options for the transformer
- * @param {string} [options.style="v2"] - The styling variant to use
- *   - `"v1"`: Tab-style with rounded top corners, positioned at top-left
- *   - `"v2"`: Badge-style with border, positioned at top-left with offset
- * @param {boolean} [options.hideDot=false] - Whether to hide the green dot indicator
+ * @param {Object} options - transformer 配置项
+ * @param {string} [options.style="v2"] - 样式变体
+ *   - `"v1"`：标签页风格，顶部圆角，位于左上角
+ *   - `"v2"`：徽标风格，带边框，位于左上角并带偏移
+ * @param {boolean} [options.hideDot=false] - 是否隐藏绿色圆点指示器
  */
 export const transformerFileName = ({
   style = "v2",
   hideDot = false,
 } = {}) => ({
   pre(node) {
-    // Add CSS custom property to the node
+    // 向节点写入 CSS 自定义属性
     const fileNameOffset = style === "v1" ? "0.75rem" : "-0.75rem";
     node.properties.style =
       (node.properties.style || "") + `--file-name-offset: ${fileNameOffset};`;
@@ -37,13 +37,13 @@ export const transformerFileName = ({
 
     if (!file) return;
 
-    // Add additional margin to code block
+    // 为代码块增加额外外边距
     this.addClassToHast(
       node,
       `mt-8 ${style === "v1" ? "rounded-tl-none" : ""}`
     );
 
-    // Add file name to code block
+    // 将文件名节点插入代码块
     node.children.push({
       type: "element",
       tagName: "span",

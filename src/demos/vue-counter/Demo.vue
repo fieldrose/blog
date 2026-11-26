@@ -3,8 +3,8 @@ import { ref } from "vue";
 
 /**
  * Vue 3 island 示例：
- * - framework: "vue" → 在 .astro 里会以 client:visible 挂载
- * - 组件内部完全是 Vue 生态（ref / @click）
+ * - framework: "vue" → 在 .astro 里以 client:visible 挂载
+ * - 组件内部完全使用 Vue 生态（ref / @click）
  * - 只渲染舞台内部内容（外壳由 DemoCard.astro 提供）
  */
 const count = ref(0);

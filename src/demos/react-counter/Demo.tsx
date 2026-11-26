@@ -2,8 +2,8 @@ import { useState } from "react";
 
 /**
  * React 19 island 示例：
- * - framework: "react" → 在 .astro 里会以 client:visible 挂载
- * - 组件内部完全是 React 生态（useState / Tailwind class）
+ * - framework: "react" → 在 .astro 里以 client:visible 挂载
+ * - 组件内部完全使用 React 生态（useState / Tailwind class）
  * - 只渲染舞台内部内容（外壳由 DemoCard.astro 提供）
  */
 export default function Demo() {

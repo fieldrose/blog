@@ -1,12 +1,12 @@
 @plugin "@tailwindcss/typography";
 
 @layer base {
-  /* ===== Override default Tailwind Typography styles ===== */
+  /* ===== 覆盖 Tailwind Typography 的默认样式 ===== */
   .app-prose {
     @apply prose;
 
-    /* Reading-settings overrides (Vue Pinia island writes these to <html>).
-       Falls back to the original defaults when unset. */
+    /* 阅读设置的覆盖值（由 Vue Pinia island 写入 <html>）：
+       未设置时回退到原始默认值。 */
     font-size: calc(1rem * var(--reader-font-scale, 1));
     line-height: var(--reader-line-height, 1.75);
     max-width: var(--reader-max-width, 48rem);
@@ -118,7 +118,7 @@
     }
   }
 
-  /* ===== Code Blocks & Syntax Highlighting ===== */
+  /* ===== 代码块与语法高亮 ===== */
   .astro-code {
     @apply outline-border flex border bg-(--shiki-light-bg) text-(--shiki-light) [&_span]:text-(--shiki-light);
   }
@@ -127,7 +127,7 @@
     @apply bg-(--shiki-dark-bg) text-(--shiki-dark) [&_span]:text-(--shiki-dark);
   }
 
-  /* Styles for Shiki transformers */
+  /* Shiki transformers 的 diff / 高亮样式 */
   /* https://shiki.style/packages/transformers */
   .astro-code {
     .line.diff.add {

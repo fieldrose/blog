@@ -1,4 +1,5 @@
 ---
+// 单个专题详情页，按配置顺序列出文章。
 import type { GetStaticPaths } from "astro";
 import { getCollection } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
@@ -12,6 +13,7 @@ import { resolveTopics } from "@/utils/getTopics";
 import { topics } from "@/data/topics";
 import config from "@/config";
 
+// 为每个专题生成静态路径
 export const getStaticPaths = (() =>
   topics.map(topic => ({
     params: { slug: topic.slug },

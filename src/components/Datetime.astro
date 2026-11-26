@@ -10,7 +10,8 @@ import { useTranslations } from "@/i18n";
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-// Astro locale → dayjs locale（中文需要 zh-cn）
+// 日期展示组件：按文章 locale 与站点时区格式化时间，存在更新时优先展示修改时间
+// Astro locale 映射为 dayjs locale（中文需要 zh-cn）
 const DAYJS_LOCALE: Record<string, string> = {
   zh: "zh-cn",
   en: "en",

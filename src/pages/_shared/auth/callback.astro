@@ -33,13 +33,14 @@ const t = useTranslations(locale);
   import { getBrowserSupabase } from "@/lib/supabase/client";
 
   function safeNext(value: string | null): string {
-    // Only allow same-origin absolute paths; block open-redirects ("//host").
+    // 仅允许同源绝对路径，拦截 "//host" 形式的开放重定向
     if (value && value.startsWith("/") && !value.startsWith("//")) {
       return value;
     }
     return "/";
   }
 
+  // 处理认证回调：token_hash 走 OTP 校验，其余依赖 SDK 的 URL 会话检测
   async function handleCallback() {
     const status = document.getElementById("callback-status");
     const params = new URLSearchParams(window.location.search);
@@ -48,12 +49,9 @@ const t = useTranslations(locale);
     const type = params.get("type") ?? "email";
 
     try {
-      // Creating the client with `detectSessionInUrl: true` already exchanges
-      // the OAuth `?code=` (PKCE) for a session. Calling
-      // exchangeCodeForSession() here as well races with that internal
-      // exchange and the second call fails ("code already used"), which used
-      // to leave the page stuck on the error state even though sign-in
-      // succeeded.
+      // 使用 detectSessionInUrl: true 创建客户端时，SDK 已完成 OAuth
+      // ?code=（PKCE）到会话的交换。此处再调用 exchangeCodeForSession()
+      // 会与内部交换竞争并报「code 已使用」，登录其实成功却会停留在错误态。
       const supabase = getBrowserSupabase();
 
       if (tokenHash) {
@@ -66,8 +64,7 @@ const t = useTranslations(locale);
         return;
       }
 
-      // getSession() awaits the SDK's URL detection, so by this point the
-      // code exchange (if any) has completed.
+      // getSession() 会等待 SDK 的 URL 检测，此时 code 交换（如有）已完成。
       const { data, error } = await supabase.auth.getSession();
       if (error) throw error;
       if (!data.session) throw new Error("No session in callback URL.");

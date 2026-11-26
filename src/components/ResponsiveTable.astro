@@ -1,12 +1,13 @@
 ---
+// 响应式表格容器：横向滚动并支持 minimal / striped 两种视觉变体
 type Props = {
   class?: string;
   variant?:
-    /** No borders */
+    /** 无边框 */
     | "minimal"
-    /** 1st, 3rd, 5th … body rows tinted — classic zebra. */
+    /** 第 1、3、5… 行正文加底色，经典的斑马纹。 */
     | "striped"
-    /** 1st, 3rd, 5th … body rows tinted + no borders. */
+    /** 第 1、3、5… 行正文加底色且无边框。 */
     | "striped-minimal";
 };
 

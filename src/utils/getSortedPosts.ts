@@ -2,10 +2,10 @@ import type { CollectionEntry } from "astro:content";
 import { postFilter } from "./postFilter";
 
 /**
- * Returns posts that are eligible to be shown to users, sorted by “last updated”
- * descending (uses `modDatetime` when present, otherwise `pubDatetime`).
+ * 返回可展示给用户的文章，并按「最后更新时间」倒序排列
+ *（存在 `modDatetime` 时使用该字段，否则使用 `pubDatetime`）。
  *
- * Note: filtering respects drafts and scheduled posts via `postFilter()`.
+ * 筛选经 `postFilter()` 处理，会排除草稿与未到发布时间的定时文章。
  */
 export function getSortedPosts(posts: CollectionEntry<"posts">[]) {
   return posts

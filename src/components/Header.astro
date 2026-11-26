@@ -22,6 +22,7 @@ import { locales } from "@/i18n/locales";
 import { hasSupabasePublicEnv } from "@/lib/env";
 import config from "@/config";
 
+// 站点头部：桌面导航与移动端抽屉，含主题、语言、阅读设置与登录入口
 const { site, features } = config;
 
 const locale = Astro.currentLocale ?? config.site.lang;

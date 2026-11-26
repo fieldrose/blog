@@ -1,9 +1,9 @@
--- 0001_init.sql — profiles + post reactions
--- Apply with: supabase db push  (or paste into the Supabase SQL editor)
--- Idempotent: safe to re-run.
+-- 0001_init.sql — profiles 与文章互动
+-- 应用方式：supabase db push（或粘贴到 Supabase SQL 编辑器执行）
+-- 幂等：可重复执行。
 
 -- ─────────────────────────────────────────────────────────────
--- profiles: 1:1 with auth.users, auto-created on signup
+-- profiles：与 auth.users 一一对应，注册时自动创建
 -- ─────────────────────────────────────────────────────────────
 create table if not exists public.profiles (
   id          uuid primary key references auth.users (id) on delete cascade,
@@ -24,7 +24,7 @@ create policy "users update own profile"
   using (auth.uid() = id)
   with check (auth.uid() = id);
 
--- No INSERT policy for anon/authenticated: rows only come from the trigger below.
+-- anon/authenticated 没有 INSERT 策略：数据行只由下方触发器写入。
 grant select on public.profiles to anon, authenticated;
 grant update (username) on public.profiles to authenticated;
 
@@ -63,7 +63,7 @@ create trigger on_auth_user_created
   for each row execute function public.handle_new_user();
 
 -- ─────────────────────────────────────────────────────────────
--- reactions: exactly one vote per identity per post per type
+-- reactions：每个身份、每篇文章、每种互动类型仅允许一票
 -- ─────────────────────────────────────────────────────────────
 create table if not exists public.reactions (
   id          bigint generated always as identity primary key,
@@ -73,7 +73,7 @@ create table if not exists public.reactions (
   client_id   text,
   created_at  timestamptz not null default now(),
 
-  -- A row is EITHER a logged-in vote OR an anonymous-device vote, never both.
+  -- 每行要么是登录用户投票，要么是匿名设备投票，二者不可兼得。
   constraint reactions_identity_kind check (
     (user_id is not null and client_id is null)
     or
@@ -83,7 +83,7 @@ create table if not exists public.reactions (
     check (reaction in ('like', 'fire', 'idea', 'question'))
 );
 
--- Mutual exclusion: same identity cannot vote the same type twice.
+-- 互斥约束：同一身份不能对同一类型重复投票。
 create unique index if not exists reactions_user_uniq
   on public.reactions (post_slug, reaction, user_id)
   where user_id is not null;
@@ -97,13 +97,13 @@ create index if not exists reactions_post_idx
 
 alter table public.reactions enable row level security;
 
--- Public read...
+-- 公开读取……
 drop policy if exists "reactions are publicly readable" on public.reactions;
 create policy "reactions are publicly readable"
   on public.reactions for select
   using (true);
 
--- ...logged-in users write only their own rows...
+-- ……登录用户只能写入自己的记录……
 drop policy if exists "users insert own reactions" on public.reactions;
 create policy "users insert own reactions"
   on public.reactions for insert
@@ -114,14 +114,14 @@ create policy "users delete own reactions"
   on public.reactions for delete
   using (user_id = auth.uid());
 
--- Explicit grants: anon gets READ ONLY (no INSERT/UPDATE/DELETE policy exists
--- for anon, and RLS denies by default regardless of grants).
+-- 显式授权：anon 仅可读（anon 没有 INSERT/UPDATE/DELETE 策略，
+-- 且无论授权如何，RLS 默认拒绝）。
 grant select on public.reactions to anon, authenticated;
 grant insert, delete on public.reactions to authenticated;
 revoke insert, update, delete on public.reactions from anon;
 
 -- ─────────────────────────────────────────────────────────────
--- Aggregation views: counts only, no identity columns
+-- 聚合视图：只暴露计数，不含身份列
 -- ─────────────────────────────────────────────────────────────
 create or replace view public.reaction_counts
 with (security_invoker = off)

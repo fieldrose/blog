@@ -1,8 +1,10 @@
+# 构建命令与静态产物目录
 [build]
   base = "."
   command = "pnpm run build"
   publish = "dist"
 
+# Netlify 构建使用的 Node.js 版本
 [build.environment]
   NODE_VERSION = "22"
 

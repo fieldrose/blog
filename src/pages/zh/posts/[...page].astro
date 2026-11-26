@@ -1,4 +1,5 @@
 ---
+// 中文文章列表分页路由包装器，复用 _shared/posts/[...page].astro。
 export { getStaticPaths } from "@/pages/_shared/posts/[...page].astro";
 import Parent from "@/pages/_shared/posts/[...page].astro";
 const props = Astro.props;

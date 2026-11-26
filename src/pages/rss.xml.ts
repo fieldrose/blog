@@ -1,3 +1,4 @@
+// 生成全站 RSS 订阅源，按修改时间倒序输出文章条目。
 import rss from "@astrojs/rss";
 import { getCollection } from "astro:content";
 import { getSortedPosts } from "@/utils/getSortedPosts";

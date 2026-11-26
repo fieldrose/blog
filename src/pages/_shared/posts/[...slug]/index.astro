@@ -25,10 +25,8 @@ export async function getStaticPaths() {
   const posts = await getCollection("posts");
   const sortedPosts = getSortedPosts(posts);
 
-  // Series entries carry a curated reading order (`seriesOrder`), so their
-  // adjacent navigation stays inside the series. Standalone posts keep the
-  // global chronological order — mixing both would let a series end jump into
-  // an unrelated subject.
+  // 专栏文章按 seriesOrder 维护阅读顺序，前后篇导航只在专栏内部；
+  // 独立文章沿用全局时间顺序，混用会让专栏末篇跳到无关主题。
   const seriesGroups = new Map<string, CollectionEntry<"posts">[]>();
 
   for (const post of posts.filter(postFilter)) {
@@ -63,8 +61,8 @@ export async function getStaticPaths() {
         nextPost = toAdjacent(seriesGroup[seriesIndex + 1]);
       }
     } else {
-      // sortedPosts is newest-first, so "older" (prev) is a higher index
-      // and "newer" (next) is a lower index.
+      // sortedPosts 为新到旧排序，因此较旧（prev）是更大的索引，
+      // 较新（next）是更小的索引。
       prevPost = toAdjacent(sortedPosts[index + 1]);
       nextPost = toAdjacent(sortedPosts[index - 1]);
     }
@@ -116,6 +114,7 @@ const { Content } = await render(post);
 const t = useTranslations(locale);
 const showReactions = config.features.reactions && hasSupabasePublicEnv;
 
+// 动态 OG 图：未显式配置时指向本路由生成的 PNG 地址
 let ogImageUrl: string | undefined;
 
 if (typeof initOgImage === "string") {
@@ -263,9 +262,8 @@ const ogImage = ogImageUrl
   }
   updateScrollProgress();
 
-  // Localize the "Table of contents" heading/collapse summary per page locale.
-  // The markdown source keeps the English text (it anchors the auto-TOC);
-  // this swaps the visible text nodes without touching heading anchors.
+  // 按页面语言本地化「Table of contents」标题与折叠摘要。
+  // Markdown 源文保留英文（锚点依赖它），这里只替换可见文本节点，不改标题锚点。
   function localizeTableOfContents() {
     const article = document.getElementById("article");
     if (!article) return;
@@ -366,7 +364,7 @@ const ogImage = ogImageUrl
   }
   attachCopyButtons();
 
-  /** Accessible image lightbox for article images. */
+  /** 文章图片的无障碍灯箱预览。 */
   function initLightbox() {
     const article = document.getElementById("article");
     if (!article) return;
@@ -377,8 +375,8 @@ const ogImage = ogImageUrl
     let overlay = null;
     let lastFocused = null;
 
-    // Defer attribute mutations so they don't push the LCP timestamp.
-    // Event listeners below use delegation and don't need the attributes to exist yet.
+    // 延迟写入属性，避免影响 LCP 时间戳。
+    // 下方事件监听使用事件委托，不依赖这些属性先存在。
     requestAnimationFrame(() => {
       const images = Array.from(article.querySelectorAll("img"));
       for (const image of images) {
@@ -568,7 +566,7 @@ const ogImage = ogImageUrl
       }
       const remove = () => el.remove();
       el.addEventListener("transitionend", remove, { once: true });
-      setTimeout(remove, 250); // fallback in case transitionend never fires
+      setTimeout(remove, 250); // transitionend 未触发时的兜底
       el.classList.remove("opacity-100");
     }
 
@@ -580,7 +578,7 @@ const ogImage = ogImageUrl
       }
     }
 
-    // Keep keyboard focus inside the open dialog.
+    // 将键盘焦点限制在打开的对话框内。
     function trapFocus(e) {
       if (!overlay) return;
       const focusables = overlay.querySelectorAll(

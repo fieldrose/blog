@@ -11,6 +11,7 @@ type Phase = "form" | "loading" | "checkEmail";
 const inputClass =
   "w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-accent";
 
+// 登录/注册对话框：邮箱密码登录注册、GitHub 登录与校验错误提示
 export default function AuthDialog({
   labels,
   onClose,
@@ -36,7 +37,7 @@ export default function AuthDialog({
   useEffect(() => {
     closeRef.current?.focus();
 
-    // Window-level so Escape works regardless of which child has focus.
+    // 挂在 window 上，保证焦点落在任意子元素时 Esc 都能关闭
     function onWindowKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") onClose();
     }

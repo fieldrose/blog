@@ -4,6 +4,7 @@ import { getRelativeLocaleUrl } from "astro:i18n";
 import { getPostUrl } from "@/utils/getPostPaths";
 import config from "@/config";
 
+// 专栏导航：列出当前文章所属专栏的全部文章，并高亮当前篇
 type Props = {
   currentPost: {
     id: string;

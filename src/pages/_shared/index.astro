@@ -23,6 +23,7 @@ const t = useTranslations(locale);
 
 const posts = await getCollection("posts");
 const sortedPosts = getSortedPosts(posts);
+// 文章按 featured 与普通文章分流，首页普通文章只展示前若干篇
 const featuredPosts = sortedPosts.filter(({ data }) => data.featured);
 const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
 const seriesList = getSeriesList(sortedPosts);
@@ -220,6 +221,7 @@ const homePath = getRelativeLocaleUrl(locale, "");
 </Layout>
 
 <script>
+  // 记录当前首页地址，供文章页返回按钮使用
   document.addEventListener("astro:page-load", () => {
     const indexLayout = (document.querySelector("#main-content") as HTMLElement)
       ?.dataset;

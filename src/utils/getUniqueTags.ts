@@ -8,11 +8,11 @@ type Tag = {
 };
 
 /**
- * Builds a de-duplicated, sorted tag list from posts.
+ * 从文章中构建去重、排序后的标签列表。
  *
- * - Drafts and scheduled posts are excluded via `postFilter()`
- * - `tag` is the slug used in URLs; `tagName` is the original label for display
- * - Uniqueness is based on the slug (so differently-cased labels collapse)
+ * - 经 `postFilter()` 排除草稿与定时文章
+ * - `tag` 为 URL 中使用的 slug，`tagName` 为展示用原始标签
+ * - 按 slug 去重，仅大小写不同的标签会合并
  */
 export function getUniqueTags(posts: CollectionEntry<"posts">[]) {
   const tags: Tag[] = posts

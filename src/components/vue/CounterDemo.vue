@@ -2,8 +2,8 @@
 import { useStore } from "@nanostores/vue";
 import { counterAtom, incrementCounter, resetCounter } from "@/stores/demo";
 
-// Vue 3 island bound to the SAME framework-agnostic nanostores atom
-// as the React CounterDemo.
+// Vue 3 island，绑定到与框架无关的 nanostores atom，
+// 与 React 的 CounterDemo 共用同一份状态。
 const count = useStore(counterAtom);
 </script>
 

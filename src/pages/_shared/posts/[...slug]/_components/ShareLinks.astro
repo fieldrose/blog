@@ -15,6 +15,7 @@ const pageUrl = Astro.url;
 const platformLabel = (name: string) =>
   name.charAt(0).toUpperCase() + name.slice(1);
 
+// 动态加载各平台图标组件，缺少图标的平台自动跳过
 const items = await Promise.all(
   shareLinks.map(async ({ name, url, linkTitle }) => {
     const mod = await icons[`/src/assets/icons/socials/${name}.svg`]?.();

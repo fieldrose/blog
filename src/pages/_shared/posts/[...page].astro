@@ -1,4 +1,5 @@
 ---
+// 文章列表分页页，按 perPage 分页并展示分类导航。
 import type { GetStaticPaths } from "astro";
 import { getCollection } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
@@ -25,6 +26,7 @@ const locale = Astro.currentLocale ?? config.site.lang;
 const t = useTranslations(locale);
 
 const allPosts = await getCollection("posts");
+// 顶部分类筛选入口使用完整分类树
 const categories = getCategoryTree(allPosts);
 ---
 

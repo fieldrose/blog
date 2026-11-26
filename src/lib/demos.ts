@@ -1,11 +1,10 @@
 /**
- * Demo metadata loader. Scans all meta.ts files under src/demos/<slug>/.
- * Sorts results by the "order" field in each meta.
+ * demo 元数据加载器：扫描 src/demos/<slug>/ 下的全部 meta.ts，
+ * 并按各 meta 的 order 字段排序。
  *
- * NOTE: Components (Demo.astro / Demo.tsx / Demo.vue) MUST be statically
- * imported in .astro template files. Astro 7 does NOT support dynamic
- * component rendering via the <component is={...}> pattern.
- * This module only discovers and sorts; actual imports happen in demos/index.astro.
+ * 注意：组件（Demo.astro / Demo.tsx / Demo.vue）必须在 .astro 模板中静态导入。
+ * Astro 7 不支持通过 <component is={...}> 模式动态渲染组件。
+ * 本模块只负责发现与排序，实际导入发生在 demos/index.astro。
  */
 import type { DemoMeta } from "@/types/demo";
 
@@ -19,6 +18,7 @@ const metaGlobs = import.meta.glob<{ default: DemoMeta }>(
   { eager: true },
 );
 
+/** 返回按 order 升序排列的 demo 列表（slug 取自目录名）。 */
 export function discoverDemos(): DiscoveredDemo[] {
   const entries: DiscoveredDemo[] = Object.entries(metaGlobs).map(
     ([path, mod]) => {

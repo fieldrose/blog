@@ -1,103 +1,103 @@
 interface SiteConfig {
-  /** Deployed URL of the site, e.g. "https://example.com" */
+  /** 站点部署地址，例如 "https://example.com" */
   url: string;
-  /** Blog title shown in header and meta tags */
+  /** 页头与 meta 标签中展示的博客标题 */
   title: string;
-  /** Short description used in SEO meta and RSS feed */
+  /** 用于 SEO meta 与 RSS 的简短描述 */
   description: string;
-  /** Default post author name */
+  /** 文章默认作者名 */
   author: string;
-  /** Author profile URL (used in structured data) */
+  /** 作者主页链接（用于结构化数据） */
   profile?: string;
-  /** Fallback OG image filename in /public, e.g. "og.jpg" */
+  /** /public 下的兜底 OG 图片文件名，例如 "og.jpg" */
   ogImage?: string;
-  /** HTML lang attribute, defaults to "en" */
+  /** HTML lang 属性，默认 "en" */
   lang?: string;
-  /** IANA timezone for post dates, e.g. "Asia/Bangkok" */
+  /** 文章日期使用的 IANA 时区，例如 "Asia/Bangkok" */
   timezone?: string;
-  /** Text direction */
+  /** 文本方向 */
   dir?: "ltr" | "rtl" | "auto";
-  /** Google Search Console verification meta tag value */
+  /** Google Search Console 验证 meta 标签的内容值 */
   googleVerification?: string;
 }
 
 interface PostsConfig {
-  /** Posts per page on paginated listing pages */
+  /** 分页列表页每页的文章数 */
   perPage?: number;
-  /** Posts shown on the index/home page */
+  /** 首页展示的文章数 */
   perIndex?: number;
   /**
-   * Scheduled posts within this window (ms) of their pubDatetime
-   * are shown as published. Defaults to 15 minutes.
+   * 距 pubDatetime 在该时间窗（毫秒）内的定时文章按已发布处理，
+   * 默认 15 分钟。
    */
   scheduledPostMargin?: number;
 }
 
 interface FeaturesConfig {
-  /** Enable light/dark mode toggle. Defaults to true. */
+  /** 启用明暗主题切换，默认 true。 */
   lightAndDarkMode?: boolean;
   /**
-   * Generate dynamic OG images per post and provide `/og.png` when the static
-   * `public/{site.ogImage}` file is absent. When false, that file is required
-   * for the default layout OG image (build fails if missing).
+   * 为每篇文章生成动态 OG 图，并在静态文件 `public/{site.ogImage}`
+   * 缺失时提供 `/og.png`。设为 false 时该文件必须存在，
+   * 否则默认布局的 OG 图会构建失败。
    */
   dynamicOgImage?: boolean;
-  /** Show the /archives page and link it in nav. Defaults to true. */
+  /** 展示 /archives 页面并在导航中挂链接，默认 true。 */
   showArchives?: boolean;
-  /** Show back button on post detail pages. Defaults to true. */
+  /** 文章详情页展示返回按钮，默认 true。 */
   showBackButton?: boolean;
-  /** "Edit page" link shown on post detail pages. */
+  /** 文章详情页展示的「编辑页面」链接。 */
   editPost?:
     | {
         enabled: true;
-        /** Base URL for the edit link, e.g. GitHub edit URL */
+        /** 编辑链接的基础 URL，例如 GitHub 编辑地址 */
         url: string;
       }
     | { enabled: false };
   /**
-   * Search provider. "pagefind" ships in the base template.
-   * Set to false to disable search entirely.
+   * 搜索方案。基础模板自带 "pagefind"。
+   * 设为 false 即完全关闭搜索。
    */
   search?: "pagefind" | false;
-  /** Supabase Auth login/registration UI. Defaults to false. */
+  /** Supabase Auth 登录 / 注册 UI，默认 false。 */
   auth?: boolean;
-  /** Per-post emoji reactions. Defaults to false. */
+  /** 单篇文章的表情反馈，默认 false。 */
   reactions?: boolean;
-  /** RAG AI assistant island. Defaults to false (auto-off without AI env). */
+  /** RAG AI 助手 island，默认 false（缺少 AI 环境变量时自动关闭）。 */
   aiAssistant?: boolean;
-  /** PWA: web manifest + service worker. Defaults to false. */
+  /** PWA：web manifest 与 service worker，默认 false。 */
   pwa?: boolean;
-  /** Vue 3 reading settings panel (font size / line height / content width). Defaults to true. */
+  /** Vue 3 阅读设置面板（字号 / 行距 / 内容宽度），默认 true。 */
   readingSettings?: boolean;
 }
 
 interface SocialLink {
   /**
-   * Must match an SVG filename in src/assets/icons/socials/.
-   * e.g. "github" → src/assets/icons/socials/github.svg
+   * 必须对应 src/assets/icons/socials/ 下的 SVG 文件名，
+   * 例如 "github" → src/assets/icons/socials/github.svg
    */
   name: string;
   url: string;
   /**
-   * Accessible label for the icon link (aria-label, title attribute).
-   * Auto-generated if omitted: "{site.title} on GitHub", "Send an email to {site.title}", etc.
-   * Override when the default wording doesn't fit.
+   * 图标链接的无障碍标签（aria-label、title 属性）。
+   * 省略时自动生成，如 "{site.title} on GitHub"、"Send an email to {site.title}"；
+   * 默认措辞不合适时再覆盖。
    */
   linkTitle?: string;
 }
 
 interface ShareLink {
   /**
-   * Must match an SVG filename in src/assets/icons/socials/.
-   * e.g. "facebook" → src/assets/icons/socials/facebook.svg
+   * 必须对应 src/assets/icons/socials/ 下的 SVG 文件名，
+   * 例如 "facebook" → src/assets/icons/socials/facebook.svg
    */
   name: string;
-  /** Base share URL. The post URL will be appended as a query param. */
+  /** 分享的基础 URL，文章链接会作为查询参数追加。 */
   url: string;
   /**
-   * Accessible label for the icon link (aria-label, title attribute).
-   * Auto-generated if omitted: "Share this post on Facebook", "Share this post via WhatsApp", etc.
-   * Override when the default wording doesn't fit.
+   * 图标链接的无障碍标签（aria-label、title 属性）。
+   * 省略时自动生成，如 "Share this post on Facebook"、"Share this post via WhatsApp"；
+   * 默认措辞不合适时再覆盖。
    */
   linkTitle?: string;
 }
@@ -106,9 +106,9 @@ interface AstroPaperConfig {
   site: SiteConfig;
   posts?: PostsConfig;
   features?: FeaturesConfig;
-  /** Social profile links shown in header/footer */
+  /** 页头 / 页脚展示的社交主页链接 */
   socials?: SocialLink[];
-  /** Share links shown on post detail pages */
+  /** 文章详情页展示的分享链接 */
   shareLinks?: ShareLink[];
 }
 
@@ -136,9 +136,9 @@ export interface ResolvedAstroPaperConfig {
 }
 
 /**
- * Type helper for astro-paper.config.ts.
- * @param config - The configuration object.
- * Provides full IntelliSense without any runtime overhead.
+ * astro-paper.config.ts 的类型辅助函数。
+ * @param config - 配置对象。
+ * 提供完整 IntelliSense，且不带来任何运行时开销。
  */
 export function defineAstroPaperConfig(
   config: AstroPaperConfig

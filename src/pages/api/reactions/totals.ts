@@ -11,9 +11,9 @@ import { getAnonSupabase, hasSupabase } from "@/lib/supabase/anon";
 export const prerender = false;
 
 /**
- * Site-wide reaction totals, used by the cross-framework TanStack Query demo.
- * Static route ("totals") takes precedence over the [...slug] catch-all.
- * The reaction_totals view is publicly readable (anon granted in 0001 migration).
+ * 全站表情回应汇总，供跨框架 TanStack Query 示例使用。
+ * 静态路由（"totals"）优先于 [...slug] 通配路由。
+ * reaction_totals 视图对外公开可读（0001 迁移中已授予 anon 权限）。
  */
 export const GET: APIRoute = async () => {
   if (!hasSupabase()) {

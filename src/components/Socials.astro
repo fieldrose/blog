@@ -2,6 +2,7 @@
 import config from "@/config";
 import LinkButton from "./LinkButton.astro";
 
+// 社交链接图标列表：按 config.socials 动态加载对应的 SVG 图标
 const { site, socials } = config;
 
 const icons = import.meta.glob<{

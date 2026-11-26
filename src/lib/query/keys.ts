@@ -1,7 +1,7 @@
 /**
- * Centralized TanStack Query keys.
- * React (react-query) and Vue (vue-query) islands import from here so that
- * invalidation and cross-framework cache dedup always agree on the key shape.
+ * 集中式 TanStack Query key 定义。
+ * React（react-query）与 Vue（vue-query）island 统一从此导入，
+ * 确保失效逻辑与跨框架缓存去重始终使用一致的 key 结构。
  */
 export const queryKeys = {
   authUser: () => ["auth", "user"] as const,

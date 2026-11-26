@@ -15,7 +15,7 @@ type AdjacentPost = {
 type Props = {
   prevPost: AdjacentPost;
   nextPost: AdjacentPost;
-  /** Set when the current post belongs to a series; neighbours are series members. */
+  /** 当前文章属于专栏时设置，此时前后篇为专栏内文章。 */
   seriesNav?: { name: string } | null;
 };
 
@@ -23,6 +23,7 @@ const { prevPost, nextPost, seriesNav = null } = Astro.props;
 const locale = Astro.currentLocale ?? config.site.lang;
 const t = useTranslations(locale);
 
+// 专栏内使用专栏导航文案，独立文章使用普通文章文案
 const prevLabel = seriesNav ? t.post.previousInSeries : t.post.previousPost;
 const nextLabel = seriesNav ? t.post.nextInSeries : t.post.nextPost;
 const seriesUrl = seriesNav

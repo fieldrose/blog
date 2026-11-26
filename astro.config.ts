@@ -30,7 +30,7 @@ import basicSsl from "@vitejs/plugin-basic-ssl";
 
 const USE_SSL = process.env.DEV_SSL === "true";
 const USE_CLOUDFLARE = process.env.ASTRO_ADAPTER === "cloudflare";
-// Set only for static hosts that mount browser assets under a versioned prefix.
+// 仅在把浏览器资源挂载到带版本前缀的静态主机上设置。
 const ASSETS_PREFIX = process.env.PUBLIC_ASSET_PREFIX;
 
 export default defineConfig({
@@ -41,8 +41,8 @@ export default defineConfig({
         prerenderEnvironment: "node",
       })
     : netlify({
-        // Keep Netlify's image CDN for the Netlify deployment; a plain static
-        // build must emit real image files instead of `/.netlify/images` URLs.
+        // Netlify 部署保留 Netlify 图像 CDN；纯静态构建必须输出真实图片文件，
+        // 而不是 `/.netlify/images` 形式的 URL。
         ...(ASSETS_PREFIX ? { imageCDN: false } : {}),
         devFeatures: {
           images: true,
@@ -59,11 +59,12 @@ export default defineConfig({
         config.features?.showArchives !== false || !page.endsWith("/archives/"),
     }),
     vue({
-      // Installs Pinia-independent Vue plugins (VueQueryPlugin) on every island app.
+      // 在每个 island 应用上安装与 Pinia 解耦的 Vue 插件（VueQueryPlugin）。
       appEntrypoint: "/src/pages/_app",
     }),
     react(),
   ],
+  // 双语路由：默认语言为 zh，且默认语言同样带前缀（/zh/）。
   i18n: {
     locales: localeCodes,
     defaultLocale: "zh",
@@ -87,12 +88,11 @@ export default defineConfig({
         [
           rehypeMermaid,
           {
-            // Mermaid diagrams are rendered in the browser. Build-time rendering
-            // needs Playwright's Chromium, which CI build images (Cloudflare
-            // Workers Builds, Netlify) do not provide. Astro's content loader
-            // only logs that failure and stores an empty body, which shipped
-            // posts with a blank article. `pre-mermaid` keeps the diagram source
-            // in the HTML and lets the client render it (see src/scripts/mermaid.ts).
+            // Mermaid 图表在浏览器端渲染。构建期渲染依赖 Playwright 的 Chromium，
+            // 而 CI 构建镜像（Cloudflare Workers Builds、Netlify）并不提供该依赖。
+            // Astro 的 content loader 只会记录该失败并存入空正文，
+            // 导致已发布文章出现空白内容。`pre-mermaid` 将图表源码保留在 HTML 中，
+            // 交由客户端渲染（见 src/scripts/mermaid.ts）。
             strategy: "pre-mermaid",
           },
         ],
@@ -116,14 +116,15 @@ export default defineConfig({
       postMetaPlugin(),
       ...(USE_SSL ? [basicSsl()] : []),
     ],
-    // Force Vite to pre-bundle @pagefind/default-ui so the dynamic
-    // `await import("@pagefind/default-ui")` in search.astro resolves at dev time.
-    // Without this, Vite's scanner misses the Astro <script> dynamic import
-    // and the dev server returns 504 when opening the search page.
+    // 强制 Vite 预打包 @pagefind/default-ui，使 search.astro 中动态的
+    // `await import("@pagefind/default-ui")` 在开发时能够解析。
+    // 否则 Vite 扫描器会漏掉 Astro <script> 内的动态导入，
+    // 打开搜索页时开发服务器返回 504。
     optimizeDeps: {
       include: ["@pagefind/default-ui"],
     },
   },
+  // 本地字体：JetBrains Mono 由本地 woff2/ttf 提供，避免运行时请求外部字体 CDN。
   fonts: [
     {
       name: "JetBrains Mono",
@@ -159,13 +160,13 @@ export default defineConfig({
         context: "client",
         optional: true,
       }),
-      // Canonical site URL; also the base for OAuth/email redirects.
+      // 站点规范 URL，同时作为 OAuth / 邮件重定向的基础地址。
       PUBLIC_SITE_URL: envField.string({
         access: "public",
         context: "client",
         optional: true,
       }),
-      // Supabase — public values (RLS is the security boundary).
+      // Supabase 公开配置（安全边界由 RLS 承担）。
       PUBLIC_SUPABASE_URL: envField.string({
         access: "public",
         context: "client",
@@ -176,13 +177,13 @@ export default defineConfig({
         context: "client",
         optional: true,
       }),
-      // Supabase — server-only secret.
+      // Supabase 仅服务端使用的密钥。
       SUPABASE_SERVICE_ROLE_KEY: envField.string({
         access: "secret",
         context: "server",
         optional: true,
       }),
-      // AI provider (OpenAI-compatible) — server-only, all optional.
+      // AI 提供方（兼容 OpenAI 接口），仅服务端使用，均为可选项。
       AI_API_BASE_URL: envField.string({
         access: "secret",
         context: "server",
@@ -210,6 +211,7 @@ export default defineConfig({
       }),
     },
   },
+  // 构建期使用 svgo 优化内联 SVG。
   experimental: {
     svgOptimizer: svgoOptimizer(),
   },

@@ -1,6 +1,6 @@
 /**
- * Replace `{{key}}` placeholders in UI strings.
- * Translators can reorder placeholders freely within the sentence.
+ * 替换 UI 文案中的 `{{key}}` 占位符。
+ * 译者可以在句子内自由调整占位符顺序。
  */
 export function tplStr(
   template: string,

@@ -1,111 +1,109 @@
-# For detailed configuration reference documentation, visit:
+# 完整配置说明参见：
 # https://supabase.com/docs/guides/local-development/cli/config
-# A string used to distinguish different Supabase projects on the same host. Defaults to the
-# working directory name when running `supabase init`.
+# 用于区分同一主机上不同 Supabase 项目的标识，运行 `supabase init` 时默认取
+# 当前工作目录名。
 project_id = "blog"
 
 [api]
 enabled = true
-# Port to use for the API URL.
+# API URL 使用的端口。
 port = 54321
-# Schemas to expose in your API. Tables, views and stored procedures in this schema will get API
-# endpoints. `public` and `graphql_public` schemas are included by default.
+# 在 API 中暴露的 schema，其中的表、视图与存储过程都会获得 API 端点；
+# 默认包含 `public` 与 `graphql_public`。
 schemas = ["public", "graphql_public"]
-# Extra schemas to add to the search_path of every request.
+# 追加到每个请求 search_path 中的额外 schema。
 extra_search_path = ["public", "extensions"]
-# The maximum number of rows returns from a view, table, or stored procedure. Limits payload size
-# for accidental or malicious requests.
+# 单次查询从视图、表或存储过程返回的最大行数，用于限制意外或恶意请求的响应体积。
 max_rows = 1000
-# Controls whether new tables, views, sequences and functions created in the `public` schema by
-# `postgres` are reachable through the Data API roles (`anon`, `authenticated`, `service_role`)
-# without explicit GRANTs, matching the cloud default. Set to `false` to require explicit GRANTs
-# instead. Left unset, a fresh project falls back to `true`.
+# 控制 `postgres` 在 `public` schema 中新建的表、视图、序列与函数是否无需显式 GRANT
+# 即可被 Data API 角色（`anon`、`authenticated`、`service_role`）访问，与云端默认行为一致。
+# 设为 `false` 则要求显式 GRANT；未设置时，新项目回退为 `true`。
 # auto_expose_new_tables = true
 
 [api.tls]
-# Enable HTTPS endpoints locally using a self-signed certificate.
+# 本地使用自签名证书启用 HTTPS 端点。
 enabled = false
-# Paths to self-signed certificate pair.
+# 自签名证书对的路径。
 # cert_path = "../certs/my-cert.pem"
 # key_path = "../certs/my-key.pem"
 
 [db]
-# Port to use for the local database URL.
+# 本地数据库 URL 使用的端口。
 port = 54322
-# Port used by db diff command to initialize the shadow database.
+# `db diff` 命令初始化 shadow 数据库时使用的端口。
 shadow_port = 54320
-# Maximum amount of time to wait for health check when starting the local database.
+# 启动本地数据库时等待健康检查的最长时间。
 health_timeout = "2m"
-# The database major version to use. This has to be the same as your remote database's. Run `SHOW
-# server_version;` on the remote database to check.
+# 使用的数据库主版本，必须与远端数据库一致；可在远端执行 `SHOW
+# server_version;` 确认。
 major_version = 17
 
 [db.pooler]
 enabled = false
-# Port to use for the local connection pooler.
+# 本地连接池使用的端口。
 port = 54329
-# Specifies when a server connection can be reused by other clients.
-# Configure one of the supported pooler modes: `transaction`, `session`.
+# 指定服务端连接何时可被其他客户端复用。
+# 可选池化模式：`transaction`、`session`。
 pool_mode = "transaction"
-# How many server connections to allow per user/database pair.
+# 每个「用户/数据库」组合允许的服务端连接数。
 default_pool_size = 20
-# Maximum number of client connections allowed.
+# 允许的最大客户端连接数。
 max_client_conn = 100
 
 # [db.vault]
 # secret_key = "env(SECRET_VALUE)"
 
 [db.migrations]
-# If disabled, migrations will be skipped during a db push or reset.
+# 禁用后，`db push` 或 `db reset` 期间将跳过迁移。
 enabled = true
-# Specifies an ordered list of schema files, directories, or glob patterns that describe your database.
-# Supports paths relative to supabase directory: "./schemas/*.sql", "./database".
+# 按顺序描述数据库结构的 schema 文件、目录或 glob 模式列表。
+# 支持相对于 supabase 目录的路径，例如 "./schemas/*.sql"、"./database"。
 schema_paths = []
 
 [db.seed]
-# If enabled, seeds the database after migrations during a db reset.
+# 启用后，在 `db reset` 时于迁移之后写入种子数据。
 enabled = true
-# Specifies an ordered list of seed files to load during db reset.
-# Supports glob patterns relative to supabase directory: "./seeds/*.sql"
+# 按顺序在 `db reset` 时加载的种子文件列表。
+# 支持相对于 supabase 目录的 glob 模式，例如 "./seeds/*.sql"。
 sql_paths = ["./seed.sql"]
 
 [db.network_restrictions]
-# Enable management of network restrictions.
+# 启用网络访问限制管理。
 enabled = false
-# List of IPv4 CIDR blocks allowed to connect to the database.
-# Defaults to allow all IPv4 connections. Set empty array to block all IPs.
+# 允许连接数据库的 IPv4 CIDR 列表。
+# 默认允许全部 IPv4 连接，设为空数组则拒绝所有 IP。
 allowed_cidrs = ["0.0.0.0/0"]
-# List of IPv6 CIDR blocks allowed to connect to the database.
-# Defaults to allow all IPv6 connections. Set empty array to block all IPs.
+# 允许连接数据库的 IPv6 CIDR 列表。
+# 默认允许全部 IPv6 连接，设为空数组则拒绝所有 IP。
 allowed_cidrs_v6 = ["::/0"]
 
-# Uncomment to reject non-secure connections to the database.
+# 取消注释以拒绝到数据库的非加密连接。
 # [db.ssl_enforcement]
 # enabled = true
 
 [realtime]
 enabled = true
-# Bind realtime via either IPv4 or IPv6. (default: IPv4)
+# realtime 绑定 IPv4 或 IPv6（默认 IPv4）。
 # ip_version = "IPv6"
-# The maximum length in bytes of HTTP request headers. (default: 4096)
+# HTTP 请求头的最大字节数（默认 4096）。
 # max_header_length = 4096
 
 [studio]
 enabled = true
-# Port to use for Supabase Studio.
+# Supabase Studio 使用的端口。
 port = 54323
-# External URL of the API server that frontend connects to.
+# 前端连接的 API 服务外部 URL。
 api_url = "http://127.0.0.1"
-# OpenAI API Key to use for Supabase AI in the Supabase Studio.
+# Supabase Studio 中 Supabase AI 使用的 OpenAI API Key。
 openai_api_key = "env(OPENAI_API_KEY)"
 
-# Email testing server. Emails sent with the local dev setup are not actually sent - rather, they
-# are monitored, and you can view the emails that would have been sent from the web interface.
+# 邮件测试服务。本地开发环境发出的邮件不会真正投递，而是被拦截，
+# 可在 Web 界面查看本应发出的邮件。
 [local_smtp]
 enabled = true
-# Port to use for the email testing server web interface.
+# 邮件测试服务 Web 界面使用的端口。
 port = 54324
-# Uncomment to expose additional ports for testing user applications that send emails.
+# 取消注释以暴露额外端口，用于测试会发邮件的用户应用。
 # smtp_port = 54325
 # pop3_port = 54326
 # admin_email = "admin@email.com"
@@ -113,126 +111,124 @@ port = 54324
 
 [storage]
 enabled = true
-# The maximum file size allowed (e.g. "5MB", "500KB").
+# 允许的最大文件体积（如 "5MB"、"500KB"）。
 file_size_limit = "50MiB"
 
-# Uncomment to configure local storage buckets
+# 取消注释以配置本地 storage bucket
 # [storage.buckets.images]
 # public = false
 # file_size_limit = "50MiB"
 # allowed_mime_types = ["image/png", "image/jpeg"]
 # objects_path = "./images"
 
-# Allow connections via S3 compatible clients
+# 允许通过兼容 S3 的客户端连接
 [storage.s3_protocol]
 enabled = true
 
-# Image transformation API is available to Supabase Pro plan.
+# 图像变换 API 仅在 Supabase Pro 套餐可用。
 # [storage.image_transformation]
 # enabled = true
 
-# Store analytical data in S3 for running ETL jobs over Iceberg Catalog
-# This feature is only available on the hosted platform.
+# 将分析数据存入 S3，便于在 Iceberg Catalog 上运行 ETL 任务。
+# 该功能仅在托管平台可用。
 [storage.analytics]
 enabled = false
 max_namespaces = 5
 max_tables = 10
 max_catalogs = 2
 
-# Analytics Buckets is available to Supabase Pro plan.
+# Analytics Buckets 仅在 Supabase Pro 套餐可用。
 # [storage.analytics.buckets.my-warehouse]
 
-# Store vector embeddings in S3 for large and durable datasets
+# 将向量嵌入存入 S3，用于大规模、长期保存的数据集。
 [storage.vector]
 enabled = true
 max_buckets = 10
 max_indexes = 5
 
-# Vector Buckets is available to Supabase Pro plan.
+# Vector Buckets 仅在 Supabase Pro 套餐可用。
 # [storage.vector.buckets.documents-openai]
 
 [auth]
 enabled = true
-# The base URL of your website. Used as an allow-list for redirects and for constructing URLs used
-# in emails.
+# 站点基础 URL，用作重定向白名单，并用于构造邮件中的链接。
 site_url = "http://127.0.0.1:3000"
-# The public URL that Auth serves on. Defaults to the API external URL with `/auth/v1` appended.
+# Auth 对外服务的公共 URL，默认为 API 外部 URL 追加 `/auth/v1`。
 # external_url = ""
-# A list of *exact* URLs that auth providers are permitted to redirect to post authentication.
+# 认证成功后允许认证提供方重定向到的*精确* URL 列表。
 additional_redirect_urls = ["https://127.0.0.1:3000"]
-# How long tokens are valid for, in seconds. Defaults to 3600 (1 hour), maximum 604,800 (1 week).
+# token 有效期（秒），默认 3600（1 小时），最大 604800（1 周）。
 jwt_expiry = 3600
-# JWT issuer URL. If not set, defaults to auth.external_url.
+# JWT 签发者 URL；未设置时默认为 auth.external_url。
 # jwt_issuer = ""
-# Path to JWT signing key. DO NOT commit your signing keys file to git.
+# JWT 签名密钥路径。切勿将签名密钥文件提交到 git。
 # signing_keys_path = "./signing_keys.json"
-# If disabled, the refresh token will never expire.
+# 禁用后 refresh token 永不过期。
 enable_refresh_token_rotation = true
-# Allows refresh tokens to be reused after expiry, up to the specified interval in seconds.
-# Requires enable_refresh_token_rotation = true.
+# 允许 refresh token 过期后在指定秒数内被复用。
+# 需 enable_refresh_token_rotation = true。
 refresh_token_reuse_interval = 10
-# Allow/disallow new user signups to your project.
+# 允许/禁止新用户注册。
 enable_signup = true
-# Allow/disallow anonymous sign-ins to your project.
+# 允许/禁止匿名登录。
 enable_anonymous_sign_ins = false
-# Allow/disallow testing manual linking of accounts
+# 允许/禁止测试手动关联账号
 enable_manual_linking = false
-# Passwords shorter than this value will be rejected as weak. Minimum 6, recommended 8 or more.
+# 短于该值的密码会被判定为弱密码并拒绝；最小 6，建议 8 及以上。
 minimum_password_length = 6
-# Passwords that do not meet the following requirements will be rejected as weak. Supported values
-# are: `letters_digits`, `lower_upper_letters_digits`, `lower_upper_letters_digits_symbols`
+# 不满足以下要求的密码会被判定为弱密码并拒绝，可选值：
+# `letters_digits`、`lower_upper_letters_digits`、`lower_upper_letters_digits_symbols`
 password_requirements = ""
 
-# Configure passkey sign-ins.
+# 配置 passkey 登录。
 # [auth.passkey]
 # enabled = false
 
-# Configure WebAuthn relying party settings (required when passkey is enabled).
+# 配置 WebAuthn 依赖方设置（启用 passkey 时必填）。
 # [auth.webauthn]
 # rp_display_name = "Supabase"
 # rp_id = "localhost"
 # rp_origins = ["http://127.0.0.1:3000"]
 
 [auth.rate_limit]
-# Number of emails that can be sent per hour. Requires auth.email.smtp to be enabled.
+# 每小时可发送的邮件数；需启用 auth.email.smtp。
 email_sent = 2
-# Number of SMS messages that can be sent per hour. Requires auth.sms to be enabled.
+# 每小时可发送的短信数；需启用 auth.sms。
 sms_sent = 30
-# Number of anonymous sign-ins that can be made per hour per IP address. Requires enable_anonymous_sign_ins = true.
+# 每个 IP 每小时可进行的匿名登录次数；需 enable_anonymous_sign_ins = true。
 anonymous_users = 30
-# Number of sessions that can be refreshed in a 5 minute interval per IP address.
+# 每个 IP 在 5 分钟内可刷新的会话数。
 token_refresh = 150
-# Number of sign up and sign-in requests that can be made in a 5 minute interval per IP address (excludes anonymous users).
+# 每个 IP 在 5 分钟内可发起的注册与登录请求数（不含匿名用户）。
 sign_in_sign_ups = 30
-# Number of OTP / Magic link verifications that can be made in a 5 minute interval per IP address.
+# 每个 IP 在 5 分钟内可进行的 OTP / Magic link 验证次数。
 token_verifications = 30
-# Number of Web3 logins that can be made in a 5 minute interval per IP address.
+# 每个 IP 在 5 分钟内可进行的 Web3 登录次数。
 web3 = 30
 
-# Configure one of the supported captcha providers: `hcaptcha`, `turnstile`.
+# 配置受支持的 captcha 提供方：`hcaptcha` 或 `turnstile`。
 # [auth.captcha]
 # enabled = true
 # provider = "hcaptcha"
 # secret = ""
 
 [auth.email]
-# Allow/disallow new user signups via email to your project.
+# 允许/禁止通过邮箱注册。
 enable_signup = true
-# If enabled, a user will be required to confirm any email change on both the old, and new email
-# addresses. If disabled, only the new email is required to confirm.
+# 启用后，修改邮箱需在旧、新邮箱地址上分别确认；禁用则只需确认新邮箱。
 double_confirm_changes = true
-# If enabled, users need to confirm their email address before signing in.
+# 启用后，用户需先确认邮箱地址才能登录。
 enable_confirmations = false
-# If enabled, users will need to reauthenticate or have logged in recently to change their password.
+# 启用后，用户修改密码前需重新认证或近期登录过。
 secure_password_change = false
-# Controls the minimum amount of time that must pass before sending another signup confirmation or password reset email.
+# 发送下一封注册确认或重置密码邮件前必须间隔的最短时间。
 max_frequency = "1s"
-# Number of characters used in the email OTP.
+# 邮件 OTP 的字符数。
 otp_length = 6
-# Number of seconds before the email OTP expires (defaults to 1 hour).
+# 邮件 OTP 的过期秒数（默认 1 小时）。
 otp_expiry = 3600
 
-# Use a production-ready SMTP server
+# 使用生产可用的 SMTP 服务
 # [auth.email.smtp]
 # enabled = true
 # host = "smtp.sendgrid.net"
@@ -242,67 +238,67 @@ otp_expiry = 3600
 # admin_email = "admin@email.com"
 # sender_name = "Admin"
 
-# Uncomment to customize email template
+# 取消注释以自定义邮件模板
 # [auth.email.template.invite]
 # subject = "You have been invited"
 # content_path = "./supabase/templates/invite.html"
 
-# Uncomment to customize notification email template
+# 取消注释以自定义通知邮件模板
 # [auth.email.notification.password_changed]
 # enabled = true
 # subject = "Your password has been changed"
 # content_path = "./supabase/templates/password_changed_notification.html"
 
 [auth.sms]
-# Allow/disallow new user signups via SMS to your project.
+# 允许/禁止通过短信注册。
 enable_signup = false
-# If enabled, users need to confirm their phone number before signing in.
+# 启用后，用户需先确认手机号才能登录。
 enable_confirmations = false
-# Template for sending OTP to users
+# 向用户发送 OTP 的短信模板
 template = "Your code is {{ .Code }}"
-# Controls the minimum amount of time that must pass before sending another sms otp.
+# 发送下一条短信 OTP 前必须间隔的最短时间。
 max_frequency = "5s"
 
-# Use pre-defined map of phone number to OTP for testing.
+# 使用预定义的手机号到 OTP 映射用于测试。
 # [auth.sms.test_otp]
 # 4152127777 = "123456"
 
-# Configure logged in session timeouts.
+# 配置登录会话超时。
 # [auth.sessions]
-# Force log out after the specified duration.
+# 超过指定时长后强制登出。
 # timebox = "24h"
-# Force log out if the user has been inactive longer than the specified duration.
+# 用户闲置超过指定时长后强制登出。
 # inactivity_timeout = "8h"
 
-# This hook runs before a new user is created and allows developers to reject the request based on the incoming user object.
+# 该 hook 在新用户创建前运行，可依据传入的用户对象拒绝该请求。
 # [auth.hook.before_user_created]
 # enabled = true
 # uri = "pg-functions://postgres/auth/before-user-created-hook"
 
-# This hook runs before a token is issued and allows you to add additional claims based on the authentication method used.
+# 该 hook 在签发 token 前运行，可依据所用认证方式追加 claim。
 # [auth.hook.custom_access_token]
 # enabled = true
 # uri = "pg-functions://<database>/<schema>/<hook_name>"
 
-# Configure one of the supported SMS providers: `twilio`, `twilio_verify`, `messagebird`, `textlocal`, `vonage`.
+# 配置受支持的短信提供方：`twilio`、`twilio_verify`、`messagebird`、`textlocal`、`vonage`。
 [auth.sms.twilio]
 enabled = false
 account_sid = ""
 message_service_sid = ""
-# DO NOT commit your Twilio auth token to git. Use environment variable substitution instead:
+# 切勿将 Twilio auth token 提交到 git，改用环境变量替换：
 auth_token = "env(SUPABASE_AUTH_SMS_TWILIO_AUTH_TOKEN)"
 
-# Multi-factor-authentication is available to Supabase Pro plan.
+# 多因素认证（MFA）仅在 Supabase Pro 套餐可用。
 [auth.mfa]
-# Control how many MFA factors can be enrolled at once per user.
+# 控制每个用户可同时绑定的 MFA 因子数量。
 max_enrolled_factors = 10
 
-# Control MFA via App Authenticator (TOTP)
+# 通过 App Authenticator（TOTP）控制 MFA
 [auth.mfa.totp]
 enroll_enabled = false
 verify_enabled = false
 
-# Configure MFA via Phone Messaging
+# 通过手机短信配置 MFA
 [auth.mfa.phone]
 enroll_enabled = false
 verify_enabled = false
@@ -310,75 +306,75 @@ otp_length = 6
 template = "Your code is {{ .Code }}"
 max_frequency = "5s"
 
-# Configure MFA via WebAuthn
+# 通过 WebAuthn 配置 MFA
 # [auth.mfa.web_authn]
 # enroll_enabled = true
 # verify_enabled = true
 
-# Use an external OAuth provider. The full list of providers are: `apple`, `azure`, `bitbucket`,
-# `discord`, `facebook`, `github`, `gitlab`, `google`, `keycloak`, `linkedin_oidc`, `notion`, `twitch`,
-# `twitter`, `x`, `slack`, `spotify`, `workos`, `zoom`.
+# 使用外部 OAuth 提供方，完整列表：`apple`、`azure`、`bitbucket`、`discord`、`facebook`、
+# `github`、`gitlab`、`google`、`keycloak`、`linkedin_oidc`、`notion`、`twitch`、`twitter`、
+# `x`、`slack`、`spotify`、`workos`、`zoom`。
 [auth.external.apple]
 enabled = false
 client_id = ""
-# DO NOT commit your OAuth provider secret to git. Use environment variable substitution instead:
+# 切勿将 OAuth 提供方 secret 提交到 git，改用环境变量替换：
 secret = "env(SUPABASE_AUTH_EXTERNAL_APPLE_SECRET)"
-# Overrides the default auth callback URL derived from auth.external_url.
+# 覆盖由 auth.external_url 推导出的默认认证回调 URL。
 redirect_uri = ""
-# Overrides the default auth provider URL. Used to support self-hosted gitlab, single-tenant Azure,
-# or any other third-party OIDC providers.
+# 覆盖默认认证提供方 URL，用于支持自建 gitlab、单租户 Azure
+# 或其他第三方 OIDC 提供方。
 url = ""
-# If enabled, the nonce check will be skipped. Required for local sign in with Google auth.
+# 启用后跳过 nonce 校验；使用 Google 认证本地登录时需要。
 skip_nonce_check = false
-# If enabled, it will allow the user to successfully authenticate when the provider does not return an email address.
+# 启用后，即使提供方未返回邮箱地址也允许认证成功。
 email_optional = false
 
-# Allow Solana wallet holders to sign in to your project via the Sign in with Solana (SIWS, EIP-4361) standard.
-# You can configure "web3" rate limit in the [auth.rate_limit] section and set up [auth.captcha] if self-hosting.
+# 允许 Solana 钱包持有者通过 Sign in with Solana（SIWS，EIP-4361）标准登录。
+# 可在 [auth.rate_limit] 中配置 "web3" 限流，自托管时还需配置 [auth.captcha]。
 [auth.web3.solana]
 enabled = false
 
-# Use Firebase Auth as a third-party provider alongside Supabase Auth.
+# 将 Firebase Auth 作为第三方提供方与 Supabase Auth 并用。
 [auth.third_party.firebase]
 enabled = false
 # project_id = "my-firebase-project"
 
-# Use Auth0 as a third-party provider alongside Supabase Auth.
+# 将 Auth0 作为第三方提供方与 Supabase Auth 并用。
 [auth.third_party.auth0]
 enabled = false
 # tenant = "my-auth0-tenant"
 # tenant_region = "us"
 
-# Use AWS Cognito (Amplify) as a third-party provider alongside Supabase Auth.
+# 将 AWS Cognito（Amplify）作为第三方提供方与 Supabase Auth 并用。
 [auth.third_party.aws_cognito]
 enabled = false
 # user_pool_id = "my-user-pool-id"
 # user_pool_region = "us-east-1"
 
-# Use Clerk as a third-party provider alongside Supabase Auth.
+# 将 Clerk 作为第三方提供方与 Supabase Auth 并用。
 [auth.third_party.clerk]
 enabled = false
-# Obtain from https://clerk.com/setup/supabase
+# 获取地址：https://clerk.com/setup/supabase
 # domain = "example.clerk.accounts.dev"
 
-# OAuth server configuration
+# OAuth 服务端配置
 [auth.oauth_server]
-# Enable OAuth server functionality
+# 启用 OAuth 服务端功能
 enabled = false
-# Path for OAuth consent flow UI
+# OAuth 授权同意流程 UI 的路径
 authorization_url_path = "/oauth/consent"
-# Allow dynamic client registration
+# 允许动态注册客户端
 allow_dynamic_registration = false
 
 [edge_runtime]
 enabled = true
-# Supported request policies: `oneshot`, `per_worker`.
-# `per_worker` (default) — enables hot reload during local development.
-# `oneshot` — fallback mode if hot reload causes issues (e.g. in large repos or with symlinks).
+# 支持的请求策略：`oneshot`、`per_worker`。
+# `per_worker`（默认）在本地开发时支持热重载；
+# `oneshot` 是在热重载出现问题时（如大型仓库或使用符号链接）的回退模式。
 policy = "per_worker"
-# Port to attach the Chrome inspector for debugging edge functions.
+# 调试 edge functions 时 Chrome inspector 附加的端口。
 inspector_port = 8083
-# The Deno major version to use.
+# 使用的 Deno 主版本。
 deno_version = 2
 
 # [edge_runtime.secrets]
@@ -387,29 +383,28 @@ deno_version = 2
 [analytics]
 enabled = true
 port = 54327
-# Configure one of the supported backends: `postgres`, `bigquery`.
+# 配置受支持的后端：`postgres` 或 `bigquery`。
 backend = "postgres"
 
-# Experimental features may be deprecated any time
+# 实验性功能可能随时被废弃
 [experimental]
-# Configures Postgres storage engine to use OrioleDB (S3)
+# 配置 Postgres 存储引擎使用 OrioleDB（S3）
 orioledb_version = ""
-# Configures S3 bucket URL, eg. <bucket_name>.s3-<region>.amazonaws.com
+# 配置 S3 bucket URL，例如 <bucket_name>.s3-<region>.amazonaws.com
 s3_host = "env(S3_HOST)"
-# Configures S3 bucket region, eg. us-east-1
+# 配置 S3 bucket 区域，例如 us-east-1
 s3_region = "env(S3_REGION)"
-# Configures AWS_ACCESS_KEY_ID for S3 bucket
+# 配置 S3 bucket 的 AWS_ACCESS_KEY_ID
 s3_access_key = "env(S3_ACCESS_KEY)"
-# Configures AWS_SECRET_ACCESS_KEY for S3 bucket
+# 配置 S3 bucket 的 AWS_SECRET_ACCESS_KEY
 s3_secret_key = "env(S3_SECRET_KEY)"
 
-# pg-delta is the schema diff engine for db diff / db pull / db remote commit.
-# Set enabled = false to fall back to the legacy migra engine.
+# pg-delta 是 db diff / db pull / db remote commit 使用的 schema 差异引擎。
+# 设 enabled = false 可回退到旧版 migra 引擎。
 [experimental.pgdelta]
 enabled = true
-# Directory under `supabase/` where declarative files are written.
+# 声明式文件写入的目录（位于 `supabase/` 下）。
 # declarative_schema_path = "./schemas"
-# JSON string passed through to pg-delta SQL formatting. When omitted, SQL is
-# formatted with uppercase keywords, indent 2, max width 180, trailing commas,
-# and column/key alignment. Set to "null" to emit raw, unformatted SQL.
+# 传给 pg-delta SQL 格式化的 JSON 字符串。省略时按关键字大写、缩进 2、最大宽度 180、
+# 尾随逗号、列与键对齐的规则格式化；设为 "null" 则输出未格式化的原始 SQL。
 # format_options = "{\"keywordCase\":\"upper\",\"indent\":2,\"maxWidth\":180,\"commaStyle\":\"trailing\"}"

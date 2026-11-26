@@ -20,6 +20,10 @@ function getIdSlug(id: string): string {
   return postId.length > 0 ? String(postId[postId.length - 1]) : id;
 }
 
+/**
+ * 拼接文章 slug 路径：目录段逐级 slugify 后追加文章 id 末段。
+ * 返回值不含前导斜杠，例如 `examples/my-post`。
+ */
 function getPostSlugPath(id: string, filePath: string | undefined): string {
   const pathSegments = getPostPathSegments(filePath);
   const slug = getIdSlug(id);
@@ -31,19 +35,18 @@ function getPostSlugPath(id: string, filePath: string | undefined): string {
 export { getPostSlugPath };
 
 /**
- * Returns the slug-only path for use as a route param in `getStaticPaths`.
- * No base prefix, no locale — Astro handles those at a higher level.
- * e.g. `/examples/my-post`
+ * 返回仅含 slug 的路径，供 `getStaticPaths` 作为路由参数使用。
+ * 不含 base 与 locale 前缀，二者由 Astro 在上层处理。
+ * 例如 `/examples/my-post`。
  */
 export function getPostSlug(id: string, filePath: string | undefined): string {
   return `/${getPostSlugPath(id, filePath)}`;
 }
 
 /**
- * Returns a fully navigable URL for use in `<a href>` and RSS links.
- * Applies both locale routing and the configured Astro base via
- * `getRelativeLocaleUrl`.
- * e.g. `/posts/my-post` or `/en/posts/my-post`
+ * 返回可直接导航的完整 URL，供 `<a href>` 与 RSS 链接使用。
+ * 通过 `getRelativeLocaleUrl` 同时套用 locale 路由与 Astro base 配置。
+ * 例如 `/posts/my-post` 或 `/en/posts/my-post`。
  */
 export function getPostUrl(
   id: string,

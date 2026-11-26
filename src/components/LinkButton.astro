@@ -1,6 +1,7 @@
 ---
 import type { HTMLAttributes } from "astro/types";
 
+// 通用链接按钮：disabled 时降级为 span，避免不可点击却保留链接语义
 type Props = { disabled?: boolean } & HTMLAttributes<"a">;
 
 const { disabled, class: className, ...attrs } = Astro.props;

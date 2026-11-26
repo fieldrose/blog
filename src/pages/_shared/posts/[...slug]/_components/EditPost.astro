@@ -12,6 +12,7 @@ type Props = {
 
 const { hideEditPost, post, class: className = "" } = Astro.props;
 
+// 未启用 editPost 或文章标记隐藏时不渲染编辑入口
 const editPost = config.features.editPost;
 const href = editPost.enabled ? `${editPost.url}${post.filePath}` : "";
 const showEditPost = editPost.enabled && !hideEditPost && href.trim() !== "";
